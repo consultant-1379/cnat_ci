@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--version: 1.1.0 -->
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>urn:ietf:params:netconf:base:1.0</capability>
+    </capabilities>
+</hello>]]>]]>
+
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="1">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+        <udr-application-counters xmlns="urn:rdns:com:ericsson:oammodel:ericsson-app-counters-udr">
+    <counter-group>
+      <name>GRP_HssEsmActiveUsers</name>
+      <description>Counters for the number of active EPS users stored in HSS application</description>
+      <administrative-state>unlocked</administrative-state>
+      <data-type>ldap-entry</data-type>
+      <periodicity>one-day</periodicity>
+      <counter>
+        <name>TotalNumberOfActiveEpsUsers</name>
+        <description>The number of active EPS users</description>
+        <condition>Value of EpsLastActivityDate is within the rolling period</condition>
+        <administrative-state>unlocked</administrative-state>
+        <data-subtype>mscId</data-subtype>
+        <rule>(EpsDynInf.EpsLastActivityDate >= dateToInteger(users-active-period))</rule>
+      </counter>
+    </counter-group>
+    <counter-group>
+      <name>GRP_HssEsmUsersLocation</name>
+      <description>Counters for the number of EPS users located in the HSS application</description>
+      <administrative-state>unlocked</administrative-state>
+      <data-type>ldap-entry</data-type>
+      <counter>
+        <name>TotalNumberOfEpsUsersLocated</name>
+        <description>The number of EPS users currently located</description>
+        <condition>EpsDynInf is present and EpcLocState=1</condition>
+        <administrative-state>unlocked</administrative-state>
+        <data-subtype>mscId</data-subtype>
+        <rule>(EpsDynInf.EpsLocState = 1)</rule>
+      </counter>
+      <counter>
+        <name>TotalNumUsersRegNon3GppIpAccess</name>
+        <description>The number of users registered in a non-3GPP IP access network</description>
+        <condition>EpsDynInf is present and EpsAaaRegState=2</condition>
+        <administrative-state>unlocked</administrative-state>
+        <data-subtype>mscId</data-subtype>
+        <rule>(EpsDynInf.EpsAaaRegState = 2)</rule>
+      </counter>
+      <!--cnHSS is removing serving MME data for Purged users so they cannot be considered as being served by an MME any longer-->
+      <!--From counters perspective having PURGED or UNKNOWN location is the same for cnHSS-->
+    </counter-group>
+    <counter-group>
+      <name>GRP_HssEsmUsersStored</name>
+      <description>Counters for the number of EPS users stored in the HSS application</description>
+      <administrative-state>unlocked</administrative-state>
+      <data-type>ldap-entry</data-type>
+      <counter>
+        <name>TotalNumberOfEpsUsersStored</name>
+        <description>The number of EPS users</description>
+        <condition>EpsStaticInf is present</condition>
+        <administrative-state>unlocked</administrative-state>
+        <data-subtype>mscId</data-subtype>
+        <rule>(EpsStaticInf.EpsStaInfId != null)</rule>
+      </counter>
+    </counter-group>
+        </udr-application-counters>
+        </config>
+    </edit-config>
+</rpc>

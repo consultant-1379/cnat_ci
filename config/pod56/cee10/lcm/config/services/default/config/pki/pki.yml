@@ -1,0 +1,7 @@
+---
+# cacertExpiry: CA certificate validity default is 1825 maximum 9135
+# certExpiry: CA certificate validity default is 730
+#internalPKI:
+#  certExpiry: 730
+#  cacertExpiry: 1825
+...

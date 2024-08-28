@@ -1,0 +1,64 @@
+nodeName: pod56-cces1
+nodeType: CCES
+
+vnflcm:
+  clusterName: pod56-eccd1
+  namespace: cces
+  InstantiateVnfRequest:
+    applicationTimeOut: 3600
+    skipVerification: "true"
+
+users:
+  day0:
+    username: sysadmin
+    password: Pa$$w0rd4LDAP
+  day1:
+  - username: ccesoam
+    password: Changeme@1st
+    groups:
+    - nef-admin
+    - apigm-admin
+    - sragent-admin
+    - nrfagent-admin
+    - system-admin
+  - username: ccessec
+    password: Changeme@1st
+    groups:
+    - nef-security-admin
+    - apigm-security-admin
+    - sragent-security-admin
+    - nrfagent-security-admin
+    - system-security-admin
+
+snmp:
+  agentEngineId: 8000137001C0A856ECCD10CEA6
+
+license:
+  customerId: "946060"
+  swltId: STA-CCES-16
+
+nefInstanceId: ddd9b5b3-fa57-4cb1-ace7-56eccd10cea6
+
+ddc:
+  remotePath: /sftpuser/ddc/eccd1/pod56-cces1
+
+diameter:
+  remoteIp: 25.51.0.251
+  remotePort: 3868
+
+nef:
+  host: nef1.pod56
+  port: 443
+nefNbiTrust:
+  host: nef1-nbi-trust.pod56
+
+replicaCount:
+  eric-data-wide-column-database-cd: 3
+  eric-cces-common-entity: 2
+  eric-cces-timer-service: 2
+  eric-apigm-api-proxy: 2
+
+minReplica:
+  eric-cces-common-entity: 2
+  eric-cces-timer-service: 2
+  eric-apigm-api-proxy: 2

@@ -1,0 +1,147 @@
+######################################
+## CNF general information
+######################################
+systemProfile: standard
+nodeName: n182-vpod2-ccsm1
+nodeType: CCSM
+nodeSelector: {}
+
+vnflcm:
+  clusterName: n182-eccd2
+  namespace: ccsm
+
+users:
+  day1:
+  - username: ccsm-admin
+    password: Changeme@1st
+    groups:
+    - ausf_admin
+    - udm_sensitive_key_admin
+    - udm_admin
+    - system-admin
+    - nrfagent-admin
+    - hssepc_admin
+    - ccsm-admin
+    - eir_admin
+    - eir_privacy_admin
+    - eir_security_admin
+  - username: ccsm-sec
+    password: Changeme@1st
+    groups:
+    - udm_security_admin
+    - nrfagent-security-admin
+    - system-security-admin
+
+license:
+  customerId: "946060"
+  swltId: STA-CCSM-40
+
+cnom:
+  fqdn: cnom.ccsm1.n182.vpod2.seli.gic.ericsson.se
+snmp:
+  agentEngineId: 800000c1046363736d3163347331
+  sourceIdentifier: 10.221.125.17
+
+ddc:
+  remotePath: /mnt/ddc/node182-cluster2-ccsm1
+
+#vtap:
+ # tapagent: true
+  #remotePath: vtap/n182-vpod2-ccsm1
+
+######################################
+## CNF specific information
+######################################
+ccsm:
+  ausf:
+    instanceId: 0c765084-9cc5-49c6-9876-415553a1c4d2
+    host: ccsm1-ausf-5g-sig.n182-vpod2
+    port: 443
+  udm:
+    instanceId: 841d1b7c-5103-11e9-8c09-55444da1c4d2
+    host: ccsm1-udm-5g-sig.n182-vpod2
+    port: 443
+  eir:
+    instanceId: 77fba27d-6a44-4074-8d9a-454952a1c4d2
+    host: ccsm1-eir-5g-sig.n182-vpod2
+    port: 443
+  hss:
+    instanceId: 9448c0d3-6590-4e54-b90f-485353a1c4d2
+    host: ccsm1-hss-epc-http-sig.n182-vpod2
+    port: 80
+    diameter:
+      host: ccsm
+######################################
+## CNF certificates specific
+######################################
+certs:
+  iccr-external-tls-certificate:
+    p12: ../certificates/ccsm1/ccsm1-iccr-server.p12
+  eric-ccsm-udm-sbi-server-certs:
+    p12: ../certificates/ccsm1/ccsm1-udm-sbi-server.p12
+  eric-ccsm-udm-sbi-client-certs:
+    p12: ../certificates/ccsm1/ccsm1-udm-sbi-client.p12
+  eric-ccsm-ausf-sbi-server-certs:
+    p12: ../certificates/ccsm1/ccsm1-ausf-sbi-server.p12
+  eric-ccsm-ausf-sbi-client-certs:
+    p12: ../certificates/ccsm1/ccsm1-ausf-sbi-client.p12
+  eric-ccsm-hss-sbi-server-certs:
+    p12: ../certificates/ccsm1/ccsm1-hss-sbi-server.p12
+  eric-ccsm-hss-sbi-client-certs:
+    p12: ../certificates/ccsm1/ccsm1-hss-sbi-client.p12
+  eric-ccsm-eir-sbi-server-certs:
+    p12: ../certificates/ccsm1/ccsm1-eir-sbi-server.p12
+  eric-ccsm-eir-sbi-client-certs:
+    p12: ../certificates/ccsm1/ccsm1-eir-sbi-client.p12
+
+######################################
+## CNF dimensioning specific
+######################################
+hpaReplica:
+  eric-udm-blackhole: {min: 1, max: 2}
+  eric-udm-cancelepclocation: {min: 2, max: 2}
+  eric-udm-capacity: {min: 1, max: 20}
+  eric-udm-eapauth: {min: 2, max: 2}
+  eric-udm-eapprimeauth: {min: 2, max: 2}
+  eric-udm-epsauth: {min: 4 , max: 4}
+  eric-udm-gbaauth: {min: 2, max: 2}
+  eric-udm-imsauth: {min: 2, max: 2}
+  eric-udm-iratamfdereg: {min: 2, max: 2}
+  eric-udm-iratamflocation: {min: 2, max: 2}
+  eric-udm-iratsndereg: {min: 2, max: 2}
+  eric-udm-iwk5g2g: {min: 2, max: 2}
+  eric-udm-sdmamdata: {min: 2, max: 2}
+  eric-udm-sdmimplicitunsub: {min: 2, max: 2}
+  eric-udm-sdmmultipledataset: {min: 2, max: 2}
+  eric-udm-sdmnotif: {min: 2, max: 2}
+  eric-udm-sdmnssai: {min: 2, max: 2}
+  eric-udm-sdmsmdata: {min: 2, max: 3}
+  eric-udm-sdmsmfselect: {min: 2, max: 2}
+  eric-udm-sdmsubscriptions: {min: 3, max: 4}
+  eric-udm-sdmuectxtsmf: {min: 2, max: 2}
+  eric-udm-ueauth: {min: 2, max: 3}
+  eric-udm-uecmamfget: {min: 2, max: 2}
+  eric-udm-uecmamfderegnotifier: {min: 2, max: 2}
+  eric-udm-uecmamfregupdate: {min: 2, max: 2}
+  eric-udm-uecmreg: {min: 3, max: 4}
+  eric-udm-uecmsmfderegistration: {min: 2, max: 2}
+  eric-udm-uecmsmfregistration: {min: 2, max: 3}
+  eric-ausf-capacity: {min: 1, max: 20}
+  eric-ausf-engine: {min: 2, max: 2}
+  eric-eir-eireic: {min: 3, max: 4}
+  eric-eir-s13diameter: {min: 2, max: 2}
+  eric-eir-diametereireic: {min: 2, max: 2}
+  eric-hssepc-capacity: {min: 1, max: 20}
+  eric-hssepc-s6adiameter: {min: 2, max: 2}
+  eric-hssepc-iratsndereg: {min: 3, max: 3}
+  eric-hssepc-s6aauthentication: {min: 4, max: 4}
+  eric-hssepc-s6acancellocation: {min: 3, max: 4}
+  eric-hssepc-s6adeletesubscriber: {min: 2, max: 2}
+  eric-hssepc-s6ainsertsubscriber: {min: 2, max: 2}
+  eric-hssepc-s6anotify: {min: 2, max: 2}
+  eric-hssepc-s6apurge: {min: 2, max: 2}
+  eric-hssepc-s6aupdatelocation: {min: 4, max: 5}
+  eric-hssepc-soap: {min: 2, max: 2}
+  eric-hssepc-s6aprovnotification: {min: 2, max: 2}
+  eric-hssepc-subscriptionupdate: {min: 2, max: 2}
+

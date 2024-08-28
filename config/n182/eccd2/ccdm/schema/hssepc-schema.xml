@@ -1,0 +1,672 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<rpc message-id="4" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+            <udr xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udr">
+                <ldap-access>
+                    <ldap-schema>
+                        <name>hssepc.schema</name>
+                        <content><![CDATA[
+attributetype ( 1.3.6.1.4.1.193.188.3.1.1.1 NAME 'EpsSubsId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.1.2 NAME 'EpsAssocImsi'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+objectclass ( 1.3.6.1.4.1.193.188.3.1.1 NAME 'EpsSubs'
+      STRUCTURAL
+      MUST (EpsSubsId)
+      MAY (EpsAssocImsi $ CDC)
+      )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.1 NAME 'EpsStaInfId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.2 NAME 'EpsProfileId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.3 NAME 'EpsOdb'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.4 NAME 'EpsRoamAllow'
+      EQUALITY booleanMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.5 NAME 'EpsIndApnOiReplace'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.6 NAME 'EpsIndDefContextId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.7 NAME 'EpsIndSubChargChars'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.8 NAME 'EpsIndContextId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.9 NAME 'EpsIndAmbrMaxUl'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.10 NAME 'EpsIndAmbrMaxDl'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.11 NAME 'EpsIndRatFreqSelPrioId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.12 NAME 'EpsRoamRestrict'
+      EQUALITY booleanMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.13 NAME 'EpsAccessRestriction'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.14 NAME 'EpsUserIpV4Address'
+      EQUALITY caseIgnoreMatch
+      SUBSTR caseIgnoreSubstringsMatch
+      ORDERING caseIgnoreOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.15 NAME 'EpsUserIpV6Address'
+      EQUALITY caseIgnoreMatch
+      SUBSTR caseIgnoreSubstringsMatch
+      ORDERING caseIgnoreOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.16 NAME 'EpsTenantId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.17 NAME 'EpsStnSr'
+      EQUALITY caseIgnoreMatch
+      SUBSTR caseIgnoreSubstringsMatch
+      ORDERING caseIgnoreOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.18 NAME 'EpsMpsPriority'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.19 NAME 'EpsZoneCodeSetId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.20 NAME 'EpsAutomaticProvisioned'
+      EQUALITY booleanMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.21 NAME 'EpsIndMappingContextId'
+      EQUALITY caseIgnoreMatch
+      SUBSTR caseIgnoreSubstringsMatch
+      ORDERING caseIgnoreOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.22 NAME 'EpsCommonMsisdn'
+      EQUALITY caseIgnoreMatch
+      SUBSTR caseIgnoreSubstringsMatch
+      ORDERING caseIgnoreOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.23 NAME 'EpsAutoProvMask'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.24 NAME 'EpsRoamingServiceAreaId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.25 NAME 'EpsAaaIndDefContextId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.26 NAME 'EpsAaaIndContextId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.27 NAME 'EpsAaaIndMappingContextId'
+      EQUALITY caseIgnoreMatch
+      SUBSTR caseIgnoreSubstringsMatch
+      ORDERING caseIgnoreOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.28 NAME 'EpsAaaOdb'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.29 NAME 'EpsAdminDisable'
+      EQUALITY booleanMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.30 NAME 'EpsNam'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.31 NAME 'EpsAaaMip6fv'
+      EQUALITY octetStringMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.32 NAME 'EpsIndUeUsageType'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.33 NAME 'EpsIndRauTauTimer'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.34 NAME 'EpsMdtUserConsent'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.35 NAME 'EpsIndAddDefContextId'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.36 NAME 'EpsIndUserType'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.37 NAME 'EpsIndAmbrMaxUlExt'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.38 NAME 'EpsIndAmbrMaxDlExt'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.39 NAME 'EpsIndeDrx'
+      EQUALITY caseIgnoreMatch
+      SUBSTR caseIgnoreSubstringsMatch
+      ORDERING caseIgnoreOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.40 NAME 'EpsIndActTim'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.2.41 NAME 'EpsIndCoreNetworkRestrictions'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+objectclass ( 1.3.6.1.4.1.193.188.3.1.2 NAME 'EpsStaticInf'
+      STRUCTURAL
+      MUST (EpsStaInfId $ EpsProfileId $ EpsOdb $ EpsRoamAllow)
+      MAY (assocId $ CDC $
+         EpsIndApnOiReplace $ EpsIndDefContextId $
+         EpsIndSubChargChars $ EpsIndContextId $
+         EpsIndAmbrMaxUl $ EpsIndAmbrMaxDl $
+         EpsIndRatFreqSelPrioId $ EpsRoamRestrict $
+         EpsAccessRestriction $ EpsUserIpV4Address $
+         EpsUserIpV6Address $ EpsTenantId $ EpsStnSr $
+         EpsMpsPriority $ EpsZoneCodeSetId $ EpsAutomaticProvisioned $
+         EpsIndMappingContextId $ EpsCommonMsisdn $ EpsAutoProvMask $
+         EpsRoamingServiceAreaId $ EpsAaaIndDefContextId $
+         EpsAaaIndContextId $ EpsAaaIndMappingContextId $ EpsAaaOdb
+         $ EpsAdminDisable $ EpsNam $ EpsAaaMip6fv $ EpsIndUeUsageType
+         $ EpsMdtUserConsent $ EpsIndRauTauTimer $ EpsIndAddDefContextId
+         $ EpsIndUserType $ EpsIndAmbrMaxUlExt $ EpsIndAmbrMaxDlExt $
+         EpsIndeDrx $ EpsIndActTim $ EpsIndCoreNetworkRestrictions)
+      )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.1 NAME 'EpsDynInfId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.2 NAME 'EpsMmeAddr'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.3 NAME 'EpsLocState'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.4 NAME 'EpsMmeRealm'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.5 NAME 'EpsLastInsertSent'
+      EQUALITY octetStringMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{18}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.6 NAME 'EpsMmeOdb'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.7 NAME 'EpsMobilityNotifInfo'
+      EQUALITY octetStringMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.8  NAME 'EpsAaaAddr'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.9  NAME 'EpsAaaRealm'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.10  NAME 'EpsAaaRegState'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.11  NAME 'EpsDynPdnInf'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.12  NAME 'EpsImeiSv'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.13  NAME 'EpsVplmnId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.14 NAME 'EpsMmeRegServ'
+      EQUALITY booleanMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.15 NAME 'EpsHomoImsVoip'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.16 NAME 'EpsTadsRetrieveSupp'
+      EQUALITY booleanMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.17  NAME 'EpsLastUpdateLocationDate'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.18  NAME 'EpsUeSrVccCap'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.19 NAME 'EpsLocInfFetchSupp'
+      EQUALITY booleanMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.21 NAME 'EpsAaaLastUpdateSent'
+      EQUALITY octetStringMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{18}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.20 NAME 'EpsLastActivityDate'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.22 NAME 'EpsMmeFeatureList2Supp'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.23 NAME 'EpsAaaVplmnId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.24 NAME 'EpsServiceInfo'
+      EQUALITY bitStringMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+      SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.25 NAME 'EpsMmeFeatureList1Supp'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.26 NAME 'EpsUserTypeInTraffic'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.27 NAME 'Eps5GSubInf'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.3.28 NAME 'EpsMmeNumberforMtSms'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+objectclass ( 1.3.6.1.4.1.193.188.3.1.3 NAME 'EpsDynInf'
+      STRUCTURAL
+      MUST (EpsDynInfId $ EpsLocState)
+      MAY (EpsMmeAddr $ EpsMmeRealm $ EpsLastInsertSent $
+         EpsMmeOdb $ EpsMobilityNotifInfo $ EpsAaaAddr $
+         EpsAaaRealm $ EpsAaaRegState $ EpsDynPdnInf $ EpsImeiSv $
+         EpsVplmnId $ EpsMmeRegServ $ EpsHomoImsVoip $ EpsTadsRetrieveSupp $
+         EpsLastUpdateLocationDate $ EpsUeSrVccCap $ EpsLocInfFetchSupp $
+         EpsAaaLastUpdateSent $ EpsLastActivityDate $ EpsMmeFeatureList2Supp $
+         EpsAaaVplmnId $ EpsServiceInfo $ EpsMmeFeatureList1Supp $
+         EpsUserTypeInTraffic $ Eps5GSubInf $ EpsMmeNumberforMtSms $ CDC)
+      )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.1 NAME 'EpsSgsnAddr'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.2 NAME 'EpsSgsnLocState'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.3 NAME 'EpsSgsnRealm'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.4 NAME 'EpsSgsnLastInsertSent'
+      EQUALITY octetStringMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{18}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.5 NAME 'EpsSgsnVplmnId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.6 NAME 'EpsSgsnHomoImsVoip'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.7  NAME 'EpsSgsnLastUpdateLocationDate'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.8 NAME 'EpsSgsnFeatureList2Supp'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.9 NAME 'EpsSgsnFeatureList1Supp'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{8}
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.10 NAME 'EpsSgsnNumber'
+      EQUALITY octetStringMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.40
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.4.11 NAME 'EpsSgsnLastActivityDate'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+objectclass ( 1.3.6.1.4.1.193.188.3.1.4 NAME 'EpsSgsnDynInf'
+      SUP top
+      AUXILIARY
+      MAY (EpsSgsnAddr $ EpsSgsnLocState $ EpsSgsnRealm $
+         EpsSgsnLastInsertSent $ EpsSgsnVplmnId $ EpsSgsnHomoImsVoip $
+         EpsSgsnLastUpdateLocationDate $ EpsSgsnFeatureList2Supp $
+         EpsSgsnFeatureList1Supp $ EpsSgsnNumber $ EpsSgsnLastActivityDate)
+      )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.1 NAME 'EpsMtcInfId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.2 NAME 'EpsMonteMmeServiceSupport'
+      EQUALITY integerMatch
+      ORDERING integerOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.27
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.3 NAME 'EpsMtcEventProfId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.4 NAME 'EpsMonteUserReachability'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{1024} )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.5 NAME 'EpsMonteLossOfConnectivity'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{1024} )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.6 NAME 'EpsMonteAvailabilityAfterDdnF'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{1024} )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.7 NAME 'EpsMonteLocationReporting'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{1024} )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.8 NAME 'EpsMonteCommunicationF'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{1024} )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.9 NAME 'EpsNIDDAllow'
+      EQUALITY booleanMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+      SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.10 NAME 'EpsNIDDAuthInfo'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{1400}
+      SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.11 NAME 'EpsMtcDeviceTriggerProfId'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.12 NAME 'EpsMonteRoamStatus'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{1024} )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.13 NAME 'EpsMonteImeiSvAssoc'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{1024} )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.14 NAME 'EpsMtcAllowedProviderIdList'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 1.3.6.1.4.1.193.188.3.1.5.15 NAME 'EpsMtcLastEventUpdate'
+      EQUALITY caseExactMatch
+      SUBSTR caseExactSubstringsMatch
+      ORDERING caseExactOrderingMatch
+      SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+      SINGLE-VALUE )
+
+objectclass (1.3.6.1.4.1.193.188.3.1.5 NAME 'EpsMtcInf'
+      STRUCTURAL
+      MUST (EpsMtcInfId)
+      MAY (CDC $ EpsMonteMmeServiceSupport $ EpsMtcEventProfId $ EpsMonteUserReachability $
+           EpsMonteLossOfConnectivity $ EpsMonteAvailabilityAfterDdnF $
+           EpsMonteLocationReporting $ EpsMonteCommunicationF $ EpsNIDDAllow
+           $ EpsNIDDAuthInfo $ EpsMtcDeviceTriggerProfId
+           $ EpsMonteRoamStatus $ EpsMonteImeiSvAssoc $ EpsMtcAllowedProviderIdList $ EpsMtcLastEventUpdate)
+      )
+                     ]]></content>
+                    </ldap-schema>
+                </ldap-access>
+            </udr>
+        </config>
+    </edit-config>
+</rpc>

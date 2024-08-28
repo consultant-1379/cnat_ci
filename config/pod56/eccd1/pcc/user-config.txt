@@ -1,0 +1,7 @@
+config
+system authentication user tsadm
+ password             tsadm
+ groups               [ system-admin system-security-admin mm-config-admin mm-itc-admin mm-security-admin mm-admin mm-expert-admin sm-admin sm-cdr-admin sm-charging-admin sm-itc-admin sm-operator sm-tracing-admin sm-uetrace-admin system-troubleshooter admin ]
+!
+commit
+end

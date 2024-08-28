@@ -1,0 +1,25 @@
+# Machine 1 -- Master/Worker
+apiVersion: v1
+data:
+  password: ZXJpY3Nzb24=
+  username: cm9vdA==
+kind: Secret
+metadata:
+  name: ccd4-secret
+type: Opaque
+---
+apiVersion: metal3.io/v1alpha1
+kind: BareMetalHost
+metadata:
+  name: ccd4
+  labels:
+    node-pool-name: control-plane
+spec:
+  bmc:
+    address: ipmi://172.16.60.3
+    credentialsName: ccd4-secret
+    disableCertificateVerification: true
+  rootDeviceHints:
+    hctl: 0:2:0:0
+  bootMACAddress: "b4:45:06:f3:65:59"
+

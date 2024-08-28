@@ -1,0 +1,696 @@
+global:
+  timezone: CET
+  applicationId: vpod2-pcg1
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: PACKET_CORE_GATEWAY
+          customerId: 946060
+          swltId: STA-PCG-31
+
+
+eric-pc-kvdb-rd-server:
+  numberOfMaster: 1
+  replicationFactor: 1
+  resources:
+    metricExporter:
+      limits:
+        cpu: 50m
+        memory: 52Mi
+      requests:
+        cpu: 50m
+        memory: 52Mi
+    node:
+      limits:
+        cpu: 1
+        memory: 8Gi
+      requests:
+        cpu: 300m
+        memory: 4Gi
+eric-pc-networking-cm-agent:
+  replicaCount: 2
+  resources:
+    eric-pc-networking-cm-agent:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+eric-pc-routing-aggregator:
+  replicaCount: 2
+  resources:
+    routingAggregator:
+      limits:
+        cpu: '2'
+        memory: 4Gi
+      requests:
+        cpu: 500m
+        memory: 1024Mi
+eric-pc-routing-engine:
+  nodeSelector:
+    node-pool: control-plane
+  replicaCount: 2
+  resources:
+    eric-pc-routing-engine:
+      limits:
+        cpu: '1'
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+  interfaces:
+    type: ovs
+    ovs:
+    - bridge: br_data
+      vlan_mode: trunk
+      trunk:
+        - minID: 2202
+          maxID: 2202
+        - minID: 2205
+          maxID: 2205
+        - minID: 2204
+          maxID: 2204
+        - minID: 2201
+          maxID: 2201
+      mtu: 9000
+eric-pc-routing-engine-api:
+  replicaCount: 2
+  resources:
+    eric-pc-routing-engine-api:
+      limits:
+        cpu: '1'
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
+eric-pc-up-br-agent:
+  replicaCount: 1
+  resources:
+    brAgent:
+      limits:
+        cpu: '1'
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+eric-pc-up-data-plane:
+  affinity:
+    podAntiAffinity: soft
+  replicaCount: 1
+  acceleratedIo:
+    enabled: true
+    driver: bifurcated
+  applications:
+  - name: app100
+  nodeSelector:
+    type: high-throughput
+  resources:
+    dataPlane:
+      limits:
+        cpu: 2
+        hugepages-1Gi: 1Gi
+        memory: 12Gi
+        mellanox.com/mlnx_left: "1"
+        mellanox.com/mlnx_right: "1"
+      requests:
+        cpu: 2
+        hugepages-1Gi: 1Gi
+        memory: 12Gi
+        mellanox.com/mlnx_left: "1"
+        mellanox.com/mlnx_right: "1"
+  interfaces:
+    - name: net1
+      type: sriov
+      resourceName: mellanox.com/mlnx_left
+    - name: net2
+      type: sriov
+      resourceName: mellanox.com/mlnx_right
+  cm_source_env: false
+  global:
+    serviceNames:
+      cm:
+        mediator: ''
+
+#Removed in PCG 1.23 - Scripts/Configurations/supporting-files/example-config/deployments/resources-small-telco.yaml
+#eric-pc-up-partitioner:
+#  replicaCount: 2
+#  resources:
+#    partitioner:
+#      limits:
+#        cpu: '1'
+#        memory: 512Mi
+#      requests:
+#        cpu: 200m
+#        memory: 40Mi
+eric-pc-up-pfcp-endpoint:
+  replicaCount: 1
+  resources:
+    pfcpEndpoint:
+      limits:
+        cpu: '1'
+        memory: 4Gi
+      requests:
+        cpu: 400m
+        memory: 512Mi
+eric-pc-up-service-chaining-cm-agent:
+  resources:
+    serviceChainingCmAgent:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 50m
+        memory: 64Mi
+eric-pc-up-timer-wheel:
+  replicaCount: 2
+  resources:
+    timerWheel:
+      limits:
+        cpu: '1'
+        memory: 256Mi
+      requests:
+        cpu: 200m
+        memory: 64Mi
+eric-pc-up-user-plane-cm-agent:
+  replicaCount: 2
+  resources:
+    userPlaneCmAgent:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+eric-pm-resource-monitor:
+  replicaCount: 1
+  resources:
+    pmrm:
+      limits:
+        cpu: 400m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+eric-probe-event-report-broker:
+  replicaCount: 2
+  resources:
+    probeEventReportBroker:
+      limits:
+        cpu: '1'
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 256Mi
+#Added in PCG 1.23 - Scripts/Configurations/supporting-files/example-config/deployments/resources-small-telco.yaml
+eric-tm-partition-distributor:
+  replicaCount: 2
+  resources:
+    partitionDistributor:
+      limits:
+        cpu: '1'
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 40Mi
+        
+snmp-alarm-provider-secret-creation:
+  enabled: false
+
+eric-cloud-native-base:
+  eric-si-application-sys-info-handler:
+    asih:
+      applicationId: vpod2-pcg1
+  eric-cm-mediator:
+    replicaCount: 2
+    resources:
+      eric-cm-mediator:
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 500m
+          memory: 256Mi
+      eric-cm-mediator-notifier:
+        limits:
+          cpu: '2'
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 256Mi
+  eric-ctrl-bro:
+    bro:
+      replicas: 1
+    resources:
+      backupAndRestore:
+        limits:
+          cpu: '2'
+          memory: 4Gi
+        requests:
+          cpu: 200m
+          memory: 500Mi
+  eric-data-coordinator-zk:
+    heap: 512m
+    replicaCount: 3
+    resources:
+      datacoordinatorzk:
+        limits:
+          cpu: '2'
+          memory: 4Gi
+        requests:
+          cpu: 300m
+          memory: 1Gi
+  eric-data-distributed-coordinator-ed:
+    pods:
+      dced:
+        replicaCount: 3
+    resources:
+      dced:
+        limits:
+          cpu: '1'
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 400Mi
+  eric-data-message-bus-kf:
+    replicaCount: 3
+    resources:
+      jmxexporter:
+        limits:
+          cpu: '1'
+          memory: 1Gi
+        requests:
+          cpu: 300m
+          memory: 512Mi
+      messagebuskf:
+        limits:
+          cpu: '2'
+          memory: 6Gi
+        requests:
+          cpu: 700m
+          memory: 3Gi
+  eric-data-object-storage-mn:
+    resources:
+      logshipper:
+        limits:
+          cpu: 100m
+        requests:
+          cpu: 50m
+      mgt:
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 256Mi
+      server:
+        limits:
+          cpu: 500m
+          memory: 2Gi
+        requests:
+          cpu: 250m
+          memory: 512Mi
+  eric-data-search-engine:
+    jvmHeap:
+      data: 1088m
+      ingest: 1088m
+      master: 576m
+    replicaCount:
+      data: 2
+      ingest: 2
+      master: 3
+    resources:
+      data:
+        limits:
+          cpu: '1'
+          memory: 4Gi
+        requests:
+          cpu: 500m
+          memory: 2Gi
+      ingest:
+        limits:
+          cpu: '1'
+          memory: 2304Mi
+        requests:
+          cpu: 500m
+          memory: 2176Mi
+      master:
+        limits:
+          cpu: 750m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      metrics:
+        limits:
+          cpu: 100m
+        requests:
+          cpu: 30m
+      tlsproxy:
+        limits:
+          cpu: 100m
+        requests:
+          cpu: 30m
+
+#Removed from PCG 1.23 - Scripts/Configurations/supporting-files/example-config/deployments/resources-small-telco.yaml
+#  eric-data-search-engine-curator:
+#    resources:
+#      curator:
+#        limits:
+#          cpu: 100m
+#          memory: 100Mi
+#        requests:
+#          cpu: 90m
+#          memory: 90Mi
+  eric-fh-alarm-handler:
+    replicaCount: 2
+    resources:
+      alarmhandler:
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 300m
+          memory: 384Mi
+  eric-fh-snmp-alarm-provider:
+    resources:
+      alarmprovider:
+        limits:
+          cpu: '1'
+          memory: 1536Mi
+        requests:
+          cpu: 100m
+          memory: 800Mi
+    service:
+      externalIPv4:
+        enabled: true
+        annotations:
+          addressPoolName: pcg-oam
+          sharedVIPLabel: pcg-oam
+    sourceIdentifierType: 1
+    sourceIdentifier: "10.221.125.5"
+  eric-log-transformer:
+    replicaCount: 2
+    resources:
+      logtransformer:
+        limits:
+          cpu: '1.5'
+        requests:
+          cpu: 250m
+
+  eric-odca-diagnostic-data-collector:
+    manualService:
+      replicas: 1
+    resources:
+      diagnostic-data-collector:
+        limits:
+          cpu: '1'
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 300Mi
+      diagnostic-data-collector-manual:
+        limits:
+          cpu: '1'
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 300Mi
+    service:
+      replicas: 1
+  eric-pm-server:
+    rbac:
+      appMonitoring:
+        configFileCreate: false
+        enabled: true
+    resources:
+      eric-pm-reverseproxy:
+        limits:
+          cpu: '2'
+          memory: 128Mi
+        requests:
+          cpu: 200m
+          memory: 32Mi
+      eric-pm-server:
+        limits:
+          cpu: '3'
+          memory: 8Gi
+        requests:
+          cpu: 500m
+          memory: 4Gi
+    server:
+      replicaCount: 1
+      persistentVolume:
+        enabled: true
+        size: 24Gi
+  eric-sec-certm:
+    resources:
+      certm:
+        limits:
+          cpu: '1'
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+  eric-sec-key-management:
+    replicaCount:
+      kms: 2
+    resources:
+      shelter:
+        limits:
+          cpu: 300m
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 400Mi
+      vault:
+        limits:
+          cpu: 300m
+          memory: 1Gi
+        requests:
+          cpu: 200m
+          memory: 400Mi
+  eric-sec-sip-tls:
+    replicaCount: 1
+    resources:
+      sip-tls:
+        limits:
+          cpu: '3'
+          memory: 400Mi
+        requests:
+          cpu: 100m
+          memory: 200Mi
+      sip-tls-supervisor:
+        limits:
+          cpu: '3'
+          memory: 400Mi
+        requests:
+          cpu: 100m
+          memory: 200Mi
+  eric-lm-combined-server:
+    licenseConsumerHandler:
+      replicaCount: 2
+    licenseServerClient:
+      licenseServer:
+        thrift:
+          host: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+          port: 9095
+    resources:
+      eric-lm-license-consumer-handler:
+        limits:
+          cpu: '2'
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      eric-lm-license-server-client:
+        limits:
+          cpu: '1'
+          memory: 2Gi
+        requests:
+          cpu: 100m
+          memory: 1Gi
+  eric-log-shipper:
+    resources:
+      logshipper:
+        limits:
+          cpu: '1'
+          memory: 500Mi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+eric-cloud-native-nf-additions:
+  eric-cm-yang-provider:
+    service:
+      externalIPv4:
+        enabled: true
+        annotations:
+          addressPoolName: pcg-oam
+          sharedVIPLabel: pcg-oam
+    resources:
+      cliExtensionCmds:
+        limits:
+          cpu: '1'
+        requests:
+          cpu: 50m
+      externalNotifSender:
+        limits:
+          cpu: '1'
+        requests:
+          cpu: 50m
+      notificationController:
+        limits:
+          cpu: '1'
+        requests:
+          cpu: 50m
+      objectStorageAdapter:
+        limits:
+          cpu: '1'
+        requests:
+          cpu: 50m
+      pmMetrics:
+        limits:
+          cpu: '1'
+        requests:
+          cpu: 50m
+      schemaSynchronizer:
+        limits:
+          cpu: '4'
+        requests:
+          cpu: 100m
+      sshd:
+        limits:
+          cpu: '1'
+        requests:
+          cpu: 50m
+      yangDbAdapter:
+        limits:
+          cpu: '2'
+        requests:
+          cpu: 100m
+      yangEngine:
+        limits:
+          cpu: '4'
+        requests:
+          cpu: 250m
+  eric-cnom-server:
+    service:
+      type: LoadBalancer
+    annotations:
+      metallb.universe.tf/address-pool: "pcg-oam"
+      metallb.universe.tf/allow-shared-ip: "pcg-oam"
+    replicaCount: 1
+    resources:
+      server:
+        limits:
+          cpu: 400m
+          memory: 400Mi
+        requests:
+          cpu: 150m
+          memory: 400Mi
+  eric-cnom-server-db-pg:
+    highAvailability:
+      replicaCount: 2
+    resources:
+      metrics:
+        limits:
+          cpu: 200m
+        requests:
+          cpu: 100m
+      postgres:
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 500m
+          memory: 320Mi
+  eric-data-sftp-server:
+    service:
+      externalIPv4:
+        enabled: true
+        annotations:
+          sharedVIPLabel: "pcg-oam"
+          addressPoolName: "pcg-oam"
+    resources:
+      sftpServer:
+        limits:
+          cpu: '1'
+          memory: 1Gi
+        requests:
+          cpu: 300m
+          memory: 256Mi
+  eric-pm-bulk-reporter:
+    resources:
+      alarmreporter:
+        limits:
+          cpu: '1'
+          memory: 200Mi
+        requests:
+          cpu: 50m
+          memory: 50Mi
+      bulkreporter:
+        limits:
+          cpu: '1'
+          memory: 200Mi
+        requests:
+          cpu: 100m
+          memory: 50Mi
+    service:
+      annotations:
+        addressPoolName: "pcg-oam"
+        sharedVIPLabel: "pcg-oam"
+  eric-sec-admin-user-management:
+    replicaCount: 1
+    resources:
+      aum:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 250m
+          memory: 256Mi
+  eric-sec-ldap-server:
+    adminCredentials: null
+    replicaCount: 2
+    resources:
+      ldap:
+        limits:
+          cpu: '3'
+          memory: 1Gi
+        requests:
+          cpu: 300m
+          memory: 512Mi
+      ldapagent:
+        limits:
+          cpu: '3'
+        requests:
+          cpu: 300m
+      ldapproxy:
+        limits:
+          cpu: '1'
+          memory: 4Gi
+        requests:
+          cpu: 300m
+          memory: 1Gi
+eric-pc-kvdb-rd-operator:
+  replicaCount: 1
+  resources:
+    logcar:
+      limits:
+        cpu: 1m
+        memory: 20Mi
+      requests:
+        cpu: 1m
+        memory: 20Mi
+    operator:
+      limits:
+        cpu: 500m
+        memory: 220Mi
+      requests:
+        cpu: 250m
+        memory: 84Mi
+cnom-loadBalancer-service:
+  enabled: true
+  annotations:
+    metallb.universe.tf/address-pool: "pcg-oam"
+    metallb.universe.tf/allow-shared-ip: "pcg-oam"

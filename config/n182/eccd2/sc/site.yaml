@@ -1,0 +1,71 @@
+nodeName: n182-vpod2-sc1
+nodeType: SC
+
+vnflcm:
+  clusterName: n182-eccd2
+  namespace: sc
+  InstantiateVnfRequest:
+    applicationTimeOut: 3000
+    skipVerification: "true"
+
+users:
+  day1:
+  - username: sc-admin
+    password: Changeme@1st
+    groups:
+    - system-admin
+    - system-security-admin
+    - sc-admin
+    - sc-security-admin
+    - bsf-admin
+    - bsf-security-admin
+
+license:
+  customerId: '946060'
+  swltId: STA-SC-15
+
+snmp:
+  agentEngineId: 800000c10473633163347331
+  heartbeatInterval: 600
+  sourceIdentifier: 10.228.194.178
+
+ddc:
+  remotePath: /mnt/ddc/node182-cluster2-sc1
+
+vtap:
+  remotePath: vtap/node182-cluster2-sc1
+
+replicaCount:
+  eric-bsf-worker: 2
+  
+sc:
+ bsf:
+   enabled: true
+   instanceId: 652e666f-88f9-4864-914f-627366a1c4d1
+   host: sc1-bsf-sig.site1-cluster2
+   ip: 172.17.142.18
+   diameter:
+     ip: 172.17.142.17
+ scp:
+   enabled: false
+ sepp:
+   enabled: false
+
+cnom:
+  fqdn: cnom.bsf1.n182.vpod2.seli.gic.ericsson.se
+
+######################################
+## CNF certificates
+######################################
+certs:
+  iccr-external-tls-certificate:
+    p12: ../certificates/sc1/sc1-iccr-server.p12
+  eric-bsf-sbi-server-certs:
+    p12: ../certificates/sc1/sc1-bsf-sbi-server.p12
+  eric-bsf-sbi-client-certs:
+    p12: ../certificates/sc1/sc1-bsf-sbi-client.p12
+#  eric-scp-sbi-server-certs:
+#    p12: ../../../certs/n280-eccd1/sc1/sc1-scp-sbi-server.p12
+#  eric-scp-sbi-client-certs:
+#    p12: ../../../certs/n280-eccd1/sc1/sc1-scp-sbi-client.p12
+

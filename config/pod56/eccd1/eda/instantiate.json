@@ -1,0 +1,9 @@
+{
+  "clusterName": "pod56-eccd1",
+  "additionalParams": {
+    "namespace": "eda",
+     "applicationTimeOut": "1800",
+     "skipJobVerification": "false",
+     "skipVerification": "false"
+  }
+}

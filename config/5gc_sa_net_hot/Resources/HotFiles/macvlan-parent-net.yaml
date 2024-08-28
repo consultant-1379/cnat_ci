@@ -1,0 +1,38 @@
+heat_template_version: 2017-09-01
+
+description: >
+
+parameters:
+
+  index:
+    type: number
+  prefix:
+    type: string
+  networks:
+    type: json
+
+resources:
+
+  net:
+    type: OS::Neutron::Net
+    properties:
+      name:
+        str_replace:
+          template: "<prefix>-<net_name>"
+          params:
+            "<prefix>": { get_param: prefix }
+            "<net_name>": { get_param: [ networks, { get_param: index }, name ] }
+
+  subnet:
+    properties:
+      name:
+        str_replace:
+          template: "<prefix>-<net_name>_subnet"
+          params:
+            "<prefix>": { get_param: prefix }
+            "<net_name>": { get_param: [ networks, { get_param: index }, name ] }
+      cidr: { get_param: [ networks, { get_param: index }, cidr ] }
+      enable_dhcp: false
+      network: { get_resource: net }
+      gateway_ip: null
+    type: OS::Neutron::Subnet

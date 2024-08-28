@@ -1,0 +1,50 @@
+nodeInfo: site.yaml
+siteGlobal: ../site_global.yaml
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+templateDir: ../../../../ts-config/templates/
+files:
+- template: common/snmp-config.xml.jinja2
+  target: snmp-config.xml
+- template: common/user-config.xml.jinja2
+  target: user-config.xml
+- template: ccpc/1.12/instantiate.json.jinja2
+  target: instantiate.json
+- template: ccpc/1.12/values.yaml.jinja2
+  target: values.yaml
+- template: ccpc/1.12/ccpc-nf-profile-config.xml.jinja2
+  target: nf-profile-config.xml
+- template: ccpc/1.12/ccpc-nrf-agent-config.xml.jinja2
+  target: nrf-agent-config.xml
+- template: ccpc/1.12/ccpc-diameter-config.xml.jinja2
+  target: diameter-config.xml
+- template: ccpc/1.12/ccpc-sm-policy-control.xml.jinja2
+  target: sm-policy-control.xml
+- template: ccpc/1.12/ccpc-switch-admin-state.xml.jinja2
+  target: switch-admin-state.xml
+- template: ccpc/1.12/ccpc-ddc-config.xml.jinja2
+  target: ddc-config.xml
+- template: ccpc/1.12/ccpc-remote-nf-type-discovery-mode.xml.jinja2
+  target: remote-nf-type-discovery-mode.xml
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml
+- template: ccpc/1.12/policy-provisioning/Bronze.json.jinja2
+  target: policy-provisioning/Bronze.json
+- template: ccpc/1.12/policy-provisioning/defaultIpCanSessionQos.json.jinja2
+  target: policy-provisioning/defaultIpCanSessionQos.json
+- template: ccpc/1.12/policy-provisioning/global.json.jinja2
+  target: policy-provisioning/global.json
+- template: ccpc/1.12/policy-provisioning/dbr_on_attach_qos_profile.json.jinja2
+  target: policy-provisioning/dbr_on_attach_qos_profile.json
+- template: ccpc/1.12/policy-provisioning/dbr_on_attach_select_policy.json.jinja2
+  target: policy-provisioning/dbr_on_attach_select_policy.json
+- template: ccpc/1.12/policy-provisioning/dbr_on_attach_select_rule.json.jinja2
+  target: policy-provisioning/dbr_on_attach_select_rule.json
+- template: ccpc/1.12/policy-provisioning/dbr_on_attach_service.json.jinja2
+  target: policy-provisioning/dbr_on_attach_service.json
+- template: ccpc/1.12/policy-provisioning/service-classification.json.jinja2
+  target: policy-provisioning/service-classification.json
+- template: ccpc/1.12/external-certificates.xml.jinja2
+  target: external-certificates.xml

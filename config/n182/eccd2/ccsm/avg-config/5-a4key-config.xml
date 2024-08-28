@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <action xmlns="urn:ietf:params:xml:ns:yang:1">
+    <udm xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udm">
+      <!--
+        Contains configuration parameters for ARPF.
+      -->
+      <arpf>
+        <!--
+          Set the value of an A4Key in one of the lists:
+          a4-key-list-aes-128-ecb, a4-key-list-des-ecb or a4-key-list-blowfish-128-ecb
+          Constraints:
+          - Before creating an A4 Key entry, the CustomerKey value must be defined if hsm-only deployment is not set.
+          - Before creating an A4 Key entry, the crypto-officer-password value must be defined if hsm-only or hsm-arpf deployment is set.
+          - Before creating an A4 Key entry, the Storage Key (SK) value must be defined if hsm-only or hsm-arpf deployment is set.
+          - No more than 512 (0-511) entries can be created per list
+          - In hsm-only deployments a4-key-list-blowfish-128-ecb cannot be set.
+          - If a4-key-change feature is not granted, only version 0 (a4-key-version-ind=0 or not specified) can be set.
+          - If the a4-key-change feature is granted, different versions than 0 can be set (a4-key-version-ind) as follows:
+              - If no a4-key-version-ind value is given, the next available version value is set
+              - If the a4-key-version-ind value is provided, then it will be used to point to the
+                indicated version and:
+                  - if that version exists, the new value of the a4 key replaces the existing one
+                  - if does not exist,it is accepted only if the version is the next version to the current
+                    highest version; i.e. it cannot be left empty values between two versions
+        -->
+        <set-a4-key>
+          <!--
+            Index of the A4Key
+          -->
+          <a4-key-ind>1</a4-key-ind>
+          <!--
+            Index of the A4Key Version. This is an optional input according set-a4-key description
+          -->
+          <!-- <a4-key-version-ind>{A4KEY_VERSION_IND}</a4-key-version-ind> -->
+          <!--
+            Value of the A4 key.
+            Hexadecimal string in plain text with 32 characters length
+            for aes-128-ecb and blowfish-128-ecb, for des-ecb the a4-key
+            lenght is 16 characters.
+          -->
+          <a4-key>0123456789ABCDEF0123456789ABCDEF</a4-key>
+          <!--
+            Algorithm to be used for encrypting the A4 key (des-ecb(0), blowfish-128-ecb(1) or aes-128-ecb(2)).
+            The key will be stored in the corresponding A4KeyList
+          -->
+          <a4-key-encryption-algorithm>aes-128-ecb</a4-key-encryption-algorithm>
+        </set-a4-key>
+      </arpf>
+    </udm>
+  </action>
+  </rpc>
+  <close-session/>

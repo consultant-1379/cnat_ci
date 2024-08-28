@@ -1,0 +1,809 @@
+#
+## The CCDADM Configuration YAML file for CCD Cluster deployment in Target Solution Dual Mode 5GC on NFVI
+##
+## Note:
+## 1. The root volume need to be set when HA-policy is enabled
+## 2. Configure user node scripts according to "Deploy the Dual-mode 5G Core in the Ericsson NFVI" CPI document
+## 3. The placeholder <description for the parameter> must be replaced with actual value
+#
+
+#######################################################################################################
+# infra
+#######################################################################################################
+infra:
+  audit:
+    log_level: detailed
+  ###################################### Target Cloud #################################################
+  iaas:
+    type: capo
+    # configure the delay between two VMs boot
+    provisioning_load_spread_delay: 20
+    nameservers: ['10.221.16.10', '10.221.16.11']
+    ntp_servers: ['10.221.17.6', '10.221.17.46']
+    ntp_parameters:
+      ntp_minpoll: 3
+      ntp_maxpoll: 8
+      ntp_version: 4
+      ntp_max_offset: "1.2"
+    timezone: "CET"
+    capo:
+      clouds:
+        nfvi:
+          auth:
+            auth_url: https://pcccpod056-os-ext-vip.seln.ete.ericsson.se:5000/v3
+            username: admin
+            password: PeyOQ0cJjfdsDC84Q6e6c7TPngppatfyl7hAzfCl
+            project_name: admin
+            project_domain_name: Default
+            user_domain_name: Default
+          regions:
+          - name: CEERegion
+      target_cloud: nfvi
+      ## For NFVI7, CEE external cacert can be obtained from file /etc/kolla/certificates/ca/ca_ext.crt
+      ## on CEE control host.
+      ## Copy the content of the cert file above and paste below to replace <CEE external ca certificate>.
+      ## See example configuration below for target_cloud_cacert:
+      ## target_cloud_cacert: |
+      ##   -----BEGIN CERTIFICATE-----
+      ##   <...>
+      ##   -----END CERTIFICATE-----
+      target_cloud_cacert: |
+        -----BEGIN CERTIFICATE-----
+        MIIDTDCCAjSgAwIBAgIJAJQPPWnnrhGCMA0GCSqGSIb3DQEBCwUAMDsxOTA3BgNV
+        BAMMMFRlc3QgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgSW50ZXJuYWwgVXNhZ2Ug
+        T25seTAeFw0yMjA3MTgwMzQyMTVaFw00OTEyMDMwMzQyMTVaMDsxOTA3BgNVBAMM
+        MFRlc3QgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgSW50ZXJuYWwgVXNhZ2UgT25s
+        eTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMfe5Hg+M4EaFPl/j3Pp
+        2isKKJwwFAKLE1mTBctNY5u1qkzoo/kP0AZ9nvJ2z1dcEnx7owD7GimH6b5O5kYr
+        3CjblmQywmZYTRRiHJqQWRjjKFtEtNbSgPnUnNHOW/y9oWSTSSj26UUfc2rj+A8G
+        MxuwXIHZvNl+TgLGTEkolF9rILjMnF8xxtDMsh+XuKeH2n4EAoOh4sHigPNwfOkq
+        O4CEyBu7vcgzf9zSNI8CDSPM/5WsqSr8WjM2tg8VUAvM6Xzbjcf+B/Yc4svIyOIQ
+        y9V/hwKAWqidwD9UpFUkVtYMF1gnfXlExPTNBCAilvrrWzqjz0sbjNIAWHf3jz4l
+        bhkCAwEAAaNTMFEwHQYDVR0OBBYEFLWwMjnvXLr9ZuUaetpkdIttbTqyMB8GA1Ud
+        IwQYMBaAFLWwMjnvXLr9ZuUaetpkdIttbTqyMA8GA1UdEwEB/wQFMAMBAf8wDQYJ
+        KoZIhvcNAQELBQADggEBABYO47gLZUUJ0J0uR9MunZRaxE9ReskokOHiyZxeAQ72
+        LVv+nMduCyjGALc8HMJSOH3VIKxCJOkt3MWXR7UT21M/gJZLY5l3jlEXgxO4u+nM
+        PzByqF1T+XI/mUKRb8I56ZvkaH8yEryJ97MJAIFVsFr1qs1di4uIVSBm+0chdcQ2
+        cd8FqCGT+qZeQ3vqMJqUTUE4Hmg+b6Z0tgb/LvY3MUjnQ7IO5lWlMYsguqiaxkyv
+        o7jbzHYvtVGFDT2VK+ILbA5MNmzmdH1UACZ2h5HEQeir/PACuihkVGoLxVXoikgF
+        96UgxbGAlua9I0NRHNGv57Eh7HldyNI8bxHx8sMBPSA=
+        -----END CERTIFICATE-----
+      oam_network:
+        name: pod56-eccd1-ccd-oam
+        subnets:
+        - pod56-eccd1-ccd-oam_subnet
+      internal_network:
+        subnet_ipv4:
+          cidr: "10.0.1.0/24"
+        enable_port_security: false
+      election_network:
+        subnet_ipv4:
+          cidr: "20.0.0.0/24"
+      instance_create_timeout: 15
+      node_image:
+        name: eccd-2.26.3-000067-36465425-node-image.raw
+
+  ## Custom root password for console access
+  ##
+  ## This field is a sha256 or sha512 hash of the root password which is applied for all pools.
+  ## The salt of the password must only contain characters from the set a-zA-Z0-9. The minimum
+  ## required length of the salt is 10 characters. The validity of the salt is verified with
+  ## the following regex: ^[a-zA-Z0-9]{10,}$.
+  ##
+  ## For example, one can use mkpasswd to generate a sha512 hash from a password and salt as
+  ## follows:
+  ## $ mkpasswd -m sha-512 testPassword -s ccdsalt1234567
+  ## $6$ccdsalt1234567$Lssr6CqKyQ4L/kPMROLBVal5vHezxLPLcUzrmAWE9.dm4UyHnHHt38TpyscIAcWQSP37PslE7RAiBDCaUCmwX/
+  ## Note: mkpasswd can be installed through 'apt install whois' on a Ubuntu OS.
+  console_password_hash: "$6$ccdsalt1234567$Lssr6CqKyQ4L/kPMROLBVal5vHezxLPLcUzrmAWE9.dm4UyHnHHt38TpyscIAcWQSP37PslE7RAiBDCaUCmwX/"
+  # deleting the value for session_timeout or setting to zero will default to 900
+  session_timeout: 800
+  # deleting the value for ssh_inactivity or setting to zero will default to 300
+  ssh_inactivity: 200
+  ###################################### Ephermeral Node ##############################################
+  bootstrap:
+    authorized_keys:
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2NyXimfeIsVLx3AFHt5pBnKcC5K2liNQ23mlzEJvBiOmHcf9N7VwqlNrbkKVn+rhdujNDlzAe/9CdL95Z3fXOJURwdi3Nv6xj+lMEj3bEbB74Kq8iZWG/8DAgPEnfMixTjUE9SszxPNF7gd+1ehlQin5Hsqlb7Bik1DuG1/MhGpcjLLGWF2oh58jTrR1lUNkJYSLRtMnaHRtyaLPXtOiCB1iNsWlApLyd4PSsbBdKiJDZVwj5ahCh92K9PBGKKeYTpaMDSn7qJX3854sqsjPxcVnOqcGqOoyCQNuptxjGa8jZPxEKosbMCRsFHmiPlwsro0aeF6deuwEUYYMC6PNb
+    capo:
+      ephemeral_root_volume:
+        size: 50
+        availability_zone: nova
+      ephemeral_flavor: EPH_2vcpu_4096MBmem_0GBdisk
+      ephemeral_image:
+        name: eccd-2.26.3-000064-e8538f68-ephemeral-image.raw
+      ephemeral_availability_zone: nova
+      ephemeral_metadata:
+        ha-policy: ha-offline
+  ###################################### Control Plane Node ###########################################
+  controlplane:
+    control_plane_external_vip: "10.130.34.85"
+    control_plane_internal_vip: "10.0.1.2"
+    control_plane_registry_vip: "10.0.1.3"
+    control_plane_port: 6443
+    pool_cfg:
+      name: cp
+      count: 3
+      node_labels:
+      - "ecfe-speaker=false"
+      capo:
+        flavor: MGMT_10vcpu_32768MBmem_150GBdisk
+        availability_zones: ['nova']
+      authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2NyXimfeIsVLx3AFHt5pBnKcC5K2liNQ23mlzEJvBiOmHcf9N7VwqlNrbkKVn+rhdujNDlzAe/9CdL95Z3fXOJURwdi3Nv6xj+lMEj3bEbB74Kq8iZWG/8DAgPEnfMixTjUE9SszxPNF7gd+1ehlQin5Hsqlb7Bik1DuG1/MhGpcjLLGWF2oh58jTrR1lUNkJYSLRtMnaHRtyaLPXtOiCB1iNsWlApLyd4PSsbBdKiJDZVwj5ahCh92K9PBGKKeYTpaMDSn7qJX3854sqsjPxcVnOqcGqOoyCQNuptxjGa8jZPxEKosbMCRsFHmiPlwsro0aeF6deuwEUYYMC6PNb
+      user_node_scripts:
+        post_network_init: IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLXVleAplY2hvIC1lICJBZGRpbmcgVGFyZ2V0IFNvbHV0aW9uIER1YWwtbW9kZSA1R0MgU2VsZi1zaWduZWQgUm9vdENBIgpyb290Y2FfZmlsZT0vZXRjL3BraS90cnVzdC9hbmNob3JzL3RzZG01Z2Mtc2VsZi1zaWduZWQtcm9vdGNhLmNydApjYXQgPDxFT0YgPiAkcm9vdGNhX2ZpbGUKLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUdDVENDQS9HZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBRENCbmpFTE1Ba0dBMVVFQmhNQ1UwVXgKRWpBUUJnTlZCQWdNQ1ZOMGIyTnJhRzlzYlRFU01CQUdBMVVFQnd3SlUzUnZZMnRvYjJ4dE1SRXdEd1lEVlFRSwpEQWhGY21samMzTnZiakVWTUJNR0ExVUVDd3dNVUVNZ1UyOXNkWFJwYjI1ek1SZ3dGZ1lEVlFRRERBOVVaV0Z0ClFteDFaWE5TYjI5MFEwRXhJekFoQmdrcWhraUc5dzBCQ1FFV0ZHdGxiaTV6YUdsQVpYSnBZM056YjI0dVkyOXQKTUI0WERUSXdNVEV3TWpBNU16TXhObG9YRFRRd01UQXlPREE1TXpNeE5sb3dnWjR4Q3pBSkJnTlZCQVlUQWxORgpNUkl3RUFZRFZRUUlEQWxUZEc5amEyaHZiRzB4RWpBUUJnTlZCQWNNQ1ZOMGIyTnJhRzlzYlRFUk1BOEdBMVVFCkNnd0lSWEpwWTNOemIyNHhGVEFUQmdOVkJBc01ERkJESUZOdmJIVjBhVzl1Y3pFWU1CWUdBMVVFQXd3UFZHVmgKYlVKc2RXVnpVbTl2ZEVOQk1TTXdJUVlKS29aSWh2Y05BUWtCRmhSclpXNHVjMmhwUUdWeWFXTnpjMjl1TG1OdgpiVENDQWlJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dJUEFEQ0NBZ29DZ2dJQkFMcEZTdDJSUGZ0WXdQSGFhWDBPCmxpL2c1MlZuSG15QUNtRzFlZ25QQTRlZlJwdGZGcXNtOWxISDJieWlnU2VjaCt6ZkxYQ2FyVkVyZHUxL3l2UkcKellhTGdILzc2WHRPVlhwR1lhM2FYQmtzQmJrVG5JUm1ndHExMWlJZE9LWFVyVmJWdDRIWjIwRUp4ckZyTXM5bgpteHk3ZHZoV00xS3JTVlNVcU44NDBEU1dKeGVGV1dnRVo3dlRnUmhudUFEMkZVcXNaNkNSdnQyaUwzMVpOSWNvCmRxT1VRRjljaFpMV2dwckVEZ1JtSkQ0b0xqVm9XZTBrUy96UlIyRzNHQjlKMjh4czlaalNwMzhDdFRncUJ6eXYKZ1d1YTRJbTVLeUZJSlVlSDRhOU5SWVpXcnk2STlzeEF6SVlWdDdraTNUQVArSzJZc0dnOWREMUd3S0RSKzVaeQo3RVZ1cmk5aHFSNVlGcnZ2ZE5BaldySnZ5bVFYYURkbVhVR2E3T2c4cDlJek0rbE5MODZkRGYzQnN5ZXFISnJxCm0zMU9NSE0zTUNWZmMwelV1OTZMbkxqMndxVGRLYTdNYVd5ZkE3S08zOHdJQUNCdk8vU05DQ3pDWHBBREpSRUQKQTNuMjE5eTZReG1NK0RIMzVYVkJUdkprTTVVeFBIb2E4cmhac3VMaG9iSXlOVS9LdWs2SkFtL2x1ZVl6T0c5awpsTG1hYVNhc2RsTkovUHFmNE1CT0IxVUtQVnNKc3JhdkZhUTdCbU9McDNSMFh5aG9Ocm5tZC9PT3hVNnIxVEgxCndoNXZ4MkNBT080dHVqdm5paGdlQURVOHlRZHdES0JrT3RqalYwVGRZME1GeGVjTG93dG1FbnJLZklPOWtTUzMKdHBuQWdkQmdmcTdlT1l2c3JLdzMxQXF4QWdNQkFBR2pVREJPTUIwR0ExVWREZ1FXQkJUcWtJRWFyWDI4akFUQgpNQnN2L1ZzZTVqQ2ViREFmQmdOVkhTTUVHREFXZ0JUcWtJRWFyWDI4akFUQk1Cc3YvVnNlNWpDZWJEQU1CZ05WCkhSTUVCVEFEQVFIL01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQ0FRQjczdEczRzFtWnQ5M2o1TW9SWGltc0I2c08KcTQ3QS9sWml5SktxSmlMSWVTcTFWOEdPUHdxZlF5TkFlNDBpbmhMV0hZa3k1clBmaGhYdytGbHlXNHpvdHY3VwpaeWdUanRDd2E3RWJhd1VNT29HOVljTWhLOU5aeC9Fb1BUMGNzNEJLNlV2YWpwSDI4S2w1K2Z5dlNMTjVaWTdLCmFyQklNVVdOVnM3bTNPOWU1ZG9MeDZlOThzb2oyVTVQa0dxMUFCMnhnd1g3RjBzcElqM1lnM1dTNEM1ejVLa0YKYjFjdmlWZ0h1Rm54Sk5HdTVuWStoMDgraTVjWk51L1VjMU05cGtZdGhsZm5ocHlQbE9OeEQ5clRwRG01TEVrVQozYWY5enlxd0p1dXVuV0RKTWZLS1pHUEI1QkNnZk02aEJ3NEQzaUxXVFd4ckhmak5naE5WcUNoNksrTCtHZGZECmh6VC9MVlNIVy9iT2pIaCt3QVZHRmNGeHhYZWRYeHEvcHJqMVp3ZmxQSTdYdnh1Q3dqMUVWQTYzMEZJQlNDNi8KeFdxOG1Ib0VDWFhwODM5R2NjZDN0bWVhdUVMcmNoa3R5Nk9hQnB3SGcvZEI0NEdFQnlKei9UK2xiTElPWkxYZApLK2twZ2FONFRtQTV3dGxRUE1xMEhRTHZFYXgrY0NVWXRFNzhRU2UrODZtVi8yUTFFZUpORWVzVDdwNUMyVTRjCmFRWmJQUTZZZ3ZSWnR2UEQvM0NyUVM5Q0QwREp3YUNyajJkRUlTYjRsRWovZno1d2xMRVR5UzdYLzBLWVVNS1IKVW1xeUt3ejJaczlqTTdCeTBIeE0xaSswZi9vdk1EdUt1UTZJUVRST0V1MFRaWlZINktSc0R1dWp2Ky9WSjJOYgpzemxyUnczbGExSDcxZVU5VVE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCkVPRgpjaG1vZCA0MDAgJHJvb3RjYV9maWxlCnNlZCAtaSAicy9LVUJFTEVUX0VYVFJBX0FSR1M9LyYtLXJlZ2lzdGVyLXdpdGgtdGFpbnRzPW5vZGUtcm9sZS5rdWJlcm5ldGVzLmlvXC9jb250cm9sLXBsYW5lPTpOb1NjaGVkdWxlIC8iIC91c3IvbG9jYWwvbGliL3N5c3RlbWQvc3lzdGVtL2t1YmVsZXQuc2VydmljZQo=
+      kubelet_options:
+        housekeeping_interval: 10
+        allowed_unsafe_sysctls:
+        - "kernel.shm*"
+        - "kernel.msg*"
+      machine_health_check:
+        max_unhealthy: 30%
+        node_startup_timeout: 15m
+        timeout: 5m
+        unhealthy_range: "[0-3]"
+    host_workloads: false
+  ###################################### Worker Nodes #################################################
+  worker_pools:
+  - pool_cfg:
+      name: pool1
+      # The initial count of nodes in one pool
+      initial_deployment_count: 5
+      max_pods_per_node: 200
+      count: 8
+      node_labels:
+      - "type=standard"
+      - "ecfe-speaker=true"
+      disable_sctp_kernel_module: true
+      capo:
+        flavor: STD1_72vcpu_327680MBmem_250GBdisk
+        availability_zones: ['nova']
+        subport_sets:
+          subportset1:
+          - network_id: dfa0c874-bef1-4ee9-9e8e-ec3146265f8d
+            vlan_id: 3023 # pc-mm-oam
+          - network_id: 8fc2fa45-569d-44a6-91ab-1eb9ad7b4819
+            vlan_id: 3829 # pc-mm-ran-1
+          - network_id: 4156f977-f537-4414-b780-d6f436b5af4a
+            vlan_id: 3879 # pc-mm-ran-2
+          - network_id: 3ef24121-fb11-4711-8aef-501383b270ca
+            vlan_id: 3877 # pc-mm-signaling-1
+          - network_id: abdeeff2-4783-4dbb-93b6-542726308d23
+            vlan_id: 3906 # pc-mm-signaling-2
+          - network_id: 1aae899e-bd96-4126-a97d-d25b2b677337
+            vlan_id: 3826 # pc-mm-media
+          - network_id: 9560f583-44d9-4ef5-90af-63fade6c57f6
+            vlan_id: 3801 # pc-sm-media
+          - network_id: bec65161-d2c5-4f90-bc71-35256b5cf007
+            vlan_id: 3852 # pc-sm-signaling
+          - network_id: 2eafe575-45eb-4478-9b70-b9df607ff6db
+            vlan_id: 3400 # pc-sm-intra
+          - network_id: 5adbedc3-06ad-47d4-b66c-e66c450c3966
+            vlan_id: 3804 # pc-up-ran
+          - network_id: 2c52adac-9f45-4ae5-bbbc-b15f48dd0d03
+            vlan_id: 3827 # pc-up-signaling
+          - network_id: 9c48754e-7f39-467e-96c7-60c84540cad3
+            vlan_id: 3901 # pc-up-media
+          - network_id: 1bfefab6-4de6-4c23-b38e-3479d4be4291
+            vlan_id: 3805 # pc-up-open1
+        traffic_networks:
+        # worker node eth1
+        - network: pod56-eccd1-ecfe-oam
+          subnets:
+          - pod56-eccd1-ecfe-oam_subnet
+          enable_port_security: false
+        # worker node eth2
+        - network: pod56-eccd1-ecfe-signaling
+          subnets:
+          - pod56-eccd1-ecfe-signaling_subnet
+          enable_port_security: false
+        # worker node eth3
+        - network: pod56-eccd1-ecfe-intersite
+          subnets:
+          - pod56-eccd1-ecfe-intersite_subnet
+          enable_port_security: false
+        # worker node eth4
+        - network: pod56-eccd1-macvlan-parent-1
+          subnets:
+          - pod56-eccd1-macvlan-parent-1_subnet
+          trunk: true
+          nic_subport_sets: ['subportset1']
+          enable_port_security: false
+        server_group_policies:
+        - anti-affinity
+      cpu_isolation_config:
+        reserved_cpus: ""
+        cpu_manager_policy: none
+        isolation_interrupts: false
+      user_node_scripts:
+        post_network_init: IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLXVleAplY2hvIC1lICJBZGRpbmcgVGFyZ2V0IFNvbHV0aW9uIER1YWwtbW9kZSA1R0MgU2VsZi1zaWduZWQgUm9vdENBIgpyb290Y2FfZmlsZT0vZXRjL3BraS90cnVzdC9hbmNob3JzL3RzZG01Z2Mtc2VsZi1zaWduZWQtcm9vdGNhLmNydApjYXQgPDxFT0YgPiAkcm9vdGNhX2ZpbGUKLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUdDVENDQS9HZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBRENCbmpFTE1Ba0dBMVVFQmhNQ1UwVXgKRWpBUUJnTlZCQWdNQ1ZOMGIyTnJhRzlzYlRFU01CQUdBMVVFQnd3SlUzUnZZMnRvYjJ4dE1SRXdEd1lEVlFRSwpEQWhGY21samMzTnZiakVWTUJNR0ExVUVDd3dNVUVNZ1UyOXNkWFJwYjI1ek1SZ3dGZ1lEVlFRRERBOVVaV0Z0ClFteDFaWE5TYjI5MFEwRXhJekFoQmdrcWhraUc5dzBCQ1FFV0ZHdGxiaTV6YUdsQVpYSnBZM056YjI0dVkyOXQKTUI0WERUSXdNVEV3TWpBNU16TXhObG9YRFRRd01UQXlPREE1TXpNeE5sb3dnWjR4Q3pBSkJnTlZCQVlUQWxORgpNUkl3RUFZRFZRUUlEQWxUZEc5amEyaHZiRzB4RWpBUUJnTlZCQWNNQ1ZOMGIyTnJhRzlzYlRFUk1BOEdBMVVFCkNnd0lSWEpwWTNOemIyNHhGVEFUQmdOVkJBc01ERkJESUZOdmJIVjBhVzl1Y3pFWU1CWUdBMVVFQXd3UFZHVmgKYlVKc2RXVnpVbTl2ZEVOQk1TTXdJUVlKS29aSWh2Y05BUWtCRmhSclpXNHVjMmhwUUdWeWFXTnpjMjl1TG1OdgpiVENDQWlJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dJUEFEQ0NBZ29DZ2dJQkFMcEZTdDJSUGZ0WXdQSGFhWDBPCmxpL2c1MlZuSG15QUNtRzFlZ25QQTRlZlJwdGZGcXNtOWxISDJieWlnU2VjaCt6ZkxYQ2FyVkVyZHUxL3l2UkcKellhTGdILzc2WHRPVlhwR1lhM2FYQmtzQmJrVG5JUm1ndHExMWlJZE9LWFVyVmJWdDRIWjIwRUp4ckZyTXM5bgpteHk3ZHZoV00xS3JTVlNVcU44NDBEU1dKeGVGV1dnRVo3dlRnUmhudUFEMkZVcXNaNkNSdnQyaUwzMVpOSWNvCmRxT1VRRjljaFpMV2dwckVEZ1JtSkQ0b0xqVm9XZTBrUy96UlIyRzNHQjlKMjh4czlaalNwMzhDdFRncUJ6eXYKZ1d1YTRJbTVLeUZJSlVlSDRhOU5SWVpXcnk2STlzeEF6SVlWdDdraTNUQVArSzJZc0dnOWREMUd3S0RSKzVaeQo3RVZ1cmk5aHFSNVlGcnZ2ZE5BaldySnZ5bVFYYURkbVhVR2E3T2c4cDlJek0rbE5MODZkRGYzQnN5ZXFISnJxCm0zMU9NSE0zTUNWZmMwelV1OTZMbkxqMndxVGRLYTdNYVd5ZkE3S08zOHdJQUNCdk8vU05DQ3pDWHBBREpSRUQKQTNuMjE5eTZReG1NK0RIMzVYVkJUdkprTTVVeFBIb2E4cmhac3VMaG9iSXlOVS9LdWs2SkFtL2x1ZVl6T0c5awpsTG1hYVNhc2RsTkovUHFmNE1CT0IxVUtQVnNKc3JhdkZhUTdCbU9McDNSMFh5aG9Ocm5tZC9PT3hVNnIxVEgxCndoNXZ4MkNBT080dHVqdm5paGdlQURVOHlRZHdES0JrT3RqalYwVGRZME1GeGVjTG93dG1FbnJLZklPOWtTUzMKdHBuQWdkQmdmcTdlT1l2c3JLdzMxQXF4QWdNQkFBR2pVREJPTUIwR0ExVWREZ1FXQkJUcWtJRWFyWDI4akFUQgpNQnN2L1ZzZTVqQ2ViREFmQmdOVkhTTUVHREFXZ0JUcWtJRWFyWDI4akFUQk1Cc3YvVnNlNWpDZWJEQU1CZ05WCkhSTUVCVEFEQVFIL01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQ0FRQjczdEczRzFtWnQ5M2o1TW9SWGltc0I2c08KcTQ3QS9sWml5SktxSmlMSWVTcTFWOEdPUHdxZlF5TkFlNDBpbmhMV0hZa3k1clBmaGhYdytGbHlXNHpvdHY3VwpaeWdUanRDd2E3RWJhd1VNT29HOVljTWhLOU5aeC9Fb1BUMGNzNEJLNlV2YWpwSDI4S2w1K2Z5dlNMTjVaWTdLCmFyQklNVVdOVnM3bTNPOWU1ZG9MeDZlOThzb2oyVTVQa0dxMUFCMnhnd1g3RjBzcElqM1lnM1dTNEM1ejVLa0YKYjFjdmlWZ0h1Rm54Sk5HdTVuWStoMDgraTVjWk51L1VjMU05cGtZdGhsZm5ocHlQbE9OeEQ5clRwRG01TEVrVQozYWY5enlxd0p1dXVuV0RKTWZLS1pHUEI1QkNnZk02aEJ3NEQzaUxXVFd4ckhmak5naE5WcUNoNksrTCtHZGZECmh6VC9MVlNIVy9iT2pIaCt3QVZHRmNGeHhYZWRYeHEvcHJqMVp3ZmxQSTdYdnh1Q3dqMUVWQTYzMEZJQlNDNi8KeFdxOG1Ib0VDWFhwODM5R2NjZDN0bWVhdUVMcmNoa3R5Nk9hQnB3SGcvZEI0NEdFQnlKei9UK2xiTElPWkxYZApLK2twZ2FONFRtQTV3dGxRUE1xMEhRTHZFYXgrY0NVWXRFNzhRU2UrODZtVi8yUTFFZUpORWVzVDdwNUMyVTRjCmFRWmJQUTZZZ3ZSWnR2UEQvM0NyUVM5Q0QwREp3YUNyajJkRUlTYjRsRWovZno1d2xMRVR5UzdYLzBLWVVNS1IKVW1xeUt3ejJaczlqTTdCeTBIeE0xaSswZi9vdk1EdUt1UTZJUVRST0V1MFRaWlZINktSc0R1dWp2Ky9WSjJOYgpzemxyUnczbGExSDcxZVU5VVE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCkVPRgpjaG1vZCA0MDAgJHJvb3RjYV9maWxlCgpjYXQgPDwgRU9GID4gYXBwYXJtb3ItZG9ja2VyLXBjYwojaW5jbHVkZSA8dHVuYWJsZXMvZ2xvYmFsPgoKcHJvZmlsZSBkb2NrZXItcGNjIGZsYWdzPShhdHRhY2hfZGlzY29ubmVjdGVkLG1lZGlhdGVfZGVsZXRlZCkgewogICAgI2luY2x1ZGUgPGFic3RyYWN0aW9ucy9iYXNlPgogICAgbmV0d29yaywKICAgIGNhcGFiaWxpdHksCiAgICBmaWxlLAogICAgbW91bnQsCiAgICB1bW91bnQsCiAgICBwdHJhY2UgcGVlcj1Ae3Byb2ZpbGVfbmFtZX0sCn0KRU9GCgptdiBhcHBhcm1vci1kb2NrZXItcGNjIC9ldGMvYXBwYXJtb3IuZC8Kc3lzdGVtY3RsIHJlc3RhcnQgYXBwYXJtb3IKCmZ1bmN0aW9uIGxvYWRfa2VybmVsX21vZHVsZSgpIHsKICAgIGZvciBtIGluICRAOyBkbwogICAgbW9kcHJvYmUgJG0gJiYgZWNobyAkbSA+PiAvZXRjL21vZHVsZXMtbG9hZC5kL2RtNWdjX25mdmlfcHJlbG9hZC5jb25mCiAgICBkb25lCn0KbG9hZF9rZXJuZWxfbW9kdWxlIGlwNnRhYmxlX21hbmdsZSBmb3UKCiMgYWRqdXN0IGtlcm5lbCBwYXJhbWV0ZXJzIGZvciBETSA1R0MgQ05GcwpjYXQgPDwgRU9GID4+IC9ldGMvc3lzY3RsLmNvbmYKIyMgdXBkYXRlIHRvIGtlcm5lbCBwYXJhbWV0ZXJzIHJlcXVpcmVkIGJ5IFNlYXJjaCBFbmdpbmUKdm0ubWF4X21hcF9jb3VudCA9IDI2MjE0NApFT0YKc3lzY3RsIC1wCgojIEFkZCBzdGF0aWMgcm91dGVzIGZvciBOZUxTCm5lbHNfaXA9IjEwLjE1NS4xNDIuNjgvMzIiCmd3X2lwPSQoZ3JlcCAicmVnaXN0cnkuZWNjZC5sb2NhbCIgL2V0Yy9ob3N0cyB8IGN1dCAtZCcgJyAtZjEpCmNhdCA8PCBFT0YgPj4gL2V0Yy9zeXNjb25maWcvbmV0d29yay9pZnJvdXRlLWV0aDAKIyMgTmVMUyBzdGF0aWMgcm91dGUKJHtuZWxzX2lwfSAke2d3X2lwfSAtIC0KRU9GCg==
+        post_kubeadm_init: IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLXVleAoKIyMgTGFiZWwgdGhlIHdvcmtlciBub2RlcyBmb3IgUENDCiMgQUREIExBQkVMIFNUQVJUCmVjaG8gLWUgIkFkZGluZyBQQ0MgQ05GIGxhYmVscyAuLi4uIgojIHNldCB3b3JrZXIgbm9kZXMgY291bnQgb2YgUEMtTU0gY29udHJvbGxlciBvciBQQy1TTSBjb250cm9sbGVyIHRvIDMgd2hlbiBpdCBzdXBwb3J0cyBIQQpleHBvcnQgTU1fQ09OVFJPTExFUlM9MgpleHBvcnQgTU1fQ1RSTF9MQUJFTD0icGNjLW1tLXBvZD1jb250cm9sbGVyIgpleHBvcnQgTU1fTk9OX0NUUkxfTEFCRUw9InBjYy1tbS1wb2Q9bm9uLWNvbnRyb2xsZXIiCmV4cG9ydCBTTV9DT05UUk9MTEVSUz0yCmV4cG9ydCBTTV9DVFJMX0xBQkVMPSJwY2Mtc20tcG9kPWNvbnRyb2xsZXIiCmV4cG9ydCBTTV9OT05fQ1RSTF9MQUJFTD0icGNjLXNtLXBvZD1ub24tY29udHJvbGxlciIKCmdldF9sYWJlbF9jb3VudCgpIHsKICAgIExBQkVMPSQxCiAgICBDT1VOVD0kKC91c3IvbG9jYWwvYmluL2t1YmVjdGwgLS1rdWJlY29uZmlnIC9ldGMva3ViZXJuZXRlcy9rdWJlbGV0LmNvbmYgZ2V0IG5vZGUgLWwgJHtMQUJFTH0gfCBlZ3JlcCAtdiAiXk5BTUUiIHwgd2MgLWwpCiAgICBlY2hvICRDT1VOVAp9CgojIyMgTUFJTgpOT0RFX05BTUU9JChob3N0bmFtZSAtcykKaWYgWyAkKGdldF9sYWJlbF9jb3VudCAkTU1fQ1RSTF9MQUJFTCkgLWx0ICRNTV9DT05UUk9MTEVSUyBdCnRoZW4KICAgIC91c3IvbG9jYWwvYmluL2t1YmVjdGwgLS1rdWJlY29uZmlnIC9ldGMva3ViZXJuZXRlcy9rdWJlbGV0LmNvbmYgbGFiZWwgbm9kZSAkTk9ERV9OQU1FICRNTV9DVFJMX0xBQkVMCiAgICAvdXNyL2xvY2FsL2Jpbi9rdWJlY3RsIC0ta3ViZWNvbmZpZyAvZXRjL2t1YmVybmV0ZXMva3ViZWxldC5jb25mIGxhYmVsIG5vZGUgJE5PREVfTkFNRSAkU01fTk9OX0NUUkxfTEFCRUwKZWxpZiBbICQoZ2V0X2xhYmVsX2NvdW50ICRTTV9DVFJMX0xBQkVMKSAtbHQgJFNNX0NPTlRST0xMRVJTIF0KdGhlbgogICAgL3Vzci9sb2NhbC9iaW4va3ViZWN0bCAtLWt1YmVjb25maWcgL2V0Yy9rdWJlcm5ldGVzL2t1YmVsZXQuY29uZiBsYWJlbCBub2RlICROT0RFX05BTUUgJFNNX0NUUkxfTEFCRUwKICAgIC91c3IvbG9jYWwvYmluL2t1YmVjdGwgLS1rdWJlY29uZmlnIC9ldGMva3ViZXJuZXRlcy9rdWJlbGV0LmNvbmYgbGFiZWwgbm9kZSAkTk9ERV9OQU1FICRNTV9OT05fQ1RSTF9MQUJFTAplbHNlCiAgICAvdXNyL2xvY2FsL2Jpbi9rdWJlY3RsIC0ta3ViZWNvbmZpZyAvZXRjL2t1YmVybmV0ZXMva3ViZWxldC5jb25mIGxhYmVsIG5vZGUgJE5PREVfTkFNRSAkTU1fTk9OX0NUUkxfTEFCRUwKICAgIC91c3IvbG9jYWwvYmluL2t1YmVjdGwgLS1rdWJlY29uZmlnIC9ldGMva3ViZXJuZXRlcy9rdWJlbGV0LmNvbmYgbGFiZWwgbm9kZSAkTk9ERV9OQU1FICRTTV9OT05fQ1RSTF9MQUJFTApmaQplY2hvIC1lICJFTkQgUENDIENORiBsYWJlbHMiCiMgQUREIExBQkVMIEVORAo=
+      machine_health_check:
+        max_unhealthy: 30%
+        node_startup_timeout: 10m
+        timeout: 5m
+        unhealthy_range: "[0-3]"
+  - pool_cfg:
+      name: pool2
+      # The initial count of nodes in one pool
+      initial_deployment_count: 1
+      count: 1
+      node_labels:
+      - "type=high-throughput"
+      - "ecfe-speaker=false"
+      node_taints:
+      - key: "high-throughput=true"
+        effect: NoSchedule
+      capo:
+        flavor: HT_42vcpu_81920MBmem_50GBdisk
+        availability_zones: ['nova']
+        traffic_networks:
+        # worker node eth1
+        - network: pod56-eccd1-ecfe-oam
+          subnets:
+          - pod56-eccd1-ecfe-oam_subnet
+          enable_port_security: false
+        # worker node eth2
+        - network: sriov-flat-left
+          subnets:
+          - sriov-flat-left_subnet
+          vnic_type: direct
+          binding_profile_trusted: true
+          enable_port_security: false
+        # worker node eth3
+        - network: sriov-flat-right
+          subnets:
+          - sriov-flat-right_subnet
+          vnic_type: direct
+          binding_profile_trusted: true
+          enable_port_security: false
+        # worker node eth4
+        - network: sriov-flat-left
+          subnets:
+          - sriov-flat-left_subnet
+          vnic_type: direct
+          binding_profile_trusted: true
+          enable_port_security: false
+        # worker node eth5
+        - network: sriov-flat-right
+          subnets:
+          - sriov-flat-right_subnet
+          vnic_type: direct
+          binding_profile_trusted: true
+          enable_port_security: false
+        # worker node eth6
+        - network: sriov-flat-left
+          subnets:
+          - sriov-flat-left_subnet
+          vnic_type: direct
+          binding_profile_trusted: true
+          enable_port_security: false
+        # worker node eth7
+        - network: sriov-flat-right
+          subnets:
+          - sriov-flat-right_subnet
+          vnic_type: direct
+          binding_profile_trusted: true
+          enable_port_security: false
+        # worker node eth8
+        - network: sriov-flat-left
+          subnets:
+          - sriov-flat-left_subnet
+          vnic_type: direct
+          binding_profile_trusted: true
+          enable_port_security: false
+        # worker node eth9
+        - network: sriov-flat-right
+          subnets:
+          - sriov-flat-right_subnet
+          vnic_type: direct
+          binding_profile_trusted: true
+          enable_port_security: false
+        server_group_policies:
+        - soft-anti-affinity
+      hugepage_config:
+        type: 1GB
+        pagecount_1gb: 4
+      cpu_isolation_config:
+        topology_manager_policy: single-numa-node
+        reserved_cpus: "0,1"
+        cpu_manager_policy: static
+        isolation_interrupts: true
+      user_node_scripts:
+        post_network_init: IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLXVleAplY2hvIC1lICJBZGRpbmcgVGFyZ2V0IFNvbHV0aW9uIER1YWwtbW9kZSA1R0MgU2VsZi1zaWduZWQgUm9vdENBIgpyb290Y2FfZmlsZT0vZXRjL3BraS90cnVzdC9hbmNob3JzL3RzZG01Z2Mtc2VsZi1zaWduZWQtcm9vdGNhLmNydApjYXQgPDxFT0YgPiAkcm9vdGNhX2ZpbGUKLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUdDVENDQS9HZ0F3SUJBZ0lCQURBTkJna3Foa2lHOXcwQkFRc0ZBRENCbmpFTE1Ba0dBMVVFQmhNQ1UwVXgKRWpBUUJnTlZCQWdNQ1ZOMGIyTnJhRzlzYlRFU01CQUdBMVVFQnd3SlUzUnZZMnRvYjJ4dE1SRXdEd1lEVlFRSwpEQWhGY21samMzTnZiakVWTUJNR0ExVUVDd3dNVUVNZ1UyOXNkWFJwYjI1ek1SZ3dGZ1lEVlFRRERBOVVaV0Z0ClFteDFaWE5TYjI5MFEwRXhJekFoQmdrcWhraUc5dzBCQ1FFV0ZHdGxiaTV6YUdsQVpYSnBZM056YjI0dVkyOXQKTUI0WERUSXdNVEV3TWpBNU16TXhObG9YRFRRd01UQXlPREE1TXpNeE5sb3dnWjR4Q3pBSkJnTlZCQVlUQWxORgpNUkl3RUFZRFZRUUlEQWxUZEc5amEyaHZiRzB4RWpBUUJnTlZCQWNNQ1ZOMGIyTnJhRzlzYlRFUk1BOEdBMVVFCkNnd0lSWEpwWTNOemIyNHhGVEFUQmdOVkJBc01ERkJESUZOdmJIVjBhVzl1Y3pFWU1CWUdBMVVFQXd3UFZHVmgKYlVKc2RXVnpVbTl2ZEVOQk1TTXdJUVlKS29aSWh2Y05BUWtCRmhSclpXNHVjMmhwUUdWeWFXTnpjMjl1TG1OdgpiVENDQWlJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dJUEFEQ0NBZ29DZ2dJQkFMcEZTdDJSUGZ0WXdQSGFhWDBPCmxpL2c1MlZuSG15QUNtRzFlZ25QQTRlZlJwdGZGcXNtOWxISDJieWlnU2VjaCt6ZkxYQ2FyVkVyZHUxL3l2UkcKellhTGdILzc2WHRPVlhwR1lhM2FYQmtzQmJrVG5JUm1ndHExMWlJZE9LWFVyVmJWdDRIWjIwRUp4ckZyTXM5bgpteHk3ZHZoV00xS3JTVlNVcU44NDBEU1dKeGVGV1dnRVo3dlRnUmhudUFEMkZVcXNaNkNSdnQyaUwzMVpOSWNvCmRxT1VRRjljaFpMV2dwckVEZ1JtSkQ0b0xqVm9XZTBrUy96UlIyRzNHQjlKMjh4czlaalNwMzhDdFRncUJ6eXYKZ1d1YTRJbTVLeUZJSlVlSDRhOU5SWVpXcnk2STlzeEF6SVlWdDdraTNUQVArSzJZc0dnOWREMUd3S0RSKzVaeQo3RVZ1cmk5aHFSNVlGcnZ2ZE5BaldySnZ5bVFYYURkbVhVR2E3T2c4cDlJek0rbE5MODZkRGYzQnN5ZXFISnJxCm0zMU9NSE0zTUNWZmMwelV1OTZMbkxqMndxVGRLYTdNYVd5ZkE3S08zOHdJQUNCdk8vU05DQ3pDWHBBREpSRUQKQTNuMjE5eTZReG1NK0RIMzVYVkJUdkprTTVVeFBIb2E4cmhac3VMaG9iSXlOVS9LdWs2SkFtL2x1ZVl6T0c5awpsTG1hYVNhc2RsTkovUHFmNE1CT0IxVUtQVnNKc3JhdkZhUTdCbU9McDNSMFh5aG9Ocm5tZC9PT3hVNnIxVEgxCndoNXZ4MkNBT080dHVqdm5paGdlQURVOHlRZHdES0JrT3RqalYwVGRZME1GeGVjTG93dG1FbnJLZklPOWtTUzMKdHBuQWdkQmdmcTdlT1l2c3JLdzMxQXF4QWdNQkFBR2pVREJPTUIwR0ExVWREZ1FXQkJUcWtJRWFyWDI4akFUQgpNQnN2L1ZzZTVqQ2ViREFmQmdOVkhTTUVHREFXZ0JUcWtJRWFyWDI4akFUQk1Cc3YvVnNlNWpDZWJEQU1CZ05WCkhSTUVCVEFEQVFIL01BMEdDU3FHU0liM0RRRUJDd1VBQTRJQ0FRQjczdEczRzFtWnQ5M2o1TW9SWGltc0I2c08KcTQ3QS9sWml5SktxSmlMSWVTcTFWOEdPUHdxZlF5TkFlNDBpbmhMV0hZa3k1clBmaGhYdytGbHlXNHpvdHY3VwpaeWdUanRDd2E3RWJhd1VNT29HOVljTWhLOU5aeC9Fb1BUMGNzNEJLNlV2YWpwSDI4S2w1K2Z5dlNMTjVaWTdLCmFyQklNVVdOVnM3bTNPOWU1ZG9MeDZlOThzb2oyVTVQa0dxMUFCMnhnd1g3RjBzcElqM1lnM1dTNEM1ejVLa0YKYjFjdmlWZ0h1Rm54Sk5HdTVuWStoMDgraTVjWk51L1VjMU05cGtZdGhsZm5ocHlQbE9OeEQ5clRwRG01TEVrVQozYWY5enlxd0p1dXVuV0RKTWZLS1pHUEI1QkNnZk02aEJ3NEQzaUxXVFd4ckhmak5naE5WcUNoNksrTCtHZGZECmh6VC9MVlNIVy9iT2pIaCt3QVZHRmNGeHhYZWRYeHEvcHJqMVp3ZmxQSTdYdnh1Q3dqMUVWQTYzMEZJQlNDNi8KeFdxOG1Ib0VDWFhwODM5R2NjZDN0bWVhdUVMcmNoa3R5Nk9hQnB3SGcvZEI0NEdFQnlKei9UK2xiTElPWkxYZApLK2twZ2FONFRtQTV3dGxRUE1xMEhRTHZFYXgrY0NVWXRFNzhRU2UrODZtVi8yUTFFZUpORWVzVDdwNUMyVTRjCmFRWmJQUTZZZ3ZSWnR2UEQvM0NyUVM5Q0QwREp3YUNyajJkRUlTYjRsRWovZno1d2xMRVR5UzdYLzBLWVVNS1IKVW1xeUt3ejJaczlqTTdCeTBIeE0xaSswZi9vdk1EdUt1UTZJUVRST0V1MFRaWlZINktSc0R1dWp2Ky9WSjJOYgpzemxyUnczbGExSDcxZVU5VVE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCkVPRgpjaG1vZCA0MDAgJHJvb3RjYV9maWxlCgojIEJpbmQgU1ItSU9WIFZGIHRvIERQREsgZHJpdmVyCmlmZG93biBldGgyCmlmZG93biBldGgzCmlmZG93biBldGg0CmlmZG93biBldGg1CmlmZG93biBldGg2CmlmZG93biBldGg3CmlmZG93biBldGg4CmlmZG93biBldGg5CmRyaXZlcmN0bCBzZXQtb3ZlcnJpZGUgMDAwMDowMDowNi4wIGlnYl91aW8KZHJpdmVyY3RsIHNldC1vdmVycmlkZSAwMDAwOjAwOjA3LjAgaWdiX3Vpbwpkcml2ZXJjdGwgc2V0LW92ZXJyaWRlIDAwMDA6MDA6MDguMCBpZ2JfdWlvCmRyaXZlcmN0bCBzZXQtb3ZlcnJpZGUgMDAwMDowMDowOS4wIGlnYl91aW8KZHJpdmVyY3RsIHNldC1vdmVycmlkZSAwMDAwOjAwOjBhLjAgaWdiX3Vpbwpkcml2ZXJjdGwgc2V0LW92ZXJyaWRlIDAwMDA6MDA6MGIuMCBpZ2JfdWlvCmRyaXZlcmN0bCBzZXQtb3ZlcnJpZGUgMDAwMDowMDowYy4wIGlnYl91aW8KZHJpdmVyY3RsIHNldC1vdmVycmlkZSAwMDAwOjAwOjBkLjAgaWdiX3Vpbw==
+        post_kubeadm_init: IyEvdXNyL2Jpbi9lbnYgYmFzaApzZXQgLXVleAoKIyMjIFBDRyAxLjE5IEVQMyB3b3JrYXJvdW5kIGZvciBwZXJmb3JtYW5jZSBhZmZlY3RlZCBieSBMaW51eCBrZXJuZWwgZmVhdHVyZSBUSFAgKFRyYW5zcGFyZW50IEh1Z2UgUGFnZXMpCiMjIyBUaGlzIFdBIGlzIG9ubHkgYXBwbGllZCBmb3IgQ0NEIDIuMjQsIDIuMjUgYW5kIDIuMjYKIyB1cGRhdGUgcHJvYWN0aXZlbmVzcwpjYXQgPDwgRU9GID4+IC9ldGMvc3lzY3RsLmNvbmYKdm0uY29tcGFjdGlvbl9wcm9hY3RpdmVuZXNzID0gMApFT0YKCiMgdXBkYXRlIHB0ZXMKY2F0IDw8IEVPRiA+PiAvcm9vdC9wdGVzX3VwZGF0ZS5zaAplY2hvIDEyNyA+IC9zeXMva2VybmVsL21tL3RyYW5zcGFyZW50X2h1Z2VwYWdlL2todWdlcGFnZWQvbWF4X3B0ZXNfbm9uZQpFT0YKY2htb2QgK3ggL3Jvb3QvcHRlc191cGRhdGUuc2gKCiMgY3JlYXRlIGF1dG8gc3RhcnQgc2VydmljZSBmb3IgcHRlcyB1cGRhdGluZwpjYXQgPDwgRU9GID4+IC9ldGMvc3lzdGVtZC9zeXN0ZW0vcHRlc191cGRhdGUuc2VydmljZQpbVW5pdF0KRGVzY3JpcHRpb249VXBkYXRlIG1heF9wdGVzX25vbmUKQmVmb3JlPWNvbnRhaW5lcmQuc2VydmljZQpbU2VydmljZV0KVHlwZT1vbmVzaG90CkV4ZWNTdGFydD0vYmluL2Jhc2ggLWMgIi9yb290L3B0ZXNfdXBkYXRlLnNoIgpbSW5zdGFsbF0KV2FudGVkQnk9bXVsdGktdXNlci50YXJnZXQKRU9GCnN5c3RlbWN0bCBlbmFibGUgcHRlc191cGRhdGUuc2VydmljZQpzeXN0ZW1jdGwgc3RhcnQgcHRlc191cGRhdGUuc2VydmljZQo=
+      machine_health_check:
+        max_unhealthy: 30%
+        node_startup_timeout: 10m
+        timeout: 5m
+        unhealthy_range: "[0-3]"
+
+#######################################################################################################
+# kubernetes
+#######################################################################################################
+kubernetes:
+  ip_version: 4
+  ingress_cluster_ip: 10.96.255.200
+  apiserver_extra_sans:
+  - kubeapi.ingress.pod56-eccd1.seln.ete.ericsson.se
+  pod_cidr_blocks:
+  - 192.168.0.0/16
+  ## Generate Self-Signed Certificate for Kubernetes Cluster
+  ## Refer to the script scripts/common/generate-certs.sh in CCD VMD image to generate self-signed certificate for
+  ## kubernetes cluster. The root CA certificate is generated under scripts/common/credentials directory.
+  ##
+  ## See example configuration below for the two parameters ca_cert and ca_key:
+  ## ca_cert: |
+  ##   -----BEGIN CERTIFICATE-----
+  ##   <...>
+  ##   -----END CERTIFICATE-----
+  ##
+  ## ca_key: |
+  ##   -----BEGIN RSA PRIVATE KEY-----
+  ##   <...>
+  ##   -----END RSA PRIVATE KEY-----
+  ca_cert: |
+    -----BEGIN CERTIFICATE-----
+    MIIDETCCAfmgAwIBAgIUKL3RL+N3QyXiVQ7Dun/NcFd7tSMwDQYJKoZIhvcNAQEL
+    BQAwGDEWMBQGA1UEAwwNS3ViZXJuZXRlcy1jYTAeFw0yMTAzMjUwNzQzMDlaFw00
+    ODA4MTAwNzQzMDlaMBgxFjAUBgNVBAMMDUt1YmVybmV0ZXMtY2EwggEiMA0GCSqG
+    SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC347YB0fgpi8GbPREvQ/G6EM1sOMIqrylk
+    M1ibtBCxFA4HKT+e7Uu41C8m36Rl3Co068nK4LLrPuj9MNncJGsKvUXSW5zodXyJ
+    zYslTA0E+8hLRU2BhOJZtihYL/o4l74RBJjv512TkjUnqigRoD85+gyxPkdNyuXP
+    y8RkYGSeQmUVRL8CX6r2KT8UoWKGM72ThaNf7DUdbCVh5WIPUas4ioMDhFzqABTJ
+    rSj6oYFf5Zfl4sgwEdK65EZBw6CDhBQAZxNyeGp/FTHGbPvh+GBlaj5HnirsfL+G
+    RDY3RR1xSlzQPfnfyEWTn3JU1xZSCHnrcnqdvHC05/nSyGjiyN9VAgMBAAGjUzBR
+    MB0GA1UdDgQWBBT/m5uEfOH7B0BdKNmmoEDd/JT/1DAfBgNVHSMEGDAWgBT/m5uE
+    fOH7B0BdKNmmoEDd/JT/1DAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUA
+    A4IBAQA0UnHM8alGos136qGP1DYWOv298YRbd0aBLZKkdivCedEPjf8nB0dVbIQo
+    YVzUJ0LQr4wT7aNdNzGevSncP5S/Q6t9tfqg6f3wsYqkS26cMC1witThgA6pPsZC
+    yb2PtwZY447sHIrnbAcDgi1xTiWATDdqaD72m6uEK62fcxT906+3CpC5hBEuo3CH
+    B40zLKwgHuP0E+ALrbVO8GYDnlexxEOTHYkgzbqmsRt21WpRBGpE0wlHMBQ+IonU
+    +mti7kozPKkhHhC1i9/6ezEHLuvun4RGkY2oH4FTufUaDSCA50mzPJsQEArUxp3P
+    HRz9NWGe2pY040hihLwIA2MuMKr5
+    -----END CERTIFICATE-----
+  ca_key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEowIBAAKCAQEAt+O2AdH4KYvBmz0RL0PxuhDNbDjCKq8pZDNYm7QQsRQOByk/
+    nu1LuNQvJt+kZdwqNOvJyuCy6z7o/TDZ3CRrCr1F0luc6HV8ic2LJUwNBPvIS0VN
+    gYTiWbYoWC/6OJe+EQSY7+ddk5I1J6ooEaA/OfoMsT5HTcrlz8vEZGBknkJlFUS/
+    Al+q9ik/FKFihjO9k4WjX+w1HWwlYeViD1GrOIqDA4Rc6gAUya0o+qGBX+WX5eLI
+    MBHSuuRGQcOgg4QUAGcTcnhqfxUxxmz74fhgZWo+R54q7Hy/hkQ2N0UdcUpc0D35
+    38hFk59yVNcWUgh563J6nbxwtOf50sho4sjfVQIDAQABAoIBAHjCg14Co3O1Iblu
+    iwB9IBtOuXhedbROP2JcDc6Cm4uOXf/56JvXvahtP2HJ8E4sHVOPnH8svJKcR6ku
+    EYPuLpVo4pdYLlzB+r0MTFp77Pje2BQGOPXbbEH5y9jN+QZ9MAZA/KZfTCaDF4Eq
+    zxF0KNFMElW7TlwZ6H1jlV9NpgX++qcnP6X8LyJXnZHF0/0wqygK+MoeSbo7Jdqb
+    /bA9mWL9GTf3lvLaDbNoRqB/6ctUt3u3DPglC05szMLEUFBAovbUSWmli7hfIh/T
+    2BOlZXYLsQIuFqNFjhxXRotrzYow6ST5mJJfa+16knAKgcci968aMO65YEDwOoxJ
+    j46EJMECgYEA5ikxr4AJ1Gm8AUu6w17Xyjua6FBHTBFzY6kzMYz5R2+oF7AHCxOx
+    1wdu5ymbAqt8K7P4yvMcOgzoO+RzBiRY+BT3vBfYzIaqa8/HrTNJczgarCOLnGoP
+    K0fWosafAHS5PABhRzycICY7swOZaIcHQI2q124eql+hCaET6dD82FkCgYEAzIiu
+    GjhyhpPPWh0nu4JEnpnGZNpUaGtK+QF6wxiT+zwunWdmPzp6025uyFZMWWbkM4F5
+    cdD8qooUk2oSyFYY/tL35jgSCoCXQFAYbhSFKc4AW6HPw9tmikBe7RZvmREV66Ks
+    yBMzlGdwPTbHD3D3yQoc3Q6N4BA0D8a1Js8nn10CgYEAj0o8LZfYBs8hBemAx5sn
+    WzdKlLFOAfSnUveG8KVkmG3SR5UGfYXwZP+ysuW7JKlgb9Dm5mr+OsHIX2k1lzBP
+    13suVILALWz1cpN0K8dPRhU6vcqPY3zAHuDlpodjfCQvIkTWS0RXqshCyItIGcRe
+    5niMUPy0yLsqhdUrkZjToVkCgYAV+8ravp5woIp04RVYLhQ6B8UvKdhQsNeKFAKh
+    3Y5qPnm0KVzwBtUUzJXTqpLiORDmCFCJTzEZE2ZKwefq6HYfTYWflP87ab7YBsPZ
+    cRMu/xlCwA2Yu4g1691IFlVAWnnEreNsTcQJe2Sw76ZNnpLDZPbdO6c8IgG2gGEQ
+    HsvfcQKBgDa8I3ZZwFhTm4GmLdwAPYFZuWau11ZCsdCDeWa5CtpQf45SdUeEOVqM
+    JkcoHcLXoOUAqfA561IqbW9FMfNTI4eQEeJjf81ne2prK5xYLDKGXiLC99meKShA
+    Ioa1vBgf6GtYmp2+YndDPjCRlCdJ94s1Iwog/GFiK8ioKmxCLuET
+    -----END RSA PRIVATE KEY-----
+  # Some NFs include a requirement on CoreDNS cache TTL
+  coredns_cfg:
+      kube_dns_success_ttl: 5
+      kube_dns_denial_ttl: 5
+  nodelocalDNS_config_map_fwdzones:
+  - domain: 3gppnetwork.org
+    dns_server: 10.130.34.4
+  featuregates:
+    bound_service_account_token_volume: false
+  etcd_config:
+    election_timeout: 3000
+    heartbeat_interval: 300
+    snapshot_count: 10000
+    enable_pprof: true
+
+#######################################################################################################
+# license
+#######################################################################################################
+license:
+  nels_host: 10.155.142.68
+  licensing_domains:
+  - customer_id: 946060
+    product_type: ECCD
+    swlt_id: STA-CCD-1
+
+#######################################################################################################
+# Addons
+#######################################################################################################
+addons:
+- name: calico
+  spec:
+    mtu: 2090
+    interface_name: _calico_interface
+    ipv4_pool_ipip_mode: Never
+- name: cr-registry
+  spec:
+    storage_class: csi-cinder-sc-delete
+    storage_size: 50Gi
+    user_id: admin
+    ## container registry b64-encoded password
+    ##
+    ## Note: no newline character allowed at the end of the password.
+    ## for example: printf "<password string>" | base64
+    password: YWRtaW4xMjM= # admin123
+    hostname: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+    replicas_count: 1
+- name: ingress
+  spec:
+    ingress_service:
+      allocate_node_port: true
+      annotations:
+        metallb.universe.tf/address-pool: ingress
+      type: LoadBalancer
+      loadbalancer_ip: 10.130.34.224
+- name: metrics-server
+  spec: { }
+- name: multus
+  spec: { }
+- name: sriov-network-device-plugin
+  spec:
+    pool:
+      sriov-dpdk-25g:
+        node_selectors:
+          "node-pool": "pool2"
+        sriov_network_device_plugin_configmap_name: sriov-dp-configmap2
+        sriov_network_device_plugin_configmap_data: |-
+          {
+              "resourceList": [{
+                      "resourceName": "intel_sriov_dpdk_left",
+                      "selectors": {
+                          "pciAddresses": ["0000:00:06.0", "0000:00:08.0", "0000:00:0a.0", "0000:00:0c.0"],
+                          "drivers": ["vfio-pci", "igb_uio"]
+                      }
+                  },
+                  {
+                      "resourceName": "intel_sriov_dpdk_right",
+                      "selectors": {
+                          "pciAddresses": ["0000:00:07.0", "0000:00:09.0", "0000:00:0b.0", "0000:00:0d.0"],
+                          "drivers": ["vfio-pci", "igb_uio"]
+                      }
+                  }
+              ]
+          }
+- name: ecfe
+  spec:
+    node_selectors:
+      speaker:
+        ecfe-speaker: true
+    speakers_allowed_on_control_plane: false
+    allocate_speakers: true
+    config: |
+      bgp-bfd-peers:
+      - peer-address: 11.1.2.254
+        peer-asn: 8002
+        my-asn: 7002
+        hold-time: 180s
+        min-rx: 300ms
+        min-tx: 300ms
+        multiplier: 3
+        my-address-pools:
+        - pcc-amf-sbi
+        - pcc-smf-nsmf
+        - pcc-smf-notification
+        - ccdm-5g-traffic
+        - cces-5g-sbi-traffic
+        - cces-5g-nbi-trust-traffic
+        - ccpc-5g-traffic
+        - ccpc-4g-traffic
+        - ccrc-nrf-sig
+        - ccrc-nssf-sig
+        - ccsm-ausf-5g-sig
+        - ccsm-udm-5g-sig
+        - ccsm-dia-sig
+        - ccsm-eir-5g-sig
+        - ccsm-hss-epc-http-sig
+        - sc-bsf-dia-sig
+        - sc-bsf-sig
+        - sc-scp-sig
+      - peer-address: 11.1.20.254
+        peer-asn: 8000
+        my-asn: 7020
+        hold-time: 180s
+        min-rx: 300ms
+        min-tx: 300ms
+        multiplier: 3
+        my-address-pools:
+        - ingress
+        - pcc-oam
+        - pcg-oam
+        - ccrc-oam
+        - ccsm-oam
+        - ccdm-oam
+        - ccdm-5g-prov
+        - ccdm-4g-prov
+        - cces-oam
+        - cces-5g-prov
+        - ccpc-oam
+        - ccpc-5g-prov
+        - eda-oam
+        - sc-oam
+      - peer-address: 11.1.18.254
+        peer-asn: 8007
+        my-asn: 7007
+        hold-time: 180s
+        min-rx: 300ms
+        min-tx: 300ms
+        multiplier: 3
+        my-address-pools:
+        - ccdm-intersite
+        - ccdm-4g-traffic
+      address-pools:
+      - name: pcc-amf-sbi
+        protocol: bgp
+        addresses:
+        - 5.8.6.9/32
+        auto-assign: false
+      - name: pcc-smf-nsmf
+        protocol: bgp
+        addresses:
+        - 5.8.6.1/32
+        auto-assign: false
+      - name: pcc-smf-notification
+        protocol: bgp
+        addresses:
+        - 5.8.6.2/32
+        auto-assign: false
+      - name: ccdm-5g-traffic
+        protocol: bgp
+        addresses:
+        - 5.8.6.4/32
+        auto-assign: false
+      - name: cces-5g-sbi-traffic
+        protocol: bgp
+        addresses:
+        - 5.8.6.8/32
+        auto-assign: false
+      - name: cces-5g-nbi-trust-traffic
+        protocol: bgp
+        addresses:
+        - 5.8.6.16/32
+        auto-assign: false
+      - name: ccpc-5g-traffic
+        protocol: bgp
+        addresses:
+        - 5.8.6.17/32
+        auto-assign: false
+      - name: ccpc-4g-traffic
+        protocol: bgp
+        addresses:
+        - 5.8.6.18/32
+        auto-assign: false
+      - name: ccrc-nrf-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.6/32
+        auto-assign: false
+      - name: ccrc-nssf-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.10/32
+        auto-assign: false
+      - name: ccsm-ausf-5g-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.5/32
+        auto-assign: false
+      - name: ccsm-udm-5g-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.7/32
+        auto-assign: false
+      - name: ccsm-dia-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.13/32
+        auto-assign: false
+      - name: ccsm-eir-5g-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.14/32
+        auto-assign: false
+      - name: ccsm-hss-epc-http-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.3/32
+        auto-assign: false
+      - name: sc-bsf-dia-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.12/32
+        auto-assign: false
+      - name: sc-bsf-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.11/32
+        auto-assign: false
+      - name: sc-scp-sig
+        protocol: bgp
+        addresses:
+        - 5.8.6.15/32
+        auto-assign: false
+      - name: ingress
+        protocol: bgp
+        addresses:
+        - 10.130.34.224/32
+        auto-assign: false
+      - name: pcc-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.233/32
+        auto-assign: false
+      - name: pcg-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.235/32
+        auto-assign: false
+      - name: ccrc-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.227/32
+        auto-assign: false
+      - name: ccsm-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.226/32
+        auto-assign: false
+      - name: ccdm-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.225/32
+        auto-assign: false
+      - name: ccdm-5g-prov
+        protocol: bgp
+        addresses:
+        - 10.130.34.240/32
+        auto-assign: false
+      - name: ccdm-4g-prov
+        protocol: bgp
+        addresses:
+        - 10.130.34.248/32
+        auto-assign: false
+      - name: cces-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.246/32
+        auto-assign: false
+      - name: cces-5g-prov
+        protocol: bgp
+        addresses:
+        - 10.130.34.247/32
+        auto-assign: false
+      - name: ccpc-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.250/32
+        auto-assign: false
+      - name: ccpc-5g-prov
+        protocol: bgp
+        addresses:
+        - 10.130.34.252/32
+        auto-assign: false
+      - name: eda-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.249/32
+        auto-assign: false
+      - name: sc-oam
+        protocol: bgp
+        addresses:
+        - 10.130.34.244/32
+        auto-assign: false
+      - name: ccdm-intersite
+        protocol: bgp
+        addresses:
+        - 5.8.6.33/32
+        auto-assign: false
+      - name: ccdm-4g-traffic
+        protocol: bgp
+        addresses:
+        - 5.8.6.34/32
+        auto-assign: false
+- name: openstack-cloud-controller-manager
+  spec:
+    timeout: 50h
+- name: openstack-cinder
+  spec:
+    #Default value is 25 in CCD 2.26.0RC2
+    volume_attach_limit: 30
+    storage_classes:
+    - name: csi-cinder-sc-delete
+      spec:
+        reclaim_policy: Delete
+        allow_volume_expansion: true
+      default: true
+    - name: csi-cinder-sc-retain
+      spec:
+        reclaim_policy: Retain
+    openstack_hosts:
+    - https://pcccpod056-os-ext-vip.seln.ete.ericsson.se:5000/v3
+    openstack_ports:
+    - 5000 # identity
+    - 8774 # compute
+    - 8776 # block storage
+    - 9696 # neutron
+    - 8786 # manila
+    - 13000
+    - 13774
+    - 13776
+    - 13786
+    - 13696
+- name: ccd-licensing
+  spec:
+    storage_class: csi-cinder-sc-delete
+    #db_ha_disabled: true
+    ccd_licensing_lm_db_migration_cpu_req: "100m"
+    ccd_app_sys_info:
+      nels:
+        host_ip: 10.155.142.68
+        host_name: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+- name: pm
+  spec:
+    victoria_metrics:
+      #deploy_in_workers: true
+      collect_only_ccd_namespace_metrics: false
+      vmselect:
+        #ha_enabled: "false"
+        resources:
+          limits:
+            cpu: "2"
+            memory: 4Gi
+            ephemeral_storage: 8Gi
+          requests:
+            cpu: 500m
+            memory: 256Mi
+            ephemeral_storage: 512Mi
+        ingress:
+          enable: "true"
+          hostname: "monitoring-vmselect.ingress.pod56-eccd1.seln.ete.ericsson.se"
+      vmstorage:
+        #ha_enabled: "false"
+        resources:
+          limits:
+            memory: 7Gi
+        volume:
+          size: 200Gi
+          storage_class: csi-cinder-sc-delete
+        retention_time: 30d
+      vmagent:
+        scrape_interval: 60s
+        maxscrape_size: 256MB
+        resources:
+          limits:
+            memory: 700Mi
+        # remote_write_urls:
+        #   - url: http://10.117.58.8:1111/receive
+        #     username: abc
+        #     password: 123
+        #   - url: http://10.117.58.8:1234/receive
+        #     username:
+        #     password:
+      vmalert:
+        #ha_enabled: "false"
+    alertmanager:
+      resources:
+        limits:
+          cpu: 100m
+          memory: 200Mi
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      ingress:
+        enable: "true"
+        hostname: "monitoring-alertmanager.ingress.pod56-eccd1.seln.ete.ericsson.se"
+    node_exporter:
+      default_collectors_disabled: false
+- name: subport-controller-manager
+  spec: {}

@@ -1,0 +1,14 @@
+{
+  "clusterName": "n182-eccd2",
+  "additionalParams": {
+    "skipVerification": true,
+    "namespace": "cces",
+    "cleanUpResources": false,
+    "applicationTimeOut": "3600",
+    "skipJobVerification": true,
+    "helmNoHooks": false,
+    "manoControlledScaling": false,
+    "disableOpenapiValidation": false,
+    "helm_client_version": "3.8"
+  }
+}

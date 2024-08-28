@@ -1,0 +1,11 @@
+{
+    "ruleName": "dbr_on_attach_select_rule",
+    "condition": "(1==1)",
+    "outputAttributes": [
+        {
+            "attrName": "service",
+            "attrValue": "\"dbr_on_attach_service\"",
+            "result": "permit"
+        }
+    ]
+}

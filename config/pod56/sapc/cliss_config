@@ -1,0 +1,90 @@
+########################################
+# configure Pcc subscribe way - IMSI
+#######################################
+cliss
+ManagedElement=1,PolicyControlFunction=1,AppConfig=1,PccConfig=1
+configure
+subsIdType=IMSI
+commit
+exit
+      
+########################################
+#UDR FQDN dicovery and pcfappconfig  configuration
+#######################################
+cliss
+ManagedElement=1,PolicyControlFunction=1,PcfConfig=1,PcfAppConfig=1
+configure
+enableNrfDiscoveryNfs=UDR
+pcfFqdn="pcf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org"
+pcfID="de9f9fd9-ff3f-4255-a635-aaaaaaaaaaaa"
+pcfLocality=Stockholm
+PcfMsgTemplates=1
+   PcfMsgTemplate=pcfRegProfile
+     value="{\"nfInstanceId\":\"{PCF_ID}\",\"heartBeatTimer\":{PCF_HB_TIMER},\"nfType\":\"PCF\",\"nfStatus\":\"{PCF_STATUS}\",\"plmnList\":[{\"mcc\":\"240\",\"mnc\":\"81\"},{\"mcc\":\"240\",\"mnc\":\"80\"}],\"sNssais\":[{\"sst\":1,\"sd\":\"000002\"}],\"fqdn\":\"{PCF_FQDN}\",\"ipv4Addresses\":[\"{PCF_VIP}\"],\"capacity\":100,\"priority\":1,\"pcfInfo\":{\"dnnList\":[\"Internet\",\"ims\"],\"supiRanges\":[{\"start\":\"240800000000000\",\"end\":\"240819999999999\"}],\"rxDiamHost\":\"rxDiam-Host.com\",\"rxDiamRealm\":\"rxDiam-Realm.com\"},\"nfServices\":[{\"serviceInstanceId\":\"npcf-smpc-0001\",\"serviceName\":\"npcf-smpolicycontrol\",\"versions\":[{\"apiVersionInUri\":\"v1\",\"apiFullVersion\":\"1.R15.2.0\"}],\"scheme\":\"{CONNECT}\",\"nfServiceStatus\":\"{smpc_status}\",\"ipEndPoints\":[{\"ipv4Address\":\"{PCF_VIP}\",\"port\":9091}],\"allowedNfTypes\":[\"SMF\"]},{\"serviceInstanceId\":\"npcf-ampc-0001\",\"serviceName\":\"npcf-am-policy-control\",\"versions\":[{\"apiVersionInUri\":\"v1\",\"apiFullVersion\":\"1.R15.2.0\"}],\"scheme\":\"{CONNECT}\",\"nfServiceStatus\":\"{ampc_status}\",\"ipEndPoints\":[{\"ipv4Address\":\"{PCF_VIP}\",\"port\":9091}],\"apiPrefix\":\"npcf-am-policy-control\",\"allowedNfTypes\":[\"AMF\"]}],\"locality\":\"{locality}\"}"
+   up
+   PcfMsgTemplate=udrSubProfile
+     value="{\"subscrCond\":{\"nfType\":\"UDR\"},\"requesterFeatures\":\"1\",\"nfStatusNotificationUri\":\"{CB_URI}\"}"
+   up
+commit
+
+exit
+
+
+######################################
+Nrf configuration
+#######################################
+cliss
+ManagedElement=1,PolicyControlFunction=1,PcfConfig=1,PcfNetwork=1,PcfPeerNodes=1
+configure
+PcfPeerNode=nrf1
+   fqdn="nrf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org"
+   nodeStatus=REGISTERED
+   port=443
+   type=NRF
+   commit
+   up
+configure
+PcfPeerNode=Default
+   controls=SERVICE_ACCESS_PCF_TOD
+   controls=SUBSCRIBER_CHARGING
+   controls=SERVICE_CHARGING
+   controls=PDU_SESSION_ACCESS
+   type=SMF
+   commit
+   up
+exit
+
+
+######################################
+config EDSource for 4G unknown users
+#####################################
+cliss
+ManagedElement=1,PolicyControlFunction=1,EntityData=1,EDSources=1
+configure
+EDSource=GroupsToSubscriberUnknown
+definition="def GroupsToSubscriberUnknown( subsId, groupId ){ dataSource = { url = \"internaldb:\"; query = \"SubscriberPot:{subsId}\"; } fieldDef = { priority = dataSourceField(\"dataplans:{groupId}:prio\"); startDate = dataSourceField(\"dataplans:{groupId}:start_date\"); endDate = dataSourceField(\"dataplans:{groupId}:end_date\"); }}"
+up
+EDSource=SubscriberUnknown
+definition="def SubscriberUnknown ( argId ){ dataSource = {   url = \"internaldb:\";   query = \"SubscriberPot:{argId}\"; } fieldDef = {   id = dataSourceField(\"id\");   groups = dataSourceField(\"dataplans\");   trafficIds = dataSourceField(\"trafficIds\");   sharedDataplan = dataSourceField(\"sharedDataplanId\");   subscribedServices = dataSourceField(\"subscribedContents\");   blacklistServices = dataSourceField(\"deniedContents\");   contentFilteringProfileId = dataSourceField(\"contentFiltering\");   chargingProfile = SubsChargingProfile(dataSourceField(\"subscriberChargingProfile\"));   chargingSystem = OnlineChargingSystemProfile(dataSourceField(\"onlineChargingSystemProfile\"));   customerId = dataSourceField(\"customerId\");   maxBearerQosProfile = BearerQosProfile(dataSourceField(\"maxBearerQosProfile\"));   minBearerQosProfile = BearerQosProfile(dataSourceField(\"minBearerQosProfile\"));   servicesToRedirect =  dataSourceField(\"redirectContents\");   presenceReportingAreaNames = dataSourceField(\"presenceReportingAreaNames\");   usageLimits = dataSourceField(\"usageLimits\");   sms = dataSourceField(\"smsDestinations\");   eventTriggers = dataSourceField(\"eventTriggers\");   pdnGwListName = PdnGwListProfile(dataSourceField(\"pdnGwListName\"));   spid = dataSourceField(\"spid\"); }}"
+commit
+up
+show-config
+exit
+
+####################################
+ config clusterpatten for Gx
+####################################
+cliss
+configure
+ManagedElement=1,PolicyControlFunction=1,Network=1,DiameterNodes=1,DiameterNode=vEPC
+clusterPattern="pod56.epc.mnc081.mcc240.3gppnetwork.org"
+controls=SERVICE_ACCESS_PCEF_TOD
+controls=BEARER_QOS
+controls=CONTENT_FILTERING
+controls=SUBSCRIBER_CHARGING
+controls=SERVICE_CHARGING
+controls=USAGE_REPORTING
+controls=IP_CAN_SESSION_ACCESS
+dynamicServiceSupport=true
+commit
+exit

@@ -1,0 +1,25 @@
+{
+   "profileName":"tai-group-slice1-amf-001",
+   "amfSetId":"240-81-ff-002",
+   "taiGroupInfo":{
+      "tacRangeList":[
+         {
+            "start":"000000",
+            "end":"00ffff"
+         }
+      ],
+      "supportedSnssaiInfo":{
+         "nsiProfileName":"nsi-slice-common-region-001",
+         "sNssai":{
+            "sst":1,
+            "sd":"000002"
+         }
+      },
+      "nssPolicies":[
+         {
+            "policyEnabled":false,
+            "policyUsage":"ue-registration"
+         }
+      ]
+   }
+}

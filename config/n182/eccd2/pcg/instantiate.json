@@ -1,0 +1,9 @@
+{
+  "clusterName": "n182-eccd2",
+  "additionalParams": {
+    "namespace": "pcg",
+    "applicationTimeOut": "1200",
+    "skipJobVerification": "false",
+    "skipVerification": "true"
+  }
+}

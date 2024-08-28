@@ -1,0 +1,9 @@
+{
+  "clusterName": "pod56-eccd1",
+  "additionalParams": {
+       "namespace": "cces",
+       "applicationTimeOut": "3600",
+       "skipJobVerification": "false",
+       "skipVerification": "true"
+      }
+}

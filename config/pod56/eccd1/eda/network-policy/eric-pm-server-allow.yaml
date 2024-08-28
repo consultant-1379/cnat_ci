@@ -1,0 +1,18 @@
+## The configuration is used for Grafana accessing pm-server to get counters (only for internal test usage)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  annotations:
+  generation: 1
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: eric-pm-server-allow
+
+spec:
+  ingress:
+  - {}
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: eric-pm-server
+  policyTypes:
+  - Ingress

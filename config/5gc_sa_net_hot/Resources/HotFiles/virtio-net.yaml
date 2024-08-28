@@ -1,0 +1,83 @@
+heat_template_version: 2017-09-01
+
+description: >
+
+parameters:
+
+  index:
+    type: number
+  prefix:
+    type: string
+  networks:
+    type: json
+  phynet_virtio:
+    type: string
+  l2gw_dcgw_id:
+    type: string
+  target_cloud_system:
+    type: string
+
+
+conditions:
+  is_cee_nfvi: { equals: [{get_param: target_cloud_system}, "cee_nfvi"] }
+  is_generic_openstack: { equals: [{get_param: target_cloud_system}, "openstack"] }
+  customized_mtu:
+    yaql:
+      expression: $.data.networks.keys().contains('mtu')
+      data:
+        networks: { get_param: [ networks, { get_param: index } ] }
+
+
+resources:
+
+  net:
+    type: OS::Neutron::Net
+    properties:
+      name:
+        str_replace:
+          template: "<prefix>-<net_name>"
+          params:
+            "<prefix>": { get_param: prefix }
+            "<net_name>": { get_param: [ networks, { get_param: index }, name ] }
+      value_specs:
+        mtu:
+          if:
+          - customized_mtu
+          - { get_param: [ networks, { get_param: index }, mtu ]  }
+          - 0
+        segments:
+          if:
+          - is_cee_nfvi
+          - - provider:segmentation_id: { get_param: [ networks, { get_param: index }, vxlan ] }
+              provider:network_type: vxlan
+            - provider:segmentation_id: { get_param: [ networks, { get_param: index }, vlan ] }
+              provider:network_type: vlan
+              provider:physical_network: { get_param: phynet_virtio }
+          - - provider:segmentation_id: { get_param: [ networks, { get_param: index }, vlan ] }
+              provider:network_type: vlan
+              provider:physical_network: { get_param: phynet_virtio }
+
+  subnet:
+    properties:
+      name:
+        str_replace:
+          template: "<prefix>-<net_name>_subnet"
+          params:
+            "<prefix>": { get_param: prefix }
+            "<net_name>": { get_param: [ networks, { get_param: index }, name ] }
+      cidr: { get_param: [ networks, { get_param: index }, cidr ] }
+      enable_dhcp: { get_param: [ networks, { get_param: index }, enable_dhcp ] }
+      network: { get_resource: net }
+      gateway_ip: { get_param: [ networks, { get_param: index }, gateway ] }
+      host_routes: { get_param: [ networks, { get_param: index }, routes ] }
+      allocation_pools:
+      - { get_param: [ networks, { get_param: index }, allocation_pools ] }
+    type: OS::Neutron::Subnet
+
+  l2gw_connection_border_leaf:
+    condition: is_cee_nfvi
+    properties:
+      l2_gateway_id: { get_param: l2gw_dcgw_id }
+      network_id: { get_resource: net }
+      segmentation_id: { get_param: [ networks, { get_param: index }, vlan ] }
+    type: OS::Neutron::L2GatewayConnection

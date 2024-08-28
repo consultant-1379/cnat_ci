@@ -1,0 +1,109 @@
+vnflcm:
+  vnfInstanceName: pod56-pcg1
+  vnfProductName: PCG
+  values-file: values.yaml
+  orchestrator: helm
+  namespace: pcg
+  csar-file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/PCG_CXP9041656_1-R54G20.csar
+  clusterName: pod56-eccd1
+
+access-info:
+  oam: pod56-pcg1.seln.ete.ericsson.se
+  ldap-admin:
+    user: sysadmin
+    pass: c3lzQWRtMW5ARGF5MA==
+  users:
+  - user: tsadm
+    pass: VHNAZG01Z2NAYjF1ZXM=
+    pass-init: dHNhZG0=
+pipeline:
+# As this module will take too much time. Therefore, comment it out. But this config is available.
+#- module: push-images-to-registry
+#  cleanup: true
+#  remote-server:
+#    host: pod56-eccd1.seln.ete.ericsson.se
+#    user: eccd
+#    ssh-key: /lab/pccc_utils/scripts/ssh_key/pod56_key
+#  tool:
+#    cli: docker
+#  registry:
+#     url: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+#     user: admin
+#     pass: YWRtaW4xMjM=
+- module: install-crd
+  namespace: eric-crd-ns
+  registry:
+    host: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+    username: admin
+    password: YWRtaW4xMjM=
+  pullSecret: regcred
+  additional-values:
+    eric-tm-ingress-controller-cr-crd:
+      rbac.create: true
+- module: create-namespace
+- module: run-k8s-command
+  name: Create docker registry secret
+  cmd: create secret docker-registry regcred --docker-server=container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se --docker-username=admin --docker-password=admin123
+- module: create-k8s-secret
+  name: eric-pc-gateway-ldap-server-secret
+  sources:
+  - type: literal
+    key: adminuser
+    value: sysadmin
+  - type: literal
+    key: passwd
+    value: sysAdm1n@Day0
+  - type: literal
+    key: adminpasswd
+    value: $6$fzLPYlRZCpweJMJC$AiNfP0WYE3npY8Za6GxMFoGj75TOl.TS6tmnnky2Bv5wY0Ek8RIoJlr9pyj0LF3wMMaNsNTUH4jp2lIHviJGS0
+- module: create-k8s-secret
+  name: eric-pc-gateway-snmp-alarm-provider-config
+  sources:
+  - type: file
+    key: config.json
+    file: ../snmp-config.json
+- module: instantiate
+  helm-timeout: 800
+- module: verify-pod-running
+  ignore-not-running:
+  - eric-data-search-engine-curator
+- module: verify-pod-ready
+  check-interval: 5
+  daemonsets:
+  - eric-log-shipper
+- module: run-k8s-command
+  name: Create networkpolicy to allow accessing eric-pm-server and eric-data-search-engine
+  cmd: |
+    apply -f {file1}
+    apply -f {file2}
+  inline-files:
+    file1: ../network-policy/eric-pm-server-allow.yaml
+    file2: ../network-policy/eric-data-search-engine-allow.yaml
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: create ingress eric-pm-server --rule="eric-pm-server-pcg.ingress.n280-eccd1.sero.gic.ericsson.se/*=eric-pm-server:9090"
+- module: verify-pod-ready
+  check-interval: 5
+  deployments:
+  - eric-cm-yang-provider
+- module: load-cmyp-user-config
+  file: ../user-config.txt
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: change-initial-password
+- module: load-cmyp-app-config
+  file: ../pcg-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: ../ddc-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10

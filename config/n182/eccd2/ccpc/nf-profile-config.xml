@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <!--xmlns="urn:rdns:com:ericsson:oammodel:ericsson-pcf" refers to PCF namespace.-->
+            <pcf xmlns="urn:rdns:com:ericsson:oammodel:ericsson-pcf">
+                <!--Mix use of the ipv4-address and ipv6-address in pcf configuration is not supported currently.-->
+                <!--nf-profile: Local configuration of PCF profile.-->
+                <nf-profile>
+                    <!--instance-id: Unique ID represents the NF instance.-->
+                    <instance-id>98aae42e-da25-4329-acf0-504346a1c4d2</instance-id>
+                    <!--At least one of the addressing parameters fqdn, ipv4-address, ipv6-address must be included in the NF level.-->
+                    <!--NF level addresses include profile.fqdn, profile.ipv4-address and profile.ipv6-address.-->
+                    <!--Service level addresses include profile.service.fqdn, profile.service.ip-endpoint.ipv4-address and profile.service.ip-endpoint.ipv6-address.-->
+                    <!--The order of addresses to be used is Service level IP Address, Service level FQDN, NF level IP Address, NF level FQDN.-->
+                    <!--Scheme and port number are defined in service level: profile.service.scheme, profile.service.ip-endpoint.port.-->
+                    <!--You have a CHOICE of the ipv4-address and ipv6-address at this level.Please remove the other one when choose one ip address.-->
+                    <!--fqdn: FQDN of the PCF.-->
+                    <fqdn>ccpc1-5g-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                    <!--ipv4-address: IPv4 addresses of PCF which is listening for incoming service requests.-->
+                    <!--ipv4-address>{PCF-IPV4-ADDRESS}</ipv4-addressi-->
+                    <!--IPv6 addresses of the Network Function.-->
+                    <!--ipv6-address>{PCF-IPV6-ADDRESS}</ipv6-addressi-->
+                    <!--Operator defined information about the location of the NF instance.-->
+                    <locality>LN1</locality>
+                    <!--NSI identities of the Network Function.-->
+                    <nsi>testNSI</nsi>
+                    <!---->
+                    <pcf-info>
+                        <dnn>internet</dnn>
+                        <dnn>ims</dnn>
+                        <supi-range>
+                            <id>0</id>
+                            <supi-start>240810000000000</supi-start>
+                            <supi-end>240819999999999</supi-end>
+                        </supi-range>
+                        <rx-diam-host>ccpc1-4g-traffic.site1-cluster2.ericsson.se</rx-diam-host>
+                        <rx-diam-realm>ericsson.se</rx-diam-realm>
+                    </pcf-info>
+                    <!--PLMNs of the network function-->
+                    <plmn-id>
+                        <!--Mobile country code of PLMNs of the network function-->
+                        <mcc>240</mcc>
+                        <!--Mobile netword code of PLMNs of the network function-->
+                        <mnc>81</mnc>
+                    </plmn-id>
+                    <!--S-NSSAIs of the network function-->
+                    <snssai>
+                        <!--id: Unique ID represents the S-NSSAI.-->
+                        <id>1</id>
+                        <!--Slice/service type of the S-NSSAI.-->
+                        <sd>000002</sd>
+                        <!--Slice/service type of the S-NSSAI.-->
+                        <sst>1</sst>
+                    </snssai>
+                    <!--Timestamp when the NF was (re)started.-->
+                    <!--recovery-time>{PCF-RECOVERY-TIME}</recovery-time->
+                    <!--Time in seconds expected between 2 consecutive heart-beat messages from an NF Instance to the NRF, to be included in the registration request.-->
+                    <requested-heartbeat-timer>60</requested-heartbeat-timer>
+                    <!--Pattern (regular expression according to the ECMA-262 dialect) representing the NF domain names allowed to access the NF instance. -->
+                    <!--allowed-nf-domain>{ALLOWED-NF-DOMAIN}</allowed-nf-domaino-->
+                    <!--If the NF needs to be discoverable by other NFs in a different PLMN,then an FQDN that is used for inter PLMN routing as specified in 3GPP TS 23.003 needs to be registered with the NRF. -->
+                    <!--<inter-plmn-fqdn>{PLMN-FQDN}</inter-plmn-fqdni-->
+                    <!--S-NSSAI of the allowed slices to access the NF instance.-->
+                    <!--allowed-nssai-->
+                        <!--id: Unique ID represents the S-NSSAI.-->
+                        <!--id>{ID-NSSAI}</id-->
+                        <!--Slice/service type of the S-NSSAI.-->
+                        <!--sd>{SD-NSSAI}</sd-->
+                        <!--Slice/service type of the S-NSSAI.-->
+                        <!--sst>{SST-NSSAI}</sst-->
+                    <!--/allowed-nssai-->
+                    <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other PCF, If capacity is also present in the service parameters, those will have precedence over this value. It is reserved for future release.-->
+                    <capacity>0</capacity>
+                    <!-- The served area(s) of the NF instance. Absence of this attribute does not imply that NF instance can serve every area in the PLMN.-->
+                    <!--serving-scope>{PCF-SERVING-AREAS}</serving-scope-->
+                    <!--service: The service instance of PCF.-->
+                    <service>
+                        <!--id: Unique ID that represents the PCF service.-->
+                        <instance-id>npcf-smpolicycontrol-0001</instance-id>
+                        <!--name: Name of the PCF service.-->
+                        <name>npcf-smpolicycontrol</name>
+                        <!--scheme: Protocol schema (e.g. "http", "https").-->
+                        <scheme>https</scheme>
+                        <!-- Administrative status requested to be set in registration process at NRF. When set to "registered" or "suspended", that shall be the value of the NFStatus parameter in the registration/update request towards NRF. When set to "deregistered", the Network Function's registration profile data shall be deleted from PCF.-->
+                        <requested-status>registered</requested-status>
+                        <!--fqdn: FQDN of the service instance.-->
+                        <fqdn>ccpc1-5g-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                        <!--ip-endpoint: IP address(es) and port information where the service is listening for incoming service requests.-->
+                        <ip-endpoint>
+                            <!--id: Unique ID that represents the PCF service.-->
+                            <id>0</id>
+                            <!--You have a CHOICE of the ipv4-address and ipv6-address at this level. Please remove the other one when choose one ip address.-->
+                            <!--ipv4-address: IPv4 address of pcf service which is listening for incoming service requests.-->
+                            <!--ipv4-address>{PCF-SERVICE-IPV4-ADDRESS}</ipv4-address-->
+                            <!--ipv6-address: IPv6 address of PCF service which is listening for incoming service requests.-->
+                            <!--ipv6-address>{PCF-SERVICE-IPV6-ADDRESS}</ipv6-address-->
+                            <!--transport: Transport protocol. -->
+                            <transport>tcp</transport>
+                            <!--port: Port number that the PCF service is listening on.-->
+                            <port>443</port>
+                        </ip-endpoint>
+                        <!--Allowed PLMNs of the network function-->
+                        <!--allowed-plmn-->
+                            <!--Mobile country code of Allowed PLMNs of the network function-->
+                            <!--mcc>{MCC-PLMNS}</mcc-->
+                            <!--Mobile netword code of Allowed PLMNs of the network function-->
+                            <!--mnc>{MNC-PLMNS}</mnc-->
+                        <!--/allowed-plmn-->
+                        <!--SS-NSSAI of the allowed slices to access the service instance.The absence of this attribute indicates that any slice is allowed to access the service instance.-->
+                        <!--allowed-nssai-->
+                            <!--id: Unique ID represents the S-NSSAI.-->
+                            <!--id>{ID-NSSAI}</id-->
+                            <!--Slice/service type of the S-NSSAI.-->
+                            <!--sd>{SD-NSSAI}</sd-->
+                            <!--Slice/service type of the S-NSSAI.-->
+                            <!--sst>{SST-NSSAI}</sst-->
+                        <!--/allowed-nssai-->
+                        <!-- If the NF service needs to be discoverable by other NFs in a different PLMN, then an FQDN that is used for inter PLMN routing as specified in 3GPP TS 23.003 may be registered with the NRF.-->
+                        <!--inter-plmn-fqdn>{SERVICE-PLMN-FQDN}</inter-plmn-fqdn-->
+                        <!-- Pattern (regular expression according to the ECMA-262 dialect) representing the NF domain names allowed to access the service instance. The absence of this attribute indicates that any NF domain is allowed to access the service instance.-->
+                        <!--allowed-nf-domain>{SERVICE-ALLOWED-NF-DOMAIN}</allowed-nf-domain-->
+                        <!--priority: Priority to be used for PCF Management Service selection. -->
+                        <priority>0</priority>
+                        <!--Timestamp when the service was (re)started.-->
+                        <!--recovery-time>{PCF-RECOVERY-TIME}</recovery-time->
+                         <!--Type of the NFs allowed to access the service instance.The absence of this attribute indicates that any NF type is allowed to access the service instance.-->
+                        <allowed-nf-type>smf</allowed-nf-type>
+                        <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other service, If capacity is also present in the service parameters, those will have precedence over this value. It is reserved for future release.-->
+                        <capacity>0</capacity>
+                    </service>
+                </nf-profile>
+            </pcf>
+        </config>
+    </edit-config>
+</rpc>

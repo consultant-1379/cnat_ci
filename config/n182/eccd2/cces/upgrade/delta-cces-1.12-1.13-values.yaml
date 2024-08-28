@@ -1,0 +1,394 @@
+global:
+  istio:
+    annotations:
+      # This is used to annotate pods with sidecars, so they are automatically
+      # restarted and reinjected with the correct proxy version on SM upgrades
+      # NOTE! It must be updated *manually* for now on SM uplifts
+      serviceMesh: 12.3.0
+    ingress:
+      gateways:
+        traffic:
+          northbound:
+            trusted:
+              eric-cces-nef-nbi-trust-gateway:
+                ports:
+                  https:
+                    enabled: false
+                  https-mtls:
+                    enabled: true
+                    port: 443
+                    protocol: HTTPS
+                    hosts:
+                      - "./*"
+                    mode: mTLS
+                    settings:
+                      minProtocolVersion: TLSV1_2
+                      maxProtocolVersion: TLSV1_3
+                      cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+            non-trusted:
+              eric-cces-nef-nbi-non-trust-gateway:
+                ports:
+                  https:
+                    enabled: false
+                  https-mtls:
+                    enabled: true
+                    port: 443
+                    protocol: HTTPS
+                    hosts:
+                      - "./*"
+                    mode: mTLS
+                    settings:
+                      minProtocolVersion: TLSV1_2
+                      maxProtocolVersion: TLSV1_3
+                      cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+          southbound:
+            eric-cces-nef-sbi-gateway:
+              ports:
+                https:
+                  enabled: false
+                https-mtls:
+                  enabled: true
+                  port: 443
+                  protocol: HTTPS
+                  hosts:
+                    - "./*"
+                  mode: mTLS
+                  settings:
+                    minProtocolVersion: TLSV1_2
+                    maxProtocolVersion: TLSV1_3
+                    cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+        provisioning:
+          eric-cces-nef-provisioning-gateway:
+            ports:
+              https:
+                enabled: false
+              https-mtls:
+                enabled: true
+                port: 443
+                protocol: HTTPS
+                hosts:
+                  - "./*"
+                mode: mTLS
+                settings:
+                  minProtocolVersion: TLSV1_2
+                  maxProtocolVersion: TLSV1_3
+                  cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+        oam:
+          eric-cces-nef-oam-gateway:
+            ports:
+              https:
+                enabled: false
+              https-tls:
+                enabled: true
+                port: 2443
+                protocol: HTTPS
+                hosts:
+                  - "./*"
+                mode: TLS
+        heartbeat:
+          nbi:
+            eric-cces-nbi-heartbeat-gateway:
+              #  Northbound interface heartbeat gateway related configurations for CCES liveness detection
+              #  The default value of enabled field is true. Set true only when
+              #      - There's a need to check whether CCES site is available with liveness detection.
+              ports:
+                https-nbiheartbeat:
+                  enabled: false
+                https-mtls:
+                  enabled: true
+                  port: 443
+                  protocol: HTTPS
+                  mode: mTLS # Values allowed [ TLS, mTLS ]
+                  settings:
+                    maxProtocolVersion: TLSV1_3
+                    minProtocolVersion: TLSV1_2
+                    cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+                  hosts:
+                    - "./*"
+  cces:
+    eric-cces-charging:
+      enabled: false
+  licensing:
+    # global.licensing.sites - The site information for
+    sites:
+      # each cNeLS instance, formatted as entries in an array like so:
+      - hostname: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+        ip:
+        priority:
+  eric-nef:
+    eric-nef-parameterprovision:
+      enabled: false
+    eric-nef-analyticsexposure:
+      enabled: false
+
+eric-cces-commonsvc:
+  eric-stm-diameter-proxy-grpc:
+    resources:
+      diameterproxygrpc:
+        requests:
+          memory: 500Mi
+  eric-cces-charging-adf:
+    replicaCount: 2
+  eric-cces-charging-message-bus:
+    log:
+      outputs: ["stdout"]
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+        size: 79Gi
+    resources:
+      messagebuskf:
+        requests:
+          cpu: 3000m
+          memory: 6Gi
+        limits:
+          cpu: 4500m
+          memory: 6Gi
+    jmx:
+      enabled: false
+    configurationOverrides:
+      "heap.opts": "-Xmx2G -Xms2G"
+      log.retention.bytes: "345985024"
+      log.retention.hours: 16
+
+eric-nef:
+  eric-nef-analyticsexposure:
+    replicaCount: 2
+    minReplicas: 2
+    maxReplicas: 2
+  eric-nef-chargeableparty:
+    resources:
+      cp:
+        requests:
+          cpu: 700m
+        limits:
+          cpu: 1050m
+  eric-nef-parameterprovision:
+    replicaCount: 2
+    minReplicas: 2
+    maxReplicas: 3
+  eric-nef-serviceparameter:
+    maxReplicas: 3
+    resources:
+      sp:
+        requests:
+          cpu: 500m
+          memory: 2000Mi
+        limits:
+          cpu: 750m
+          memory: 2000Mi
+# The following commented config.osd.afInfluencePolicyDataSetProfile is part of eric-nef-serviceparameter and shall be uncommented and configured if POLICY OSD feature is enabled. Please refer to Deploying the CCES for details.
+#    config:
+#      osd:
+#        afInfluencePolicyDataSetProfile:
+#          {
+#            "key1": {
+#              "type": "object",
+#              "properties": {
+#                "property1": {
+#                  "type": "string"
+#                },
+#                "property2": {
+#                  "type": "object",
+#                  "properties": {
+#                    "property1": {
+#                      "type": "string"
+#                    },
+#                    "property2": {
+#                      "type": "string"
+#                    }
+#                  }
+#                }
+#              }
+#            },
+#            "key2": {
+#              "type": "object",
+#              "properties": {
+#                "property1": {
+#                  "type": "string"
+#                },
+#                "property2": {
+#                  "type": "object",
+#                  "properties": {
+#                    "property1": {
+#                      "type": "string"
+#                    },
+#                    "property2": {
+#                      "type": "string"
+#                    }
+#                  }
+#                }
+#              }
+#            }
+#          }
+eric-ngac:
+  eric-ngac-apiservice-runtime:
+    env:
+      datasources:
+        - name: default
+          type: cassandra
+          ttl: 86400
+          keyspace: ngac_api_service_key_value_storage
+          geoRedEnabled: false
+        - name: geored_default
+          type: cassandra
+          ttl: 86400
+          keyspace: ngac_api_service_key_value_storage_geored
+          geoRedEnabled: true
+
+eric-adp-5g-udm:
+  eric-data-search-engine:
+    index_management:
+      delete_indices_by_diskspace:
+        - index: adp-app-debug-logs-*
+          size: 4gb
+        - index: adp-app-logs-*
+          size: 8gb
+      policies:
+        - description: "Remove app debug logs older than 3 days"
+          indices:
+            - adp-app-debug-logs-*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=3d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Remove app logs older than 15 days"
+          indices:
+            - adp-app-logs-*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=15d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Remove app audit logs older than 30 days"
+          indices:
+            - adp-app-audit-logs-*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=30d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Remove alarm logs older than 30 days"
+          indices:
+            - adp-app-asi-logs-*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=30d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Remove security logs older than 30 days"
+          indices:
+            - adp-app-security-logs-*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=30d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Remove transaction logs older than 24 hours"
+          indices:
+            - eric-cces-transactionlog-*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=24h
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+
+eric-nrfagent:
+  eric-nrf-discovery-agent:
+    resources:
+      cpu: 520m
+    proxy:
+      resources:
+        requests:
+          cpu: 520m
+          memory: 512Mi
+  eric-nrf-notify-agent:
+    proxy:
+      resources:
+        requests:
+          memory: 256Mi
+        limits:
+          cpu: 2000m
+          memory: 1Gi
+eric-udm-mesh-integration:
+  eric-ingressgw-nef-nbi-non-trust-traffic:
+    ports:
+      default:
+        name: https
+        port: 443
+        targetPort: 8443
+  eric-ingressgw-nef-nbi-trust-traffic:
+    ports:
+      default:
+        name: https
+        port: 443
+        targetPort: 8443
+  eric-ingressgw-nef-provisioning-traffic:
+    ports:
+      default:
+        name: https
+        port: 443
+        targetPort: 8443
+  eric-ingressgw-nef-sbi-traffic:
+    ports:
+      default:
+        name: https
+        port: 443
+        targetPort: 8443
+  eric-ingressgw-nef-oam-traffic:
+    ports:
+      default:
+        name: https
+        port: 2443
+        targetPort: 8443
+  eric-ingressgw-cces-nbi-heartbeat-traffic:
+    ports:
+      default:
+        name: https
+        port: 443
+        targetPort: 8443
+  eric-ingressgw-cces-capif1-non-trust-traffic:
+    ports:
+      default:
+        name: https-tls
+        port: 8443
+        targetPort: 8443
+      default2:
+        name: https-mtls
+        port: 8444
+        targetPort: 8444
+  eric-ingressgw-cces-capif1-trust-traffic:
+    ports:
+      default:
+        name: https-tls
+        port: 8443
+        targetPort: 8443
+      default2:
+        name: https-mtls
+        port: 8444
+        targetPort: 8444

@@ -1,0 +1,9 @@
+batch-size: 2
+vnf-info-files:
+- pcc/helm/vnf.yaml
+- pcg/helm/vnf.yaml
+- eda/helm/vnf.yaml
+- ccdm/helm/vnf.yaml
+- ccrc/helm/vnf.yaml
+- ccsm/helm/vnf.yaml
+- sc/helm/vnf.yaml

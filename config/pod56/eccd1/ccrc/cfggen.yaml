@@ -1,0 +1,47 @@
+nodeInfo: site.yaml
+siteGlobal: ../site-global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: ccrc/1.12/values.yaml.jinja2
+  target: values.yaml
+- template: common/instantiate.json.jinja2
+  target: instantiate.json
+- template: common/snmp-config.json.jinja2
+  target: snmp-config.json
+- template: common/user-config.xml.jinja2
+  target: user-config.xml
+- template: ccrc/1.12/nrf-config.xml.jinja2
+  target: nrf-config.xml
+- template: ccrc/1.12/nrfagent-config.xml.jinja2
+  target: nrfagent-config.xml
+- template: ccrc/1.12/nssf-config.xml.jinja2
+  target: nssf-config.xml
+- template: ccrc/1.12/ddc-config.xml.jinja2
+  target: ddc-config.xml
+- template: ccrc/1.12/nssf-provisioning/amf-set-profile.json.jinja2
+  target: nssf-provisioning/amf-set-profile.json
+- template: ccrc/1.12/nssf-provisioning/nrf-instance-profile.json.jinja2
+  target: nssf-provisioning/nrf-instance-profile.json
+- template: ccrc/1.12/nssf-provisioning/tai-group-profile.json.jinja2
+  target: nssf-provisioning/tai-group-profile.json
+- template: ccrc/1.12/nssf-provisioning/slice-instance-profile.json.jinja2
+  target: nssf-provisioning/slice-instance-profile.json
+- template: ccrc/1.12/outbound-policy/auto-sni-amf.yaml.jinja2
+  target: outbound-policy/auto-sni-amf.yaml
+- template: ccrc/1.12/outbound-policy/auto-sni-smf.yaml.jinja2
+  target: outbound-policy/auto-sni-smf.yaml
+- template: ccrc/1.12/outbound-policy/destination-rules.yaml.jinja2
+  target: outbound-policy/destination-rules.yaml
+- template: ccrc/1.12/outbound-policy/service-entries.yaml.jinja2
+  target: outbound-policy/service-entries.yaml
+- template: ccrc/1.12/outbound-policy/tcp-options-for-tls-amf.yaml.jinja2
+  target: outbound-policy/tcp-options-for-tls-amf.yaml
+- template: ccrc/1.12/outbound-policy/tcp-options-for-tls-smf.yaml.jinja2
+  target: outbound-policy/tcp-options-for-tls-smf.yaml
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml

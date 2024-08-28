@@ -1,0 +1,106 @@
+nodeName: ccpc
+nodeType: CCPC
+
+
+
+vnflcm:
+  clusterName: n182-eccd2
+  namespace: ccpc
+
+users:
+  day1:
+    - username: ccpc-admin
+      password: Changeme1st!
+      groups:
+        - pcf-admin
+        - sragent-admin
+        - system-admin
+        - nrfagent-admin
+        - pcf-prov-admin
+    - username: ccpc-sec
+      password: Changeme1st!
+      groups:
+        - pcf-security-admin
+        - system-security-admin
+        - nrfagent-security-admin
+
+license:
+  customerId: "946060"
+  swltId: STA-CCPC-19
+
+cnom:
+  fqdn: cnom.ccpc1.n182.vpod2.seli.gic.ericsson.se
+
+snmp:
+  agentEngineId: 800000c104636370633163347331
+  sourceIdentifier: 10.221.125.11
+
+ddc:
+  remotePath: /mnt/ddc/node182-cluster2-ccpc1
+
+vtap:
+  remotePath: vtap/node182-cluster2-ccpc1
+
+certs:
+  iccr-external-tls-certificate:
+    p12: ../certificates/ccpc1/ccpc1-iccr-server.p12
+  eric-ccpc-sbi-server-certificate:
+    p12: ../certificates/ccpc1/ccpc1-sbi-server.p12
+  eric-ccpc-sbi-client-certificate:
+    p12: ../certificates/ccpc1/ccpc1-sbi-client.p12
+
+ccpc:
+  provFqdn: prov-ccpc1-n182-vpod2.seli.gic.ericsson.se
+  pcf:
+    instanceId: 98aae42e-da25-4329-acf0-504346a1c4d2
+    host: ccpc1-5g-traffic.site1-cluster2
+    port: 443
+  pcrf:
+    diameter:
+      host: ccpc1-4g-traffic.site1-cluster2
+
+replicaCount:
+  eric-stm-diameter: 2
+  eric-pcf-dms-server: 4
+
+hpaReplica:
+  eric-pcf-session-management-policy-control:
+    min: 2
+    max: 5
+  eric-pcrf-ipcan-session-management:
+    min: 2
+    max: 4
+  eric-ccpc-data-access:
+    min: 5
+    max: 15
+  eric-pcf-egress-proxy:
+    min: 2
+    max: 5
+  eric-pcf-end-user-notifier:
+    min: 2
+    max: 4
+
+  # default
+  eric-ccpc-provisioning:
+    min: 2
+    max: 110
+  eric-pcf-egress-proxy-bsf:
+    min: 2
+    max: 40
+  eric-pcf-egress-proxy-ccpc:
+    min: 2
+    max: 30
+  eric-pcf-charging:
+    min: 2
+    max: 70
+  eric-pcf-rx-policy-control:
+    min: 2
+    max: 60
+  eric-pcf-egress-proxy-chf:
+    min: 2
+    max: 40
+  eric-pcf-ue-policy-control:
+    min: 2
+    max: 60
+pvcSize:
+  eric-pcf-dms-server: 38

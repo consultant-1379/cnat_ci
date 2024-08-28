@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+</hello>]]>]]>
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rpc message-id="1" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <edit-config>
+    <target><running/></target>
+    <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <system xmlns="urn:ietf:params:xml:ns:yang:ietf-system">
+        <authentication>
+          <user>
+            <name>ccesoam</name>
+            <password>Changeme@1st</password>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">nef-admin</groups>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">apigm-admin</groups>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">sragent-admin</groups>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">nrfagent-admin</groups>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">system-admin</groups>
+          </user>
+          <user>
+            <name>ccessec</name>
+            <password>Changeme@1st</password>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">nef-security-admin</groups>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">apigm-security-admin</groups>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">sragent-security-admin</groups>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">nrfagent-security-admin</groups>
+            <groups xmlns="urn:rdns:com:ericsson:oammodel:ericsson-system-ext">system-security-admin</groups>
+          </user>
+       </authentication>
+      </system>
+    </config>
+  </edit-config>
+</rpc>
+<close-session/>

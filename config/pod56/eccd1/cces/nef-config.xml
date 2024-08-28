@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<rpc message-id="1" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+<edit-config>
+    <target>
+        <running/>
+    </target>
+    <config>
+        <nef xmlns="urn:rdns:com:ericsson:oammodel:ericsson-nef">
+            <nf-profile>
+                <!-- mandatory instance-id: Unique identity of the NF Instance. -->
+                <instance-id>ddd9b5b3-fa57-4cb1-ace7-56eccd10cea6</instance-id>
+                <!-- requested-status: Administrative status requested to be set in registration process at NRF. When
+                    set to "registered" or "suspended", that shall be the value of the NFStatus parameter in the
+                    registration/update request towards NRF. When set to "deregistered", the Network Function's
+                    registration profile data shall be deleted from NRF. -->
+                <requested-status>registered</requested-status>
+                <!-- At least one of the NF profile addresses(ipv4-address or ipv6-address or fqdn) shall be present. -->
+                <!-- fqdn: FQDN of the Network Function. -->
+                <fqdn>nef1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                <priority>1</priority>
+                <locality>LN1</locality>
+                <!-- ipv4-address: IPv4 addresses of the Network Function. -->
+                <!-- <ipv4-address>{{NEF-IPV4-ADDRESS}}</ipv4-address> -->
+                <!-- ipv6-address: IPv6 addresses of the Network Function. -->
+                <!-- <ipv6-address>{{NEF-IPV6-ADDRESS}}</ipv6-address> -->
+                <!-- requested-heartbeat-timer: Time in seconds expected between 2 consecutive heart-beat messages from an NF Instance to the NRF, to be included in the registration request. -->
+                <requested-heartbeat-timer>60</requested-heartbeat-timer>
+                <!-- nf-set-id: Set identifiers of the Network Function. -->
+                <!-- <nf-set-id>{{NEF-NF-SET-ID}}</nf-set-id> -->
+                <!-- <service> -->
+                    <!--id: Unique ID of the service instance within the NF Instance..-->
+                    <!-- <instance-id>{{NEF-PFD-SERVICE-ID}}</instance-id> -->
+                    <!--name: Name of the service instance.-->
+                    <!-- <name>nnef-pfdmanagement</name> -->
+                    <!-- Administrative status requested to be set in registration process at NRF. When set to "registered" or "suspended", that shall be the value of the NFServiceStatus parameter in the registration/update request towards NRF.-->
+                    <!-- <requested-status>{{NEF-PFD-REQUESTED-STATUS}}</requested-status> -->
+                    <!--scheme: Protocol schema (e.g. "http", "https").-->
+                    <!-- <scheme>{{NEF-PFD-SERVICE-SCHEME}}</scheme> -->
+                    <!-- fqdn: FQDN of the NF Service Instance. -->
+                    <!-- <fqdn>{{NEF-FQDN}}</fqdn> -->
+                    <!--allowed-nf-type: Type of the NFs allowed to access the service instance. The absence of this attribute indicates that any NF type is allowed to access the service instance -->
+                    <!-- <allowed-nf-type>{{NEF-ALLOWED-NF-TYPE}}</allowed-nf-type> -->
+                    <!-- <ip-endpoint> -->
+                        <!--id: Unique ID that represents the pfd service.-->
+                        <!-- <id>{{NEF-PFD-SERVICE-IP-ENDPOINT-ID}}</id> -->
+                        <!--You have a CHOICE of the ipv4-address and ipv6-address at this level. Please remove the other one when choose one ip address.-->
+                        <!--ipv4-address: IPv4 address of NEF service which is listening for incoming service requests.-->
+                        <!-- <ipv4-address>{{NEF-PFD-SERVICE-IPV4-ADDRESS}}</ipv4-address> -->
+                        <!--ipv6-address: IPv6 address of NEF service which is listening for incoming service requests.-->
+                        <!-- <ipv6-address>{{NEF-PFD-SERVICE-IPV6-ADDRESS}}</ipv6-address> -->
+                        <!--transport: Transport protocol. -->
+                        <!-- <transport>tcp</transport> -->
+                        <!--port: Port number that the NEF service is listening on.-->
+                        <!-- <port>{{NEF-PFD-SERVICE-PORT}}</port> -->
+                    <!-- </ip-endpoint> -->
+                    <!--priority: Priority to be used for NEF Service selection.-->
+                    <!-- <priority>{{NEF-PFD-PRIORITY}}</priority> -->
+                    <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other services of the same type. It is reserved for future release.-->
+                    <!-- <capacity>0</capacity> -->
+                <!-- </service> -->
+                <!-- <service> -->
+                    <!--id: Unique ID of the service instance within the NF Instance..-->
+                    <!-- <instance-id>{{SBI-NOTIFICATION-RECEIVER-SERVICE-ID}}</instance-id> -->
+                    <!--name: Name of the service instance.-->
+                    <!-- <name>cces-sbi-notification-receiver</name> -->
+                    <!-- Administrative status requested to be set in registration process at NRF. When set to "registered" or "suspended", that shall be the value of the NFServiceStatus parameter in the registration/update request towards NRF.-->
+                    <!-- <requested-status>{{SBI-NOTIFICATION-RECEIVER-REQUESTED-STATUS}}</requested-status> -->
+                    <!--scheme: Protocol schema (e.g. "http", "https").-->
+                    <!-- <scheme>{{SBI-NOTIFICATION-RECEIVER-SERVICE-SCHEME}}</scheme> -->
+                    <!-- fqdn: FQDN of the NF Service Instance. -->
+                    <!-- <fqdn>{{SBI-NOTIFICATION-RECEIVER-FQDN}}</fqdn> -->
+                    <!--allowed-nf-type: Type of the NFs allowed to access the service instance. The absence of this attribute indicates that any NF type is allowed to access the service instance -->
+                    <!-- <allowed-nf-type>{{SBI-NOTIFICATION-RECEIVER-ALLOWED-NF-TYPE}}</allowed-nf-type> -->
+                    <!--priority: Priority to be used for NEF Service selection.-->
+                    <!-- <priority>0</priority> -->
+                    <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other services of the same type. It is reserved for future release.-->
+                    <!-- <capacity>0</capacity> -->
+                <!-- </service> -->
+            </nf-profile>
+
+            <!-- <sbi-oauth2> -->
+                <!-- <consumer> -->
+                    <!-- Indicate the mode of authorization enforcement for NEF using OAuth2.0 to consume the services of southbound NF. -->
+                    <!-- <general-authorization-enforcement>{{NEF-SBI-OAUTH2-GENERAL-AUTHORIZATION-ENFORCEMENT}}</general-authorization-enforcement> -->
+                    <!-- Indicate NEF as service consumer to request OAuth2.0 access token for different level. -->
+                    <!-- <access-token-request-level>{{NEF-SBI-OAUTH2-ACCESS-TOKEN-REQUEST-LEVEL}}</access-token-request-level> -->
+                    <!-- It is used as expire time for the OAuth2.0 access token got from Nnrf_AccessToken service response when expires_in attribute is not presented in this response. -->
+                    <!-- <token-default-expire-time>{{NEF-SBI-OAUTH2-TOKEN-DEFAULT-EXPIRE-TIME}}</token-default-expire-time> -->
+                <!-- </consumer> -->
+            <!-- </sbi-oauth2> -->
+
+            <!-- nnef-trafficinfluence: The configuration of NEF Traffic Influence. -->
+            <!-- <nnef-trafficinfluence> -->
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                    location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501. -->
+                <!-- <service-api-root>{{NEF-TRAFFICINFLUENCE-SERVICE-API-ROOT}}</service-api-root> -->
+                <!-- mandatory notification-uri-root: Notification URI root, used by the business logic to build the
+                    notify callback URI in the request to 5GC NF. -->
+                <!-- <notification-uri-root>{{NEF-TRAFFICINFLUENCE-NOTIFICATION-URI-ROOT}}</notification-uri-root> -->
+                <!-- <communication-models> -->
+                    <!-- <sbi-communication-model> -->
+                        <!-- interface-name: Specifies the interface name of a communication model. Type is enum: npcf-policyauthorization, nbsf-management, nudm-sdm, nudr-dr -->
+                        <!-- <interface-name>{{NEF-TRAFFICINFLUENCE-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-INTERFACE-NAME}}</interface-name> -->
+                        <!-- model: Specifies the model. Type is enum: A, B ,C D -->
+                        <!-- <model>{{NEF-TRAFFICINFLUENCE-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-MODEL}}</model> -->
+                    <!-- </sbi-communication-model> -->
+                <!-- </communication-models> -->
+            <!-- </nnef-trafficinfluence> -->
+
+            <!-- nnef-bdtpnegotiation: The configuration of NEF Background Data Transfer. -->
+            <!-- <nnef-bdtpnegotiation> -->
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                    location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501. -->
+                <!-- <service-api-root>{{NEF-BDTPNEGOTIATION-SERVICE-API-ROOT}}</service-api-root> -->
+                <!-- <communication-models> -->
+                    <!-- <sbi-communication-model> -->
+                        <!-- interface-name: Specifies the interface name of a communication model. Type is enum: npcf-policyauthorizatio -->
+                        <!-- <interface-name>{{NEF-BDTPNEGOTIATION-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-INTERFACE-NAME}}</interface-name> -->
+                        <!-- model: Specifies the model. Type is enum: A, B ,C D -->
+                        <!-- <model>{{NEF-BDTPNEGOTIATION-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-MODEL}}</model> -->
+                    <!-- </sbi-communication-model> -->
+                <!-- </communication-models> -->
+            <!-- </nnef-bdtpnegotiation> -->
+
+            <!-- nnef-chargeableparty: The configuration of NEF Traffic Influence. -->
+            <!-- <nnef-chargeableparty> -->
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                    location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501. -->
+                <!-- <service-api-root>{{NEF-CHARGEABLEPARTY-SERVICE-API-ROOT}}</service-api-root> -->
+                <!-- mandatory notification-uri-root: Notification URI root, used by the business logic to build the
+                    notify callback URI in the request to 5GC NF. -->
+                <!-- <notification-uri-root>{{NEF-CHARGEABLEPARTY-NOTIFICATION-URI-ROOT}}</notification-uri-root> -->
+                <!-- <communication-models> -->
+                    <!-- <sbi-communication-model> -->
+                        <!-- interface-name: Specifies the interface name of a communication model. Type is enum: npcf-policyauthorization, nbsf-management -->
+                        <!-- <interface-name>{{NEF-CHARGEABLEPARTY-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-INTERFACE-NAME}}</interface-name> -->
+                        <!-- model: Specifies the model. Type is enum: A, B ,C D -->
+                        <!-- <model>{{NEF-CHARGEABLEPARTY-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-MODEL}}</model> -->
+                    <!-- </sbi-communication-model> -->
+                <!-- </communication-models> -->
+            <!-- </nnef-chargeableparty> -->
+
+            <!-- nnef-eventexposure: The configuration of NEF Event Exposure. -->
+            <!-- <nnef-eventexposure> -->
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                    location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501.
+                    The value of service-api-root should match with the FQDN (or IP) of NBI_Truest_VIP/NBI_Non_Truest_VIP -->
+                <!-- <service-api-root>{{NEF-EVENTEXPOSURE-SERVICE-API-ROOT}}</service-api-root> -->
+                <!-- mandatory notification-uri-root: Notification URI root, used by the business logic to build the
+                    notify callback URI in the request to 5GC NF. -->
+                <!-- <notification-uri-root>{{NEF-EVENTEXPOSURE-NOTIFICATION-URI-ROOT}}</notification-uri-root> -->
+                <!-- s6t: SCEF Event Exposure Over S6t interface. -->
+                <!-- <s6t> -->
+                    <!-- mandatory origin-host: The Origin-Host AVP, it identifies the endpoint that originated the Diameter message.-->
+                    <!-- <origin-host>{{NEF-EVENTEXPOSURE-ORIGIN-HOST}}</origin-host> -->
+                    <!-- mandatory origin-realm: The Origin-Realm AVP, it contains the realm of the originator of any Diameter message.-->
+                    <!-- <origin-realm>{{NEF-EVENTEXPOSURE-ORIGIN-REALM}}</origin-realm> -->
+                    <!-- destination-host: The Destination-Host AVP, it identifies the destination endpoint of the Diameter message.-->
+                    <!-- <destination-host>{{NEF-EVENTEXPOSURE-DESTINATION-HOST}}</destination-host> -->
+                    <!-- destination-realm: The Destination-Realm AVP, it contains the realm to which the request message is to be routed.-->
+                    <!-- <destination-realm>{{NEF-EVENTEXPOSURE-DESTINATION-REALM}}</destination-realm> -->
+                <!-- </s6t> -->
+                <!-- redirect-hosts: Diameter Redirect Destination configuration, it takes effect in the Geo-red scenario and indicate the destinations that can be redirected by the current CCES/Qos site when redirection happens. -->
+                <!-- <redirect-hosts> -->
+                    <!-- <redirect-host> -->
+                        <!-- site-id:The sites information for Diameter message redirection. -->
+                        <!-- <site-id>{{NEF-EVENTEXPOSURE-REDIRECT-HOSTS-SITE-ID}}</site-id> -->
+                        <!-- diameter-uri:The Diameter URI that can be contacted by other sites. -->
+                        <!-- <diameter-uri>{{NEF-EVENTEXPOSURE-REDIRECT-HOSTS-DIAMETER-URI}}</diameter-uri> -->
+                        <!-- <diameter-uri>{{NEF-EVENTEXPOSURE-REDIRECT-HOSTS-DIAMETER-URI}}</diameter-uri> -->
+                    <!-- </redirect-host> -->
+                <!-- </redirect-hosts> -->
+                <!-- dmc: event exposure Dual Mode Core. -->
+                <!-- <dmc> -->
+                    <!-- Used to indicate whether event exposure worked in Dual-Mode Core. -->
+                    <!-- <enabled>{{NEF-EVENTEXPOSURE-DMC-ENABLED}}</enabled> -->
+                <!-- </dmc> -->
+                <!-- Indicate that the network when the dmc.enabled is false -->
+                <!-- <network-type>{{NEF-EVENTEXPOSURE-NETWORK-TYPE}}</network-type> -->
+                <!-- <communication-models> -->
+                    <!-- <sbi-communication-model> -->
+                        <!-- interface-name: Specifies the interface name of a communication model. Type is enum: nudm-ee -->
+                        <!-- <interface-name>{{NEF-EVENTEXPOSURE-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-INTERFACE-NAME}}</interface-name> -->
+                        <!-- model: Specifies the model. Type is enum: A, B ,C D -->
+                        <!-- <model>{{NEF-EVENTEXPOSURE-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-MODEL}}</model> -->
+                    <!-- </sbi-communication-model> -->
+                    <!-- <udm-discovery-disabled-headers> -->
+                        <!-- udm-discovery-disabled-header: the disabled udm discovery header in blacklist-->
+                        <!-- <udm-discovery-disabled-header>{{NEF-EVENTEXPOSURE-UDM-DISCOVERY-DISABLED-HEADER}}</udm-discovery-disabled-header> -->
+                    <!-- </udm-discovery-disabled-headers> -->
+                <!-- </communication-models> -->
+            <!-- </nnef-eventexposure> -->
+
+            <!-- nnef-nidd: The configuration of SCEF NIDD. -->
+            <!-- <nnef-nidd> -->
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                  location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501. -->
+                <!-- <service-api-root>{{NEF-NIDD-SERVICE-API-ROOT}}</service-api-root> -->
+                <!-- s6t: SCEF NIDD Over S6t interface. -->
+                <!-- <s6t> -->
+                    <!-- mandatory origin-host: The Origin-Host AVP, it identifies the endpoint that originated the Diameter message. -->
+                    <!-- <origin-host>{{SCEF-NIDD-S6t-ORIGIN-HOST}}</origin-host> -->
+                    <!-- mandatory origin-realm: The Origin-Realm AVP, it contains the realm of the originator of any Diameter message.-->
+                    <!-- <origin-realm>{{SCEF-NIDD-S6t-ORIGIN-REALM}}</origin-realm> -->
+                    <!-- destination-host: The Destination-Host AVP, it identifies the destination endpoint of the Diameter message.-->
+                    <!-- <destination-host>{{SCEF-NIDD-S6t-DESTINATION-HOST}}</destination-host> -->
+                    <!-- mandatory destination-realm: The Destination-Realm AVP, it contains the realm to which the request message is to be routed.-->
+                    <!-- <destination-realm>{{SCEF-NIDD-S6t-DESTINATION-REALM}}</destination-realm> -->
+                <!-- </s6t> -->
+                <!-- t6a: SCEF NIDD Over T6a interface. -->
+                <!-- <t6a> -->
+                    <!-- mandatory origin-host: The Origin-Host AVP, it identifies the endpoint that originated the Diameter message. -->
+                    <!-- <origin-host>{{SCEF-NIDD-T6a-ORIGIN-HOST}}</origin-host> -->
+                    <!-- mandatory origin-realm: The Origin-Realm AVP, it contains the realm of the originator of any Diameter message.-->
+                    <!-- <origin-realm>{{SCEF-NIDD-T6a-ORIGIN-REALM}}</origin-realm> -->
+                <!-- </t6a> -->
+            <!-- </nnef-nidd> -->
+
+            <!-- nnef-devicetriggering: The configuration of SCEF Device Triggering. -->
+            <!-- <nnef-devicetriggering> -->
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                  location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501. -->
+                <!-- <service-api-root>{{NEF-DEVICETRIGGERING-SERVICE-API-ROOT}}</service-api-root> -->
+                <!--Enable multi-SMSC function-->
+                <!-- <multi-smsc-enable>{{NEF-DEVICETRIGGERING-MULTI-SMSC-ENABLE}}</multi-smsc-enable> -->
+                <!-- s6m: SCEF Device Triggering Over S6m interface. -->
+                <!-- <s6m> -->
+                    <!-- mandatory origin-host: The Origin-Host AVP, it identifies the endpoint that originated the Diameter message. -->
+                    <!-- <origin-host>{{SCEF-DEVICETRIGGERING-S6m-ORIGIN-HOST}}</origin-host> -->
+                    <!-- mandatory origin-realm: The Origin-Realm AVP, it contains the realm of the originator of any Diameter message.-->
+                    <!-- <origin-realm>{{SCEF-DEVICETRIGGERING-S6m-ORIGIN-REALM}}</origin-realm> -->
+                    <!-- destination-host: The Destination-Host AVP, it identifies the destination endpoint of the Diameter message.-->
+                    <!-- <destination-host>{{SCEF-DEVICETRIGGERING-S6m-DESTINATION-HOST}}</destination-host> -->
+                    <!-- destination-realm: The Destination-Realm AVP, it contains the realm to which the request message is to be routed.-->
+                    <!-- <destination-realm>{{SCEF-DEVICETRIGGERING-S6m-DESTINATION-REALM}}</destination-realm> -->
+                <!-- </s6m> -->
+                <!-- t4: SCEF Device Triggering Over t4 interface. -->
+                <!-- <t4> -->
+                    <!-- mandatory origin-host: The Origin-Host AVP, it identifies the endpoint that originated the Diameter message. -->
+                    <!-- <origin-host>{{SCEF-DEVICETRIGGERING-T4-ORIGIN-HOST}}</origin-host> -->
+                    <!-- mandatory origin-realm: The Origin-Realm AVP, it contains the realm of the originator of any Diameter message.-->
+                    <!-- <origin-realm>{{SCEF-DEVICETRIGGERING-T4-ORIGIN-REALM}}</origin-realm> -->
+                    <!-- destination-host: The Destination-Host AVP, it identifies the destination endpoint of the Diameter message.-->
+                    <!-- <destination-host>{{SCEF-DEVICETRIGGERING-T4-DESTINATION-HOST}}</destination-host> -->
+                    <!-- destination-realm: The Destination-Realm AVP, it contains the realm to which the request message is to be routed.-->
+                    <!-- <destination-realm>{{SCEF-DEVICETRIGGERING-T4-DESTINATION-REALM}}</destination-realm> -->
+                <!-- </t4> -->
+                <!-- dtr: Send DTR to SMS-SC -->
+                <!-- <dtr> -->
+                    <!-- msisdn: Send DTR with MSISDN to SMS-SC-->
+                    <!-- <msisdn> -->
+                        <!-- msisdn: Enable Send DTR with MSISDN to SMS-SC-->
+                        <!-- <enable>{{SCEF-DEVICETRIGGERING-DTR-MSISDN-ENABLE}}</enable> -->
+                    <!-- </msisdn> -->
+                    <!-- externalid: Send DTR with externalid to SMS-SC-->
+                    <!-- <externalid> -->
+                        <!-- externalid: Enable Send DTR with externalid to SMS-SC-->
+                        <!-- <enable>{{SCEF-DEVICETRIGGERING-DTR-EXTERNALID-ENABLE}}</enable> -->
+                    <!-- </externalid> -->
+                <!-- </dtr> -->
+                <!-- dra: Delivery Report Answer(DRA) from Device Triggering to SMS-SC -->
+                <!-- <dra> -->
+                    <!-- trigger-ref-unknown: Delivery Report Answer(DRA) from Device Triggering to SMS-SC when Device Triggering transaction does not exist -->
+                    <!-- <trigger-ref-unknown> -->
+                        <!-- result-code: Set the expected result code in Delivery Report Answer(DRA) from Device Triggering to SMS-SC when Device Triggering transaction does not exist -->
+                        <!-- <result-code>{{SCEF-DEVICETRIGGERING-DRA-TRIGGER-REF-UNKNOW-RESULT-CODE}}</result-code> -->
+                    <!-- </trigger-ref-unknown> -->
+                <!-- </dra> -->
+                <!-- smsc: setting the config about connect with smsc -->
+                <!-- <smsc> -->
+                    <!-- routing: setting the config for routing behave when connect to smsc -->
+                    <!-- <routing> -->
+                        <!-- retry-on: identify which error codes should retry routing. It constructs as a list by comma as delimiter -->
+                        <!-- <retry-on> -->
+                            <!-- result-codes: identify which error codes should retry routing. It constructs as a list by comma as delimiter -->
+                            <!-- <result-codes>{{SCEF-DEVICETRIGGERING-SMSC-ROUTING-RETRY-ON-RESULT-CODES}}</result-codes> -->
+                        <!-- </retry-on> -->
+                    <!-- </routing> -->
+                <!-- </smsc> -->
+            <!-- </nnef-devicetriggering> -->
+
+            <!-- nnef-afsessionwithqos: The configuration of NEF AF Session With QoS. -->
+            <nnef-afsessionwithqos>
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                    location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501. -->
+                <service-api-root>https://nef1-nbi-trust.pod56.5gc.mnc081.mcc240.3gppnetwork.org/hub</service-api-root>
+                <!-- qos-mode: Specifies AF session with QoS service interface over Rx or SBI. -->
+                <qos-mode>rx</qos-mode>
+                <!-- sbi: QoS Over SBI interface. -->
+                <sbi>
+                    <!-- mandatory notification-uri-root: Notification URI root, used by the business logic to build the
+                        notify callback URI in the request to 5GC NF. -->
+                    <notification-uri-root>https://nef1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</notification-uri-root>
+                </sbi>
+                <!-- rx: QoS Over RX interface. -->
+                <rx>
+                    <!-- mandatory origin-host: The Origin-Host AVP, it identifies the endpoint that originated the Diameter message.-->
+                    <origin-host>nef1.epc.mnc081.mcc240.3gppnetwork.org</origin-host>
+                    <!-- mandatory origin-realm: The Origin-Realm AVP, it contains the realm of the originator of any Diameter message.-->
+                    <origin-realm>epc.mnc081.mcc240.3gppnetwork.org</origin-realm>
+                    <!-- destination-host: The Destination-Host AVP, it identifies the destination endpoint of the Diameter message.-->
+                    <!-- <destination-host>{{NEF-AFSESSIONWITHQOS-RX-DESTINATION-HOST}}</destination-host> -->
+                    <!-- destination-realm: The Destination-Realm AVP, it contains the realm to which the request message is to be routed.-->
+                    <!-- <destination-realm>{{NEF-AFSESSIONWITHQOS-RX-DESTINATION-REALM}}</destination-realm> -->
+                    <!-- routing-policy: Indicate where to get QoS service Destination-Realm AVP and Destination-Host AVP in the AF session.
+                        local-configuration or pcf-from-bsf.-->
+                    <routing-policy>pcf-from-bsf</routing-policy>
+                    <!-- network-type: Indicate the Rx network type. The value of the parameter can be 5gc or epc.-->
+                    <network-type>5gc</network-type>
+                    <!-- redirect-hosts: Diameter Redirect Destination configuration, it takes effect in the Geo-red scenario and indicate the destinations that can be redirected by the current CCES/Qos site when redirection happens. -->
+                    <!-- <redirect-hosts> -->
+                        <!-- <redirect-host> -->
+                            <!-- site-id:The sites information for Diameter message redirection. -->
+                            <!-- <site-id>{{NEF-AFSESSIONWITHQOS-RX-REDIRECT-HOSTS-SITE-ID}}</site-id> -->
+                            <!-- diameter-uri:The Diameter URI that can be contacted by other sites. -->
+                            <!-- <diameter-uri>{{NEF-AFSESSIONWITHQOS-RX-REDIRECT-HOSTS-DIAMETER-URI}}</diameter-uri> -->
+                            <!-- <diameter-uri>{{NEF-AFSESSIONWITHQOS-RX-REDIRECT-HOSTS-DIAMETER-URI}}</diameter-uri> -->
+                        <!-- </redirect-host> -->
+                    <!-- </redirect-hosts> -->
+                </rx>
+                <!-- dmc: QoS Dual Mode Core. -->
+                <dmc>
+                    <!-- enabled: Specifies whether QoS worked in Dual Mode Core. -->
+                    <enabled>false</enabled>
+                    <!-- pcf-interface-preference: Specifies the prefer interface for QoS to communicate with 5GC PCF if both interfaces exists in PCF binding. The value of the parameter can be npcf or rx. -->
+                    <pcf-interface-preference>npcf</pcf-interface-preference>
+                </dmc>
+
+                <!-- <communication-models> -->
+                    <!-- <sbi-communication-model> -->
+                        <!-- interface-name: Specifies the interface name of a communication model. Type is enum: npcf-policyauthorization, nbsf-management -->
+                        <!-- <interface-name>{{NEF-AFSESSIONWITHQOS-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-INTERFACE-NAME}}</interface-name> -->
+                        <!-- model: Specifies the model. Type is enum: A, B ,C D -->
+                        <!-- <model>{{NEF-AFSESSIONWITHQOS-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-MODEL}}</model> -->
+                    <!-- </sbi-communication-model> -->
+                <!-- </communication-models> -->
+                <!-- bsf-discovery-disabled-headers: An array to specify blacklist for bsf discovery headers. Selected headers shall be excluded from SCP requests -->
+                <!-- <bsf-discovery-disabled-headers> -->
+                    <!-- bsf-discovery-disabled-header: the disabled bsf discovery header in blacklist-->
+                    <!-- <bsf-discovery-disabled-header>{{NEF-AFSESSIONWITHQOS-BSF-DISCOVERY-DISABLED-HEADER}}</bsf-discovery-disabled-header> -->
+                <!-- </bsf-discovery-disabled-headers> -->
+                <!-- pcf-discovery-disabled-headers: An array to specify blacklist for pcf discovery headers. Selected headers shall be excluded from SCP requests -->
+                <!-- <pcf-discovery-disabled-headers> -->
+                    <!-- pcf-discovery-disabled-header: the disabled pcf discovery header in blacklist-->
+                    <!-- <pcf-discovery-disabled-header>{{NEF-AFSESSIONWITHQOS-PCF-DISCOVERY-DISABLED-HEADER}}</pcf-discovery-disabled-header> -->
+                <!-- </pcf-discovery-disabled-headers> -->
+            </nnef-afsessionwithqos>
+
+            <!-- nnef-pfdmanagement: The configuration of NEF Pfdmanagement. -->
+            <!-- <nnef-pfdmanagement> -->
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                    location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501. -->
+                <!-- <service-api-root>{{NEF-PFDMANAGEMENT-SERVICE-API-ROOT}}</service-api-root> -->
+                <!-- optional sbi-service-api-root: Service API root of South Bound Interface, used by the business logic to build the URI in
+                    location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501.-->
+                <!-- <sbi-service-api-root>{{NEF-PFDMANAGEMENT-SBI-SERVICE-API-ROOT}}</sbi-service-api-root> -->
+                <!-- optional default-caching-time: Support setting up session with application level caching-time provisioning. -->
+                <!-- <default-caching-time>{{NEF-PFDMANAGEMENT-DEFAULT-CACHING-TIME}}</default-caching-time> -->
+                <!-- optional data-set: Query parameter of NRF discovery, indicating the data set to be supported by the NF to be discovered.-->
+                <!-- <data-set>{{NEF-PFDMANAGEMENT-DATA-SET}}</data-set> -->
+                <!-- <communication-models> -->
+                    <!-- <sbi-communication-model> -->
+                        <!-- interface-name: Specifies the interface name of a communication model. Type is enum: nudr-dr -->
+                        <!-- <interface-name>{{NEF-PFDMANAGEMENT-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-INTERFACE-NAME}}</interface-name> -->
+                        <!-- model: Specifies the model. Type is enum: A, B ,C D -->
+                        <!-- <model>{{NEF-PFDMANAGEMENT-COMMUNICATION-MODELS-SBI-COMMUNICATION-MODEL-MODEL}}</model> -->
+                    <!-- </sbi-communication-model> -->
+                <!-- </communication-models> -->
+            <!-- </nnef-pfdmanagement> -->
+
+            <!-- nnef-analyticsexposure: The configuration of NEF Analytics Exposure. -->
+            <!-- <nnef-analyticsexposure> -->
+                <!-- mandatory service-api-root: Service API root, used by the business logic to build the URI in
+                    location header in the 201 response. Details please see 4.4.1 Resource URI structure in 3GPP TS 29.501. -->
+                <!-- <service-api-root>{{NEF-ANALYTICSEXPOSURE-SERVICE-API-ROOT}}</service-api-root> -->
+                <!-- mandatory notification-uri-root: Notification URI root, used by the business logic to build the
+                    notify callback URI in the request to 5GC NF. -->
+                <!-- <notification-uri-root>{{NEF-ANALYTICSEXPOSURE-NOTIFICATION-URI-ROOT}}</notification-uri-root> -->
+                <!-- mandatory udm-api-root: UDM API root, used by the business logic to build the URI for requesting UDM. -->
+                <!-- <udm-api-root>{{UDM-API-ROOT}}</udm-api-root> -->
+                <!-- mandatory notification-uri-root: NWDAF API root, used by the business logic to build the URI for requesting NWDAF.-->
+                <!-- <nwdaf-api-root>{{NWDAF-API-ROOT}}</nwdaf-api-root> -->
+            <!-- </nnef-analyticsexposure> -->
+        </nef>
+    </config>
+</edit-config>
+</rpc>

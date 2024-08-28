@@ -1,0 +1,83 @@
+/*
+ * This Jenkins pipeline is used to build a static web site for cnat documentation.
+ */
+
+import groovy.json.JsonOutput
+
+config = [
+    gitInfo: [
+        cnatRepoUri: 'https://gerritmirror-direct.sero.gic.ericsson.se/a/5gc_config/cnat',
+        credentialId: 'cnat-https-token',
+        targetDir: '/home/cnescnatusr/cnat_for_docs'
+    ]
+]
+
+pipeline {
+    agent {
+        label "CNAT_RH8"
+    }
+
+    environment {
+        DIRECTORY = '/home/cnescnatusr/cnat_for_docs'
+        SITE_TARGET_DIR = '/proj/5GC_solution_CI/dev/solution-ci-portal/frontend/public/cnat/'
+    }
+
+    options {
+        timeout(time: 60, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Get latest CNAT') {
+            steps {
+                script {
+                    if (fileExists(env.DIRECTORY)) {
+                        echo "Removing ${env.DIRECTORY} to download the latest documentation..."
+                        sh "rm -rf ${env.DIRECTORY}"
+                    }
+                    echo "Download latest documentation from CNAT repository to ${env.DIRECTORY}..."
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: 'refs/heads/master']],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: config.gitInfo.targetDir]],
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[credentialsId: config.gitInfo.credentialId, url: config.gitInfo.cnatRepoUri]]
+                    ])
+                }
+            }
+        }
+
+        stage('Build CNAT documentation site') {
+            steps {
+                script {
+                    withEnv(['TEST_VERSION=']) {
+                        sh '''#!/usr/bin/env bash
+# This line is needed because it defines the 'module' command, which is used by this script
+# to load necessary/desired software from AFS.
+source "/app/modules/0/init/bash"
+# source cnat env
+source /lab/pccc_utils/scripts/bashrc.eagles
+# source the python test env
+source /lab/pccc_utils/scripts/cnat_pyvenv/bin/activate
+module list
+
+cd ${DIRECTORY}
+if [ ! -e "site" ]; then
+    echo "Directory site does not exist. Creating symlink..."
+    ln -s ${SITE_TARGET_DIR} site
+    echo "Symlink created."
+else
+    echo "Directory site already exists."
+fi
+
+echo "Update site contents."
+mkdocs build
+
+cd -
+'''
+                    }
+                }
+            }
+        }
+    }
+}

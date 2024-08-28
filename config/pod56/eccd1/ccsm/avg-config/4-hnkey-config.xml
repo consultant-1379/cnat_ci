@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <action xmlns="urn:ietf:params:xml:ns:yang:1">
+    <udm xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udm">
+      <!--
+        Contains configuration parameters for SIDF.
+      -->
+      <sidf>
+        <!--
+          Set the value of an home network private key in in hn-private list.
+          Constraints:
+          - Before creating an home network private Key entry, the CustomerKey value must be defined.
+          - No more than 255 entries can be created (1-255);
+        -->
+        <set-hn-key>
+          <!-- Index of the home network public and private key -->
+          <hn-key-ind>2</hn-key-ind>
+          <!--
+            Protection Scheme Identifier
+              1-> ProfileA
+              2-> ProfileB
+          -->
+          <protection-scheme-id>2</protection-scheme-id>
+          <!--
+            Value of the Home Network Private Key.
+            Hexadecimal string in plain text with 64 characters length.
+            E.g.: "012345678901234567890123456789AF012345678901234567890123456789AF"
+          -->
+          <hn-key-value>C5AD73DB8EFDEE643BF2F653837D2D0EE1E99FE2C4AD77A8C9E515624CC99012</hn-key-value>
+        </set-hn-key>
+      </sidf>
+    </udm>
+  </action>
+  </rpc>
+  <close-session/>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <action xmlns="urn:ietf:params:xml:ns:yang:1">
+    <udm xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udm">
+      <sidf>
+        <set-hn-key>
+          <hn-key-ind>2</hn-key-ind>
+          <protection-scheme-id>1</protection-scheme-id>
+          <hn-key-value>A546E36BF0527C9D3B16154B82465EDD62144C0AC1FC5A18506A2244BA449AC4</hn-key-value>
+        </set-hn-key>
+      </sidf>
+    </udm>
+  </action>
+  </rpc>
+  <close-session/>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <action xmlns="urn:ietf:params:xml:ns:yang:1">
+    <udm xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udm">
+      <sidf>
+        <set-hn-key>
+          <hn-key-ind>3</hn-key-ind>
+          <protection-scheme-id>1</protection-scheme-id>
+          <hn-key-value>C53C22208B61860B06C62E5406A7B330C2B577AA5558981510D128247D38BD1D</hn-key-value>
+        </set-hn-key>
+      </sidf>
+    </udm>
+  </action>
+  </rpc>
+  <close-session/>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <action xmlns="urn:ietf:params:xml:ns:yang:1">
+    <udm xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udm">
+      <sidf>
+        <set-hn-key>
+          <hn-key-ind>3</hn-key-ind>
+          <protection-scheme-id>2</protection-scheme-id>
+          <hn-key-value>F1AB1074477EBCC7F554EA1C5FC368B1616730155E0041AC447D6301975FECDA</hn-key-value>
+        </set-hn-key>
+      </sidf>
+    </udm>
+  </action>
+  </rpc>
+  <close-session/>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <action xmlns="urn:ietf:params:xml:ns:yang:1">
+    <udm xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udm">
+      <sidf>
+        <set-hn-key>
+          <hn-key-ind>1</hn-key-ind>
+          <protection-scheme-id>1</protection-scheme-id>
+          <hn-key-value>0900000000000000000000000000000000000000000000000000000000000000</hn-key-value>
+        </set-hn-key>
+      </sidf>
+    </udm>
+  </action>
+  </rpc>
+  <close-session/>

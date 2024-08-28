@@ -1,0 +1,1372 @@
+tags:
+  eric-cces-ngac: false
+
+eric-log-shipper:
+  enabled: false
+eric-udm-mesh-integration:
+  eric-ingressgw-nef-nbi-non-trust-traffic:
+    service:
+      externalIPv4:
+        annotations:
+          addressPoolName: cces-5g-nbi-non-trust-traffic
+      externalIPv6:
+        annotations:
+          addressPoolName: cces-5g-nbi-non-trust-traffic
+    ports:
+      - port: 443
+        targetPort: 8443
+        name: https
+  eric-ingressgw-nef-nbi-trust-traffic:
+    service:
+      externalIPv4:
+        annotations:
+          addressPoolName: cces-5g-nbi-trust-traffic
+      externalIPv6:
+        annotations:
+          addressPoolName: cces-5g-nbi-trust-traffic
+    ports:
+      - port: 443
+        targetPort: 8443
+        name: https
+  eric-ingressgw-nef-provisioning-traffic:
+    service:
+      externalIPv4:
+        annotations:
+          addressPoolName: cces-5g-prov
+      externalIPv6:
+        annotations:
+          addressPoolName: cces-5g-prov
+    ports:
+      - port: 443
+        targetPort: 8443
+        name: https
+  eric-ingressgw-nef-sbi-traffic:
+    service:
+      externalIPv4:
+        annotations:
+          addressPoolName: cces-5g-sbi-traffic
+      externalIPv6:
+        annotations:
+          addressPoolName: cces-5g-sbi-traffic
+    ports:
+      - port: 443
+        targetPort: 8443
+        name: https
+  eric-ingressgw-nef-oam-traffic:
+    service:
+      externalIPv4:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+      externalIPv6:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+    ports:
+      - port: 2443
+        targetPort: 8443
+        name: https
+  eric-ingressgw-cces-nbi-heartbeat-traffic:
+    #  Northbound interface heartbeat gateway related configurations for CCES liveness detection
+    #  The default value of enabled field is true. Set true only when
+    #      - There's a need to check whether CCES site is available with liveness detection.
+    enabled: true
+    resources:
+      istio-proxy:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+          ephemeral-storage:
+        limits:
+          cpu: 500m
+          memory: 1024Mi
+          ephemeral-storage:
+    externalTrafficPolicy: Cluster
+    service:
+      type: LoadBalancer
+      externalIPv4:
+        annotations:
+          addressPoolName: cces-nbi-heartbeat-traffic
+      externalIPv6:
+        annotations:
+          addressPoolName: cces-nbi-heartbeat-traffic
+    ports:
+      - port: 443
+        targetPort: 8443
+        name: https
+  eric-mesh-controller:
+    pilot:
+      env:
+        PILOT_ENABLE_INBOUND_PASSTHROUGH: false
+
+global:
+  tags:
+    eric-cces-ngac: false
+  externalIPv4:
+    enabled: true
+  externalIPv6:
+    enabled: false
+  internalIPFamily: IPv4
+  security:
+    tls:
+      enabled: true
+  multiTenancy:
+    enabled: true
+  timezone: CET
+  ipStackMode: "'ipv4'"
+  logShipper:
+    deployment:
+      # Indicates which deployment type is chosen for log shipper service:
+      #    daemonset: deplay as daemonset
+      #    sidecar:   deplay as sidecar
+      # default is daemonset
+      type: "daemonset"
+  log:
+    # Indicates which streaming method is chosen by all services to write log records:
+    #   indirect: stdout to infrastructure logging framework
+    #   direct: - direct streaming to the Log Aggregator
+    #   dual: -   stdout to infrastructure logging framework and direct streaming to Log Aggregator
+    #   When global.logShipper.deployment.type is "daemonset", this value must be set to "indirect"
+    #   When global.logShipper.deployment.type is "sidecar", this value must be set to "dual"
+    streamingMethod: "indirect"
+    # Indicates which output are chosen by all services to write log records, it will be deprecated and replaced by global.log.streamingMethod.
+    #   stream:  direct streaming to the Log Aggregator
+    #   stdout:  stdout to infrastructure logging framework
+    #   applicationLevel: direct streaming to the Log Aggregator
+    #   k8sLevel:stdout to infrastructure logging framework
+    #   When global.logShipper.deployment.type is "daemonset", this value must be set to ["stdout","k8sLevel"]
+    #   When global.logShipper.deployment.type is "sidecar", this value must be set to ["stream","stdout","applicationLevel","k8sLevel"]
+    outputs: ["stdout","k8sLevel"]
+  eric-cces-commonsvc:
+    eric-cces-diameter:
+      enabled: true
+    eric-cces-routingrule:
+      enabled: true
+    #    eric-cces-id-provider:
+    #      enabled: true
+  eric-nef:
+    eric-nef-trafficinfluence:
+      enabled: false
+    eric-nef-eventexposure:
+      enabled: false
+    eric-nef-nidd:
+      enabled: false
+    eric-nef-devicetriggering:
+      enabled: false
+    eric-nef-bdtpnegotiation:
+      enabled: false
+    eric-nef-chargeableparty:
+      enabled: false
+    eric-nef-afsessionwithqos:
+      enabled: true
+    eric-nef-pfdmanagement:
+      enabled: false
+    eric-nef-analyticsexposure:
+      enabled: false
+  istio:
+    annotations:
+      # This is used to annotate pods with sidecars, so they are automatically
+      # restarted and reinjected with the correct proxy version on SM upgrades
+      # NOTE! It must be updated *manually* for now on SM uplifts
+      serviceMesh: 4.1.0
+    sidecar:
+      inject: true
+    ingress:
+      gateways:
+        traffic:
+          northbound:
+            trusted:
+              eric-cces-nef-nbi-trust-gateway:
+                enabled: true
+                ports:
+                  - port: 443
+                    name: https
+                    protocol: HTTPS
+                    hosts:
+                      - "./*"
+                    mode: mTLS
+                    settings:
+                      minProtocolVersion: TLSV1_2
+                      maxProtocolVersion: TLSV1_3
+                      cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+            non-trusted:
+              eric-cces-nef-nbi-non-trust-gateway:
+                enabled: true
+                ports:
+                  - port: 443
+                    name: https
+                    protocol: HTTPS
+                    hosts:
+                      - "./*"
+                    mode: mTLS
+                    settings:
+                      minProtocolVersion: TLSV1_2
+                      maxProtocolVersion: TLSV1_3
+                      cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+          southbound:
+            eric-cces-nef-sbi-gateway:
+              enabled: true
+              ports:
+                - port: 443
+                  name: https
+                  protocol: HTTPS
+                  hosts:
+                    - "./*"
+                  mode: mTLS
+                  settings:
+                    minProtocolVersion: TLSV1_2
+                    maxProtocolVersion: TLSV1_3
+                    cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+        provisioning:
+          eric-cces-nef-provisioning-gateway:
+            enabled: true
+            ports:
+              - port: 443
+                name: https
+                protocol: HTTPS
+                hosts:
+                  - "./*"
+                mode: mTLS
+                settings:
+                  minProtocolVersion: TLSV1_2
+                  maxProtocolVersion: TLSV1_3
+                  cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+        oam:
+          eric-cces-nef-oam-gateway:
+            enabled: true
+            ports:
+              - port: 2443
+                name: https
+                protocol: HTTPS
+                hosts:
+                  - "./*"
+                mode: TLS
+        heartbeat:
+          nbi:
+            eric-cces-nbi-heartbeat-gateway:
+              #  Northbound interface heartbeat gateway related configurations for CCES liveness detection
+              #  The default value of enabled field is true. Set true only when
+              #      - There's a need to check whether CCES site is available with liveness detection.
+              enabled: true
+              ports:
+                - port: 443
+                  name: https-nbiheartbeat
+                  protocol: HTTPS
+                  mode: mTLS # Values allowed [ TLS, mTLS ]
+                  settings:
+                    maxProtocolVersion: TLSV1_3
+                    minProtocolVersion: TLSV1_2
+                    cipherSuites: '[ECDHE-ECDSA-AES128-GCM-SHA256,ECDHE-RSA-AES128-GCM-SHA256,ECDHE-ECDSA-AES256-GCM-SHA384,ECDHE-RSA-AES256-GCM-SHA384]'
+                  hosts:
+                    - "./*"
+    egress:
+      enabled: true
+      endpoints:
+        eric-cces-sbi-traffic-tls:
+          host: "*.5gc.mnc081.mcc240.3gppnetwork.org"
+          ports:
+            - port: 443
+              name: https-port-for-mTLS-origination
+              protocol: HTTP2
+              mode: mTLS
+        eric-cces-partner-portal-tls:
+          enabled: false
+          host:
+          ports:
+            - port: 443
+              name: https-port-for-mTLS-origination
+              protocol: HTTP
+              mode: mTLS
+  # Configure the policy for validating JWT.
+  # Currently, two options are supported: "third-party-jwt" and "first-party-jwt".
+  jwtPolicy: "third-party-jwt"
+  # Unique identifier of current site.
+  # The value must be unique among all CCES sites, and it should be the same with one of eric-cces-commonsvc.eric-data-wide-column-database-cd.dataCenters.name
+  localSiteId: datacenter1
+
+  #  GeographicRedundancy related configuration
+  #  The default value of enabled field is false. If it is true, 2 sites are needed at least.
+  #  Sites field is a list of sites, which contains id and zoneId.
+  #      - The id will be mapping to the value in CM Yang model like nef:geographic-redundancy:sites:site[x]:id;
+  #      - The zoneId will be mapping to the value in CM Yang model like nef:geographic-redundancy:sites:site[x]:zone-id
+  #  One of the id values must be the same with that in global.localSiteId.
+  geoRedundancy:
+    enabled: false
+  #  sites:
+  #    - id: datacenter1
+  #      zoneId: 1
+  #    - id: datacenter2
+  #      zoneId: 2
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: "CCES"
+          swltId: "STA-CCES-16"
+          customerId: "946060"
+  service_routing_agent_enabled: false
+
+
+eric-adp-5g-udm:
+  # For asih.applicationId, should follow below constraints:
+  # - The text string shall follow the pattern "(^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$)"
+  # - Contains only lowercase alphanumeric characters, '-' or '.'
+  # - Starts with an alphanumeric character
+  # - Ends with an alphanumeric character
+  # - The total length is around 1...32 
+  eric-si-application-sys-info-handler:
+    log:
+      outputs: ["stdout"]
+#    asih:
+#      applicationId:
+  eric-data-search-engine-curator:
+    actions: |
+      1:
+        action: delete_indices
+        description: Remove debug logs older than 3 days
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: adp-app-debug-logs-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: days
+            unit_count: 3
+      2:
+        action: delete_indices
+        description: Remove non-audit, non-debug logs older than 15 days
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: adp-app-logs-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: days
+            unit_count: 15
+      3:
+        action: delete_indices
+        description: Remove audit logs older than 30 days
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: adp-app-audit-logs-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: days
+            unit_count: 30
+      4:
+        action: delete_indices
+        description: Remove debug indices when accumulated indices with this prefix reaches 4 GB
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: adp-app-debug-logs-
+          - filtertype: space
+            disk_space: 4
+      5:
+        action: delete_indices
+        description: Remove non-audit, non-debug indices when accumulated indices with this prefix reaches 8 GB
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: adp-app-logs-
+          - filtertype: space
+            disk_space: 8
+      6:
+        action: delete_indices
+        description: Remove alarm logs older than 30 days
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: adp-app-asi-logs-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: days
+            unit_count: 30
+      7:
+        action: delete_indices
+        description: Remove security logs older than 30 days
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: adp-app-security-logs-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: days
+            unit_count: 30
+      8:
+        action: delete_indices
+        description: Remove jaeger span indices when accumulated indices with this prefix reaches 12 GB
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: jaeger-span-
+          - filtertype: space
+            disk_space: 12
+      9:
+        action: delete_indices
+        description: Remove jearger span indices older than 8 days
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: jaeger-span-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: days
+            unit_count: 8
+      10:
+        action: delete_indices
+        description: Remove jearger service indices older than 8 days
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: jaeger-service-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: days
+            unit_count: 8
+      11:
+        action: delete_indices
+        description: Remove transaction logs
+        options:
+          disable_action: false
+          ignore_empty_list: true
+        filters:
+          - filtertype: pattern
+            kind: prefix
+            value: eric-cces-transactionlog-
+          - filtertype: age
+            source: name
+            direction: older
+            timestring: '%Y.%m.%d'
+            unit: hours
+            unit_count: 24
+  eric-data-object-storage-mn:
+    affinity:
+      podAntiAffinity: "hard"
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+    brAgent:
+      enabled: false
+  eric-lm-combined-server:
+    licenseServerClient:
+      licenseServer:
+        thrift:
+          host: "nelsaas-vnf1-thrift.sero.gic.ericsson.se"
+    database:
+      host: eric-data-document-database-pg-lm
+      name: adp_gs_lm
+  eric-cm-mediator:
+    cmm:
+      logOutput: ["stdout"]
+    resources:
+      eric-cm-mediator:
+        requests:
+          cpu: 50m
+          memory: 350Mi
+  eric-data-coordinator-zk:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+        size: 500Mi
+    resources:
+      datacoordinatorzk:
+        requests:
+          cpu: 500m
+  eric-data-message-bus-kf:
+    log:
+      outputs: ["stdout"]
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+        size: 500Mi
+    resources:
+      messagebuskf:
+        requests:
+          cpu: 1000m
+          memory: 4Gi
+        limits:
+          cpu: 2000m
+          memory: 6Gi
+    configurationOverrides:
+      "heap.opts": "-Xmx2G -Xms2G"
+  eric-data-document-database-pg:
+    log:
+      outputs: ["stdout"]
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+    brAgent:
+      enabled: true
+    resources:
+      postgres:
+        requests:
+          cpu: 50m
+          memory: 500Mi
+        limits:
+          memory: 2500Mi
+      metrics:
+        requests:
+          cpu: 50m
+          memory: 50Mi
+        limits:
+          cpu: 100m
+          memory: 250Mi
+      brm:
+        requests:
+          cpu: 200m
+          memory: 200Mi
+        limits:
+          cpu: 300m
+          memory: 500Mi
+      bra:
+        requests:
+          cpu: 200m
+        limits:
+          cpu: 500m
+  eric-data-document-database-pg-ah:
+    enabled: true
+    log:
+      outputs: ["stdout"]
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+    brAgent:
+      enabled: false
+    resources:
+      postgres:
+        requests:
+          cpu: 50m
+          memory: 500Mi
+        limits:
+          memory: 2500Mi
+      metrics:
+        requests:
+          cpu: 50m
+          memory: 50Mi
+        limits:
+          cpu: 100m
+          memory: 250Mi
+      brm:
+        requests:
+          cpu: 200m
+          memory: 200Mi
+        limits:
+          cpu: 300m
+          memory: 500Mi
+      bra:
+        requests:
+          cpu: 200m
+        limits:
+          cpu: 500m
+  eric-data-document-database-pg-cnom:
+    log:
+      outputs: ["stdout"]
+  eric-data-document-database-pg-lm:
+    enabled: true
+    log:
+      outputs: ["stdout"]
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+    brAgent:
+      enabled: false
+    resources:
+      postgres:
+        requests:
+          cpu: 50m
+          memory: 500Mi
+        limits:
+          memory: 2500Mi
+      metrics:
+        requests:
+          cpu: 50m
+          memory: 50Mi
+        limits:
+          cpu: 100m
+          memory: 250Mi
+      brm:
+        requests:
+          cpu: 200m
+          memory: 200Mi
+        limits:
+          cpu: 300m
+          memory: 500Mi
+      bra:
+        requests:
+          cpu: 200m
+        limits:
+          cpu: 500m
+  eric-data-document-database-pg-iam:
+    log:
+      outputs: ["stdout"]
+    enabled: true
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+    brAgent:
+      enabled: false
+    resources:
+      postgres:
+        requests:
+          cpu: 50m
+          memory: 500Mi
+        limits:
+          memory: 2500Mi
+      metrics:
+        requests:
+          cpu: 50m
+          memory: 50Mi
+        limits:
+          cpu: 100m
+          memory: 250Mi
+      brm:
+        requests:
+          cpu: 200m
+          memory: 200Mi
+        limits:
+          cpu: 300m
+          memory: 500Mi
+      bra:
+        requests:
+          cpu: 200m
+        limits:
+          cpu: 500m
+  eric-pm-bulk-reporter:
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+    service:
+      externalIPv4:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+      externalIPv6:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+    env:
+      nodeName: ccdCluster
+      nodeType: CCES
+    resources:
+      bulkreporter:
+        requests:
+          cpu: 50m
+        limits:
+          cpu: 100m
+      alarmreporter:
+        requests:
+          cpu: 50m
+        limits:
+          cpu: 100m
+      pmsftp:
+        requests:
+          cpu: 100m
+        limits:
+          cpu: 500m
+  eric-data-search-engine:
+    persistence:
+      data:
+        persistentVolumeClaim:
+          storageClassName: csi-cinder-sc-delete
+          size: 15Gi
+      master:
+        persistentVolumeClaim:
+          storageClassName: csi-cinder-sc-delete
+    resources:
+      master:
+        requests:
+          cpu: 200m
+      ingest:
+        requests:
+          cpu: 200m
+      data:
+        requests:
+          cpu: 800m
+        limits:
+          cpu: 800m
+  eric-data-distributed-coordinator-ed:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+        enabled: true
+      brAgent:
+        backupVolume:
+          storageClassName: csi-cinder-sc-delete
+    resources:
+      brAgent:
+        requests:
+          cpu: 100m
+          memory: 200Mi
+      metricsexporter:
+        limits:
+          memory: 48Mi
+  eric-pm-server:
+    server:
+      persistentVolume:
+        storageClass: csi-cinder-sc-delete
+    resources:
+      eric-pm-server:
+        requests:
+          cpu: 700m
+          memory: 2Gi
+        limits:
+          memory: 12Gi
+      eric-pm-configmap-reload:
+        requests:
+          cpu: 20m
+        limits:
+          cpu: 100m
+      eric-pm-exporter:
+        limits:
+          memory: 48Mi
+  eric-ctrl-bro:
+    log:
+      outputs: ["console"]
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+    resources:
+      backupAndRestore:
+        requests:
+          cpu: 250m
+  eric-sec-key-management:
+    log:
+      outputs: ["stdout"]
+    resources:
+      vault:
+        requests:
+          cpu: 300m
+      logshipper:
+        requests:
+          memory: "20Mi"
+          cpu: "46m"
+          ephemeral-storage:
+        limits:
+          memory: "30Mi"
+          cpu: "60m"
+  eric-sec-ldap-server:
+    brAgent:
+      enabled: true
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+    resources:
+      ldap:
+        requests:
+          cpu: 100m
+          memory: 500Mi
+        limits:
+          memory: 2Gi
+      ldapagent:
+        requests:
+          cpu: 200m
+          memory: 500Mi
+        limits:
+          memory: 2Gi
+  eric-cm-yang-provider:
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+    service:
+      externalIPv4:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+      externalIPv6:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+    resources:
+      yangEngine:
+        requests:
+          cpu: 200m
+          memory: 250Mi
+      yangDbAdapter:
+        requests:
+          cpu: 10m
+          memory: 50Mi
+      sshd:
+        requests:
+          cpu: 10m
+          memory: 100Mi
+      schemaSynchronizer:
+        requests:
+          cpu: 10m
+      externalNotifSender:
+        requests:
+          cpu: 10m
+      yangLibExt:
+        requests:
+          cpu: 10m
+          memory: 20Mi
+      internalNotifSender:
+        requests:
+          cpu: 10m
+  eric-fh-snmp-alarm-provider:
+    # SNMP protocol releted values - begin, MR: Support for new SNMP_v2c varbinds
+    # Possible values are 0(Unknown), 1(IPV4), 2(IPV6)
+    #sourceIdentifierType: 1
+    # Should be in IPv4 or IPv6 format, depends on SourceIdentifierType
+    #sourceIdentifier: 127.0.0.1
+    # SNMP protocol releted values - end
+    service:
+      secretName: "snmp-alarm-provider-config"
+      externalIPv4:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+      externalIPv6:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+    resources:
+      alarmprovider:
+        requests:
+          cpu: 50m
+          memory: 375Mi
+      vip:
+        requests:
+          memory: 100Mi
+          cpu: 25m
+        limits:
+          memory: 150Mi
+          cpu: 140m
+  eric-cnom-server:
+    server:
+      loggingAudit: [stdout]
+    fqdn: "cnom.cces.pod56-eccd1.seln.ete.ericsson.se"
+    resources:
+      requests:
+        cpu: 50m
+  eric-tm-ingress-controller-cr:
+    service:
+      externalIPv4:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+      externalIPv6:
+        annotations:
+          sharedVIPLabel: cces-oam
+          addressPoolName: cces-oam
+  eric-log-shipper:
+    resources:
+      logshipper:
+        requests:
+          cpu: 400m
+          memory: 2Gi
+        limits:
+          cpu: 500m
+          memory: 2Gi
+  eric-log-transformer:
+    replicaCount: 2
+    resources:
+      logtransformer:
+        requests:
+          cpu: 1000m
+        limits:
+          cpu: 1000m
+      metrics:
+        requests:
+          memory: 64Mi
+    egress:
+      lumberjack:
+        enabled: false
+        remoteHosts:
+         # - id: host-id
+         #   host: hostname
+         #   port: port-number
+         #   codec: json
+         #   inclusions:
+         #     - field: "[metadata][category]"
+         #       value: "transactionlog"
+        certificates:
+          trustedCertificateListName: eric-log-lumberjack-client
+      syslog:
+        enabled: false
+        tls:
+          enabled: true
+        certificates:
+          asymmetricKeyCertificateName: eric-log-transformer-client-key-certificate
+          trustedCertificateListName: eric-log-transformer-cacerts
+        remoteHosts:
+        #  - host: hostname
+        #    port: 514
+        #inclusions:
+        #  - field: "[facility]"
+        #    value: "log audit"
+        #exclusions:
+        #  - logplane:
+        #    rules:
+        #      - field: "[field1]"
+        #        value: "value1"
+        #      - field: "[field2]"
+        #        value: "value2"
+        filter: #|
+  eric-fh-alarm-handler:
+    resources:
+      alarmhandler:
+        requests:
+          cpu: 50m
+          memory: 375Mi
+        limits:
+          memory: 500Mi
+    backend:
+      hostname: "eric-data-document-database-pg-ah"
+      dbname: adp_gs_ah
+  eric-odca-diagnostic-data-collector:
+    log:
+      outputs: ["stdout"]
+    resources:
+      diagnostic-data-collector:
+        requests:
+          cpu: 1400m
+          ephemeral-storage: 13Gi
+        limits:
+          cpu: 1400m
+          memory: 1200Mi
+          ephemeral-storage: 25Gi
+      diagnostic-data-collector-manual:
+        requests:
+          cpu: 500m
+          memory: 500Mi
+        limits:
+          cpu: 800m
+          memory: 800Mi
+          ephemeral-storage: 13Gi
+  eric-sec-sip-tls:
+    resources:
+      sip-tls:
+        limits:
+          memory: "400Mi"
+  eric-sec-access-mgmt:
+    persistence:
+      dbName: adp_gs_iam
+      dbHost: "eric-data-document-database-pg-iam"
+    tls:
+      client:
+        pg:
+          #Enable below for DDB split
+          issuer: eric-data-document-database-pg-iam-client-ca
+    ingress:
+      hostname: "iam.cces.pod56-eccd1.seln.ete.ericsson.se"
+  eric-sec-admin-user-management:
+    log:
+      outputs: ["stdout"]
+
+eric-cces-commonsvc:
+  eric-cces-nf-monitor:
+    config:
+      nf_monitor_config:
+        nfOperationStateDisabledCriterial: ALL
+    resources:
+      nfMonitor:
+        requests:
+          cpu: 85m
+          memory: 50Mi
+        limits:
+          cpu: 150m
+          memory: 120Mi
+      istio:
+        limits:
+          cpu: 200m
+        requests:
+          cpu: 40m
+
+  eric-data-wide-column-database-cd:
+    podPriority:
+      cassandra:
+        priorityClassName: ""
+    replicaCount: 3
+    persistence:
+      dataVolume:
+        persistentVolumeClaim:
+          size: 134Gi
+          storageClassName: csi-cinder-sc-delete
+    brAgent:
+      enabled: true
+    cassandra:
+      jvmOptions:
+        set:
+          - "-XX:MaxDirectMemorySize=1500M"
+          - "-XX:+PrintSafepointStatistics"
+          - "-XX:PrintSafepointStatisticsCount=1"
+          - "-XX:+SafepointTimeout"
+          - "-XX:SafepointTimeoutDelay=1000"
+          - "-Xms4000M"
+          - "-Xmx4000M"
+          - "-Xmn768M"    
+     #List of remote seed nodes. Specified by IP address or hostname.
+     #E.g:
+#    - 10.40.0.1
+#    - 10.40.0.2
+#      remoteSeedNodes:
+#        - VIP0
+#        - VIP1
+#    service:
+#      # Service setting to enable or disable external service exposed over IPv4.
+#      externalIPv4:
+#      # enabled can be true or false. In Geo-Red deployment, the value need to match the global.internalIPFamily parameter.
+#        enabled: false
+#      # Service setting to enable or disable external service exposed over IPv6.
+#      externalIPv6:
+#      # enabled can be true or false. In Geo-Red deployment, the value need to match the global.internalIPFamily parameter.
+#        enabled: true
+#      #Service desired route for external traffic via node-local (Local) or cluster-wide (Cluster) endpoints.
+#      #Supported values are Local or Cluster, default is set to Local.
+#      externalTrafficPolicy: Local
+#      certificates:
+        # A name referring to a key/certificate created through the Certificate Manager.
+#        asymmetricKeyCertificateName: eric-data-wide-column-database-cd-external-cql-server-cert-key/eric-data-wide-column-database-cd-external-cql-server-cert-key-cert
+        # A name referring to a list of trusted certificates (CAs) created through the Certificate Manager.
+#        trustedCertificateListName: eric-data-wide-column-database-cd-external-cql-server-ca
+    dataCenters:
+      # Name of the DC as represented in the cassandra-rackdc.properties file. This name must be unique among all CCES sites, including remote DCs.
+      - name: "datacenter1"
+#        service:
+#          externalIPv4:
+#            annotations:      # Specific address pool name configured using External Connectivity FrontEnd service.
+#              addressPoolName: cces-5g-wcdb-data-sync
+#          externalIPv6:
+#            annotations:      # Specific address pool name configured using External Connectivity FrontEnd service.
+#              addressPoolName: cces-5g-wcdb-data-sync
+    # External traffic encryption.
+#    egress:
+      # CQL client interface.
+#      certificates:
+        # A name referring to a key/certificate created through the Certificate Manager.
+#        asymmetricKeyCertificateName: eric-data-wide-column-database-cd-external-cql-client-cert-key/eric-data-wide-column-database-cd-external-cql-client-cert-key-cert
+        # A name referring to a list of trusted certificates (CAs) created through the Certificate Manager.
+#        trustedCertificateListName: eric-data-wide-column-database-cd-external-cql-client-ca
+
+    # Replication traffic encryption.
+#    georeplication:
+      # Internode interface.
+#      certificates:
+        # A name referring to a key/certificate created through the Certificate Manager.
+#        asymmetricKeyCertificateName: eric-data-wide-column-database-cd-external-internode-server-cert-key/eric-data-wide-column-database-cd-external-internode-server-cert-key-cert
+        # A name referring to a list of trusted certificates (CAs) created through the Certificate Manager.
+#        trustedCertificateListName: eric-data-wide-column-database-cd-external-internode-server-ca
+    resources:
+      cassandra:
+        requests:
+          cpu: "7"
+          memory: 8Gi
+        limits:
+          cpu: "8"
+          memory: 8Gi
+      brsc:
+        requests:
+          cpu: 250m
+          memory: 250Mi
+        limits:
+          memory: 1Gi
+      bra:
+        requests:
+          cpu: 200m
+  eric-stm-diameter:
+    enabled: true
+    initialConfig:
+      dsl:
+        enableIPv6: false
+      sctp:
+        enable: false
+    resources:
+      diameter:
+        requests:
+          cpu: "1.3"
+          memory: 100Mi
+        limits:
+          cpu: "4"
+          memory: 4Gi
+      dsl:
+        requests:
+          cpu: "0.45"
+      sctp:
+        requests:
+          cpu: "0.85"
+  eric-stm-diameter-proxy-grpc:
+    enabled: true
+    initialConfig:
+      dsl:
+        enableIPv6: false
+    resources:
+      diameterproxygrpc:
+        requests:
+          cpu: "1"
+          memory: 100Mi
+        limits:
+          cpu: "4"
+          memory: 4Gi
+      dsl:
+        requests:
+          cpu: "0.45"
+  eric-slt-dsl:
+    enabled: true
+    initialConfig:
+      dsl:
+        enableIPv6: false
+  eric-cces-common-entity:
+    replicaCount: 2
+    minReplicas: 2
+    maxReplicas: 5
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+  eric-cces-timer-service:
+    replicaCount: 2
+    minReplicas: 2
+    maxReplicas: 7
+    resources:
+      timerservice:
+        requests:
+          cpu: 800m
+          memory: 200Mi
+        limits:
+          memory: 250Mi
+  eric-cces-redis-operator:
+    resources:
+      redisOperator:
+          requests:
+            cpu: 1000m
+            memory: 50Mi
+          limits:
+            cpu: 1000m
+  eric-cces-redis-cluster:
+    resources:
+      redisCluster:
+          requests:
+            cpu: 1000m
+  eric-cces-license-handler:
+    #change the mode for nef
+    mode: nef
+  eric-cces-cm-manager:
+    resources:
+      cmmanager:
+        requests:
+          cpu: 150m
+          memory: 200Mi
+        limits:
+          cpu: 200m
+          memory: 500Mi
+  eric-cces-extension-manager:
+    resources:
+      extensionmanager:
+        requests:
+          cpu: 200m
+      istio:
+        requests:
+          cpu: 300m
+    eric-data-document-database-pg-em:
+      log:
+        outputs: ["stdout"]
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+      brAgent:
+        enabled: true
+      resources:
+        postgres:
+          requests:
+            cpu: 50m
+            memory: 500Mi
+          limits:
+            memory: 2500Mi
+        metrics:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 100m
+            memory: 250Mi
+        brm:
+          requests:
+            cpu: 200m
+            memory: 200Mi
+          limits:
+            cpu: 300m
+            memory: 500Mi
+        bra:
+          requests:
+            cpu: 200m
+          limits:
+            cpu: 500m
+
+eric-nef:
+  eric-nef-afsessionwithqos:
+    maxReplicas: 3
+    resources:
+      qos:
+        requests:
+          cpu: 800m
+  eric-nef-afsessionwithqos-provisioning:
+    maxReplicas: 3
+  eric-nef-pfdmanagement:
+    maxReplicas: 3
+  eric-nef-pfdmanagement-provisioning:
+    maxReplicas: 3
+  eric-nef-bdtpnegotiation:
+    maxReplicas: 3
+    resources:
+      bdt:
+        requests:
+          cpu: 400m
+  eric-nef-trafficinfluence:
+    maxReplicas: 3
+    resources:
+      trafficinfluence:
+        requests:
+          cpu: 700m
+  eric-nef-chargeableparty:
+    maxReplicas: 3
+    resources:
+      cp:
+        requests:
+          cpu: 500m
+  eric-nef-eventexposure:
+    maxReplicas: 3
+    resources:
+      monte:
+        requests:
+          cpu: 700m
+          memory: 1500Mi
+  eric-nef-nidd:
+    maxReplicas: 6
+    resources:
+      nidd:
+        requests:
+          cpu: 1500m
+          memory: 4Gi
+  eric-nef-devicetriggering:
+    maxReplicas: 3
+    resources:
+      devicetriggering:
+        requests:
+          cpu: 500m
+          memory: 1500Mi
+eric-apigm:
+  eric-apigm-api-admin:
+    resources:
+      api-admin:
+        requests:
+          cpu: 500m
+  eric-apigm-api-proxy:
+    replicaCount: 2
+    minReplicas: 2
+    maxReplicas: 6
+    log:
+      streamingMethod: null
+      transaction:
+        enabled: false
+    resources:
+      api-proxy:
+        requests:
+          cpu: 2000m
+          memory: 2Gi
+        limits:
+          memory: 4Gi
+        jvm:
+          largeMemoryAllocationMaxPercentage: 70
+  eric-apigm-admin-portal:
+    env:
+      ingress:
+        iam:
+          hostname: ""
+        apigmPortal:
+          hostname: ""
+          port: 2443
+      pwdQuality:
+        maxConsecutiveCharactersPerClass: 4
+        minOther: 2
+        minUpper: 1
+        minLower: 1
+        minDigit: 2
+        minLength: 8
+  eric-apigm-api-composition-engine:
+    maxReplicas: 3
+  eric-apigm-api-composition-manager:
+    maxReplicas: 3
+  eric-apigm-oauthserver:
+    clientRegistry:
+      tokenTtlInSecond: 7200
+  eric-apigm-partner-mgmt:
+    env:
+      partner:
+        portal:
+          notification:
+            path: /
+
+eric-nrfagent:
+  eric-nrf-discovery-agent:
+    resources:
+      cpu: 300m
+    sidecar:
+      resources:
+        requests:
+          cpu: 80m
+  eric-nrf-notify-agent:
+    resources:
+      cpu: 100m
+    sidecar:
+      resources:
+        requests:
+          memory: 120Mi
+        limits:
+          cpu: 2000m
+          memory: 1Gi
+  eric-nrf-register-agent:
+    resources:
+      cpu: 50m
+    elector:
+      resources:
+        limits:
+          cpu: 200m
+
+eric-ngac:
+  eric-ngac-apiservice-runtime:
+    env:
+      datasources:
+        - name: default
+          type: cassandra
+          ttl: 86400
+          keyspace: ngac_api_service_key_value_storage
+          geoRedEnabled: false

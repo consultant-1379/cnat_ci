@@ -1,0 +1,172 @@
+/*
+* This Jenkins pipeline is used in CNAT CI for building
+* and testing the latest merged CNAT code.
+*/
+import groovy.json.JsonOutput
+
+config = [
+    gitInfo: [
+        cnatRepoUri: 'https://gerritmirror-direct.sero.gic.ericsson.se/a/5gc_config/cnat',
+        credentialId: 'cnat-https-token'
+    ]
+]
+
+pipeline {
+    agent {
+        label "CNAT_RH8"
+    }
+
+    environment {
+        WORKSPACE="${env.WORKSPACE}"
+        CNAT_ARM_REPO="serodocker.sero.gic.ericsson.se/proj-eric-5gc-ci/eric-cnat"
+        LAB="${env.LAB}"
+        CLUSTER="${env.CLUSTER}"
+        EVNFM_CLUSTER="${env.EVNFM_CLUSTER}"
+    }
+
+    options {
+        timeout(time: 60, unit: 'MINUTES')
+    }
+
+    stages
+    {
+        stage('Download latest merged code from cnat git repository') {
+            steps {
+                script {
+                    echo "Fetching lastest merged CNAT code from cnat git repository"
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: 'refs/heads/master']],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'cnat']],
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[credentialsId: config.gitInfo.credentialId, url: config.gitInfo.cnatRepoUri]]
+                    ])
+                }
+            }
+        }
+
+        stage('Build the CNAT binary from latest merged code') {
+            steps {
+                script {
+                    withEnv(['TEST_VERSION=']) {
+                        sh '''#!/usr/bin/env bash
+# This line is needed because it defined the 'module' command, which is used by this script
+# to load necessary/desired software from AFS.
+source "/app/modules/0/init/bash"
+# source cnat env
+source /lab/pccc_utils/scripts/bashrc.eagles
+# source the python test env
+source /lab/pccc_utils/scripts/cnat_pyvenv/bin/activate
+module list
+
+echo "================================================"
+echo "=    BUILD CNAT BINARY FROM LATEST MERGED CODE ="
+echo "================================================"
+cd cnat
+echo "Building binary from latest cloned cnat repo..."
+./make_cnat_binary.sh
+echo "CNAT build version: $(dist/cnat --version | tail -1)"
+cd -
+'''
+                        def version = sh(script: 'cnat/dist/cnat --version | tail -1', returnStdout: true).trim()
+                        echo "Updating currentBuild.description with version ${version}"
+                        currentBuild.description  = "CNAT build/image version: ${version}"
+                    }
+                }
+            }
+        }
+
+        stage('Build, verify and push the CNAT docker image') {
+            steps {
+                script {
+                    sh '''#!/usr/bin/env bash
+# This line is needed because it defined the 'module' command, which is used by this script
+# to load necessary/desired software from AFS.
+source "/app/modules/0/init/bash"
+# source cnat env
+source /lab/pccc_utils/scripts/bashrc.eagles
+# source the python test env
+source /lab/pccc_utils/scripts/cnat_pyvenv/bin/activate
+module list
+pers_home="/local/persistent_docker/${USER}"
+persistent_dir="${WORKSPACE}"
+
+echo "================================================"
+echo "=    BUILD CNAT DOCKER IMAGE                   ="
+echo "================================================"
+TEST_VERSION="$(cnat/dist/cnat --version | tail -1 | awk -F- '{print $3}')"
+mkdir cnat-"${TEST_VERSION}"
+echo "Copying the CNAT binary to cnat-${TEST_VERSION} directory..."
+cp cnat/dist/cnat cnat-"${TEST_VERSION}"/
+
+cp -f /lab/pccc_utils/kubectl/kubectl .
+echo "Creating the CNAT Dockerfile..."
+cat << EOF > Dockerfile
+FROM armdocker.rnd.ericsson.se/dockerhub-ericsson-remote/debian:bookworm-slim
+
+ADD cnat-${TEST_VERSION} workdir
+ADD kubectl /temp/kubectl
+
+RUN install -o root -g root -m 0755 /temp/kubectl /usr/local/bin/kubectl
+
+WORKDIR /workdir
+
+ENTRYPOINT ["./cnat"]
+EOF
+
+echo "Building the CNAT docker image..."
+echo "docker build -t ${CNAT_ARM_REPO}/cnat:${TEST_VERSION} ."
+docker build -t ${CNAT_ARM_REPO}/cnat:"${TEST_VERSION}" .
+echo "Tagging the docker image with latest..."
+docker tag ${CNAT_ARM_REPO}/cnat:"${TEST_VERSION}" ${CNAT_ARM_REPO}/cnat:latest
+
+echo "================================================"
+echo "=  VERIFY CNAT DOCKER IMAGE                    ="
+echo "================================================"
+cnat_env="${pers_home}/.cnat_env.yaml"
+
+file1="cns-dual-mode-5gc-root-ca.crt"
+file2="TeamBluesRootCA.crt"
+file3="${LAB}-${CLUSTER}.config"
+file4="${LAB}-${EVNFM_CLUSTER}.config"
+
+echo -e "docker run --rm \
+    --mount type=bind,source=$cnat_env,target=/root/.cnat_env.yaml \
+    --mount type=bind,source=${pers_home}/$file1,target=/root/$file1 \
+    --mount type=bind,source=${pers_home}/$file2,target=/root/$file2 \
+    --mount type=bind,source=${pers_home}/$file3,target=/root/$file3 \
+    --mount type=bind,source=${pers_home}/$file4,target=/root/$file4 \
+    ${CNAT_ARM_REPO}/cnat:${TEST_VERSION} -e ${LAB} \n\n"
+
+docker run --rm \
+    --mount type=bind,source="$cnat_env",target="/root/.cnat_env.yaml" \
+    --mount type=bind,source="${pers_home}/$file1",target="/root/$file1" \
+    --mount type=bind,source="${pers_home}/$file2",target="/root/$file2" \
+    --mount type=bind,source="${pers_home}/$file3",target="/root/$file3" \
+    --mount type=bind,source="${pers_home}/$file4",target="/root/$file4" \
+    "${CNAT_ARM_REPO}/cnat:${TEST_VERSION}" -e "${LAB}"
+
+echo "================================="
+echo "=    PUSH CNAT DOCKER IMAGE     ="
+echo "================================="
+echo "docker push ${CNAT_ARM_REPO}/cnat:${TEST_VERSION} and latest"
+docker push ${CNAT_ARM_REPO}/cnat:${TEST_VERSION}
+docker push ${CNAT_ARM_REPO}/cnat:latest
+
+# Cleanup
+echo ""
+echo "================================================"
+echo "=  CLEANUP                                     ="
+echo "================================================"
+echo "Deleting Dockerfile, kubectl, cnat and cnat-${TEST_VERSION} directory..."
+rm -rf cnat-"${TEST_VERSION}"
+rm -rf cnat/
+rm -f Dockerfile
+rm -f kubectl
+'''
+                }
+            }
+        }
+    }
+}

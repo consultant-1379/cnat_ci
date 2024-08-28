@@ -1,0 +1,47 @@
+nodeName: n182-vpod2-eda1
+nodeType: EDA
+
+vnflcm:
+  clusterName: n182-eccd2
+  namespace: eda
+  InstantiateVnfRequest:
+    skipVerification: "true"
+
+snmp:
+  agentEngineId: 800000c1046564613163347331
+  sourceIdentifier: 10.228.194.170 #eda1-oam-n182-vpod2.seli.gic.ericsson.se
+
+license:
+  customerId: "946060"
+  swltId: STA-EDA-20
+
+eda:
+  domainName: seli.gic.ericsson.se
+  clusterName: eda1-n182-vpod2
+  hssValidatorTag: "1.29.102"
+
+  networkElements:
+    mapi:
+    - host: prov-ccdm1-n182-vpod2
+      truststoreFile: ccdmkeystore-n182-vpod2.p12
+    - host: prov-ccdm1-n182-vpod2
+      truststoreFile: ccdmkeystore-n182-vpod2.p12
+
+    ldap:
+      - host: prov-4g-ccdm1-n182-vpod2
+        tlsPem: server-certificate-n182-vpod2.pem
+      - host: prov-4g-ccdm1-n182-vpod2
+        tlsPem: server-certificate-n182-vpod2.pem
+
+pvcSize:
+  eric-data-wide-column-database-cd: 2 # default 137G
+  eric-data-message-bus-kf: 2
+
+replicaCount:
+  eric-tm-ingress-controller-cr-envoy: 2
+  eric-act-web-server: 1
+  eric-act-aaa: 1
+  eric-act-inbound-async: 1
+  eric-act-inbound-interfaces: 1
+  eric-act-inbound-mml: 1
+  eric-act-rest-provisioning: 1

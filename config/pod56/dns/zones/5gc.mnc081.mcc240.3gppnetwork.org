@@ -1,0 +1,26 @@
+$TTL    604800
+@       IN      SOA     localhost. ns1.pod56.5gc.mnc081.mcc240.3gppnetwork.org. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns1.pod56.5gc.mnc081.mcc240.3gppnetwork.org.
+@       IN      A       10.130.34.4
+@       IN      AAAA    ::1
+
+
+ns1.pod56               IN      A       10.130.34.4
+pod56-amf1.amf          IN      A       5.8.6.9
+smf1.pod56              IN      A       5.8.6.1
+udr1.pod56              IN      A       5.8.6.4
+udr2.pod56              IN      A       5.8.6.49
+udm1.pod56              IN      A       5.8.6.7
+ausf1.pod56             IN      A       5.8.6.5
+nrf1.pod56              IN      A       5.8.6.6
+;nrf1.pod56             IN      A       6.72.0.1
+pcf1.pod56              IN      A       25.51.0.251
+smf1-notif.pod56        IN      A       5.8.6.2
+udr1-intersite.pod56    IN      A       5.8.6.33
+udr2-intersite.pod56    IN      A       5.8.6.65

@@ -1,0 +1,15 @@
+#######################################################################################
+## Networking L2 gateway related information for the Datacenter                       #
+#######################################################################################
+---
+## TODO: For later use with managed switch fabrics
+#networkGateways:
+#  - gatewayName: <String: GATEWAY_NAME>
+#    fabricId: <String: FABRIC_ID>
+#    gatewayType: <String: GATEWAY_TYPE>
+#    externalGateway: DC-GW1
+#    networkList:
+#      - <String: NETWORK1>
+#      - <String: NETWORK2>
+#      - <String: NETWORKn>
+...

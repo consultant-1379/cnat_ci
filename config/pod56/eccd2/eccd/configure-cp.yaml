@@ -1,0 +1,30 @@
+- name: Configure CP nodes after CCD installation
+  hosts: cp
+  gather_facts: false
+
+  tasks:
+  - name: Configure /etc/hosts
+    shell: kubectl get nodes -o wide  | grep -v INTERNAL-IP | awk '{print $6,$1}' | column -t | sudo tee -a /etc/hosts
+
+  - name: get eth2 CIDR IP
+    shell: ip address show dev eth2 | awk '/inet / {print $2}' | head -1
+    register: cidr_ip
+
+  - name: get eth2 CIDR subnet
+    shell: ipcalc -i {{ cidr_ip.stdout }} | awk '/Network:/ {print $2}'
+    register: cidr_subnet
+
+  - name: get eth2 address
+    shell: ipcalc -i {{ cidr_ip.stdout }} | awk '/Address:/ {print $2}'
+    register: ip
+
+  - name: Add iptables SNAT Rule
+    become: yes
+    iptables:
+      table: nat
+      chain: POSTROUTING
+      out_interface: eth2
+      source: "!{{ cidr_subnet.stdout }}"
+      jump: SNAT
+      to_source: "{{ ip.stdout }}"
+

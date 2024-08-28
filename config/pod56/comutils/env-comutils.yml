@@ -1,0 +1,19 @@
+parameters:
+  extnet_vlan_id: 3018
+  extnet_cidr: 10.130.34.216/29
+  extnet_gateway_ip: 10.130.34.222
+  proxy_server: seroproxy.seln.ete.ericsson.se
+  proxy_port: 808
+  server1_fixed_ip_v4: 10.130.34.217
+  server1_fixed_ip_v4_len: 29
+  ntp_server_ips:
+  - 10.221.19.12
+  - 10.221.19.13
+  dns_server_ips:
+  - 10.130.34.4
+  - 10.221.19.4
+  - 10.221.19.6
+  soapui_service_ip: 10.130.34.231
+  flavor_name: 8vcpu_10240MBmem_0GBdisk
+  volume_size: 300
+  image_name: bionic-server-cloudimg-amd64

@@ -1,0 +1,36 @@
+---
+backupDomains:
+  - name: openstack
+    encryptBackups: true
+    encryptionPassword: r00tme
+    localBackupsStored: 2
+    incrementalBackup: true
+    incrementalBackupsStored: 6
+    defaultImportExportHost: backuphost 
+    defaultImportExportPath: /
+    defaultImportExportCredential: cee10br
+  - name: infra
+    encryptBackups: true
+    encryptionPassword: r00tme
+    localBackupsStored: 5
+    incrementalBackup: false
+    defaultImportExportHost: backuphost
+    defaultImportExportPath: /
+    defaultImportExportCredential: cee10br
+  - name: lcm
+    encryptBackups: true
+    encryptionPassword: r00tme
+    localBackupsStored: 5
+    incrementalBackup: false
+    defaultImportExportHost: backuphost
+    defaultImportExportPath: /
+    defaultImportExportCredential: cee10br
+  - name: serviceassurance
+    encryptBackups: true
+    encryptionPassword: r00tme
+    localBackupsStored: 5
+    incrementalBackup: false
+    defaultImportExportHost: backuphost
+    defaultImportExportPath: /
+    defaultImportExportCredential: cee10br
+...

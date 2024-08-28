@@ -1,0 +1,45 @@
+nodeInfo: site.yaml
+siteGlobal: ../site_global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: cces/1.13/values-small.yaml.jinja2
+  target: values.yaml
+#- template: cces/1.13/delta-cces-1.11-1.12-nef-mtls-2m-values.yaml.jinja2
+#  target: upgrade/delta-cces-1.11-1.12-values.yaml
+#- template: cces/1.13/delta-cces-1.12-1.13-nef-mtls-2m-values.yaml.jinja2
+#  target: upgrade/delta-cces-1.12-1.13-values.yaml
+- template: cces/1.13/instantiate.json.jinja2
+  target: instantiate.json
+- template: common/snmp-config.xml.jinja2
+  target: snmp-config.xml
+- template: common/sftp-config.json.jinja2
+  target: sftp-config.json
+- template: common/user-config.xml.jinja2
+  target: user-config.xml
+- template: cces/1.13/external-certificates.xml.jinja2
+  target: external-certificates.xml
+- template: cces/1.13/nef-config.xml.jinja2
+  target: nef-config.xml
+- template: cces/1.13/nef-diameter-config.xml.jinja2
+  target: nef-diameter-config.xml
+- template: cces/1.13/nrfagent-config.xml.jinja2
+  target: nrfagent-config.xml
+- template: cces/1.13/ddc-config.xml.jinja2
+  target: ddc-config.xml
+- template: cces/1.13/nef-provisioning/1_ServiceProvider.xml.jinja2
+  target: nef-provisioning/1_ServiceProvider.xml
+- template: cces/1.13/nef-provisioning/2_ServiceProviderServiceSubscription.xml.jinja2
+  target: nef-provisioning/2_ServiceProviderServiceSubscription.xml
+- template: cces/1.13/nef-provisioning/3_Application.xml.jinja2
+  target: nef-provisioning/3_Application.xml
+- template: cces/1.13/nef-provisioning/4_ApplicationServiceSubscription.xml.jinja2
+  target: nef-provisioning/4_ApplicationServiceSubscription.xml
+- template: cces/1.13/nef-provisioning/5_QoS_information.json.jinja2
+  target: nef-provisioning/5_QoS_information.json
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml

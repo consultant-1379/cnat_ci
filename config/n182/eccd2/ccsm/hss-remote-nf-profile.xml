@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <edit-config>
+    <target><running/></target>
+    <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <!--
+        Configuration for the HSS Common Network Function.
+      -->
+      <hss-common xmlns="urn:rdns:com:ericsson:oammodel:ericsson-hss-common">
+
+        <remote-nf-profile>
+
+        <!--  Configuration of remote Network Functions and their provided services, used by HSS  -->
+        <!--  in order to handle basic traffic   -->
+        <!--  UDM remote Network Function provides the following services to HSS -->
+        <!--    . nudm-ueau Authentication -->
+        <!--    . nudm-uecm UE Context Management  -->
+
+          <!-- List of remote-nf-profile. -->
+          <remote-nf-profile>
+            <!-- Unique ID for the remote endpoint. -->
+            <instance-id>841d1b7c-5103-11e9-8c09-55444da1c4d2</instance-id>
+            <!-- Type of the remote Network Function. -->
+            <type>udm</type>
+            <!-- FQDN of the remote Network Function. -->
+            <fqdn>ccsm1-udm-5g-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+            <remote-nf-service>
+              <!-- Unique ID of the remote NF Service Instance within the NF Instance. -->
+              <instance-id>nudm-ueau-0</instance-id>
+              <!-- Name of the remote NF Service Instance. -->
+              <name>nudm-ueau</name>
+              <ip-endpoint>
+                <!--
+                  Unique ID that represents endpoint of the remote NF Service Instance.
+                -->
+                <id>1</id>
+                <!-- IPv4 ddresses of the service instance. -->
+                <!-- <ipv4-address>{REMOTE_NF_SERVICE_IPV4_ADDRESS}</ipv4-address> -->
+                <!-- IPv6 ddresses of the service instance. -->
+                <!-- <ipv6-address>{REMOTE_NF_SERVICE_IPV6_ADDRESS}</ipv6-address> -->
+                <!-- Port number of the service instance. -->
+                <port>82</port>
+              </ip-endpoint>
+              <version>
+                 <api-version-in-uri>v1</api-version-in-uri>
+                 <expiry>2029-01-01T00:00:00+00:00</expiry>
+              </version>
+              <!--scheme: Protocol schema (e.g. "http", "https"). -->
+              <scheme>http</scheme>
+            </remote-nf-service>
+            <remote-nf-service>
+              <!-- Unique ID of the remote NF Service Instance within the NF Instance. -->
+              <instance-id>nudm-uecm-0</instance-id>
+              <!-- Name of the remote NF Service Instance. -->
+              <name>nudm-uecm</name>
+              <ip-endpoint>
+                <!--
+                  Unique ID that represents endpoint of the remote NF Service Instance.
+                -->
+                <id>1</id>
+                <!-- IPv4 ddresses of the service instance. -->
+                <!-- <ipv4-address>{REMOTE_NF_SERVICE_IPV4_ADDRESS}</ipv4-address> -->
+                <!-- IPv6 ddresses of the service instance. -->
+                <!-- <ipv6-address>{REMOTE_NF_SERVICE_IPV6_ADDRESS}</ipv6-address> -->
+                <!-- Port number of the service instance. -->
+                <port>82</port>
+              </ip-endpoint>
+              <version>
+                 <api-version-in-uri>v1</api-version-in-uri>
+                 <expiry>2029-01-01T00:00:00+00:00</expiry>
+              </version>
+              <!--scheme: Protocol schema (e.g. "http", "https"). -->
+              <scheme>http</scheme>
+            </remote-nf-service>
+          </remote-nf-profile>
+
+        <!--  Configuration of remote Network Functions and their provided services, used by HSS  -->
+        <!--  in order to handle basic traffic   -->
+        <!--  HSS-EPC remote Network Function provides the following services to HSS-IMS -->
+        <!--    . nhssepc-mt mtlocation/tadsinfo/ueSrvccCapability/stnsr -->
+        <!--    . nhssepc-uecm  pcscfrestoration -->
+
+          <!-- List of remote-nf-profile. -->
+          <!-- <remote-nf-profile> -->
+            <!-- Unique ID for the remote endpoint. -->
+            <!-- <instance-id>{REMOTE_NF_PROFILE_HSS_INSTANCE_ID}</instance-id> -->
+            <!-- Type of the remote Network Function. -->
+            <!-- <type>hss</type> -->
+            <!-- FQDN of the remote Network Function. -->
+            <!-- <fqdn>{REMOTE_NF_PROFILE_HSSEPC_FQDN}</fqdn> -->
+            <!-- Allowed type of the remote Network Function. -->
+            <!-- <allowed-nf-type>hss</allowed-nf-type> -->
+            <!-- <remote-nf-service> -->
+              <!-- Unique ID of the remote NF Service Instance within the NF Instance. -->
+              <!-- <instance-id>{REMOTE_NF_SERVICE_HSSEPC_MT_INSTANCE_ID}</instance-id> -->
+              <!-- Name of the remote NF Service Instance. -->
+              <!-- <name>nhssepc-mt</name> -->
+              <!-- <ip-endpoint> -->
+                <!--
+                  Unique ID that represents endpoint of the remote NF Service Instance.
+                -->
+                <!-- <id>{REMOTE_NF_SERVICE_IP_ENDPOINT_ID}</id> -->
+                <!-- IPv4 ddresses of the service instance. -->
+                <!-- <ipv4-address>{REMOTE_NF_SERVICE_IPV4_ADDRESS}</ipv4-address> -->
+                <!-- IPv6 ddresses of the service instance. -->
+                <!-- <ipv6-address>{REMOTE_NF_SERVICE_IPV6_ADDRESS}</ipv6-address> -->
+                <!-- Port number of the service instance. -->
+                <!-- <port>{REMOTE_NF_SERVICE_PORT}</port> -->
+              <!-- </ip-endpoint> -->
+              <!-- <version> -->
+                 <!-- <api-version-in-uri>v1</api-version-in-uri> -->
+                 <!-- <expiry>{REMOTE_NF_SERVICE_HSSEPC_MT_VERSION_EXPIRATION}</expiry> -->
+              <!-- </version> -->
+              <!--scheme: Protocol schema (e.g. "http", "https"). -->
+              <!-- <scheme>{REMOTE_NF_SERVICE-SCHEME}</scheme> -->
+            <!-- </remote-nf-service> -->
+            <!-- <remote-nf-service> -->
+              <!-- Unique ID of the remote NF Service Instance within the NF Instance. -->
+              <!-- <instance-id>{REMOTE_NF_SERVICE_HSSEPC_UECM_INSTANCE_ID}</instance-id> -->
+              <!-- <name>nhssepc-uecm</name> -->
+              <!-- <ip-endpoint> -->
+                <!--
+                  Unique ID that represents endpoint of the remote NF Service Instance.
+                -->
+                <!-- <id>{REMOTE_NF_SERVICE_IP_ENDPOINT_ID}</id> -->
+                <!-- IPv4 ddresses of the service instance. -->
+                <!-- <ipv4-address>{REMOTE_NF_SERVICE_IPV4_ADDRESS}</ipv4-address> -->
+                <!-- IPv6 ddresses of the service instance. -->
+                <!-- <ipv6-address>{REMOTE_NF_SERVICE_IPV6_ADDRESS}</ipv6-address> -->
+                <!-- Port number of the service instance. -->
+                <!-- <port>{REMOTE_NF_SERVICE_PORT}</port> -->
+              <!-- </ip-endpoint> -->
+              <!-- <version> -->
+                 <!-- <api-version-in-uri>v1</api-version-in-uri> -->
+                 <!-- I<expiry>{REMOTE_NF_SERVICE_HSSEPC_UECM_VERSION_EXPIRATION}</expiry> -->
+              <!-- </version> -->
+       	      <!--scheme: Protocol schema (e.g. "http", "https"). -->
+              <!-- <scheme>{REMOTE_NF_SERVICE-SCHEME}</scheme> -->
+            <!-- </remote-nf-service> -->
+          <!-- </remote-nf-profile> -->
+        </remote-nf-profile>
+      </hss-common>
+    </config>
+  </edit-config>
+  </rpc>
+  <close-session/>

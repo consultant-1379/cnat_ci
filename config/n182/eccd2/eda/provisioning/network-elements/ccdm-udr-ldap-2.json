@@ -1,0 +1,27 @@
+{
+	"active": true,
+	"name": "CCDM_UDR_LDAP_2",
+	"protocolAttributes": {
+		"BinaryAttributeConfig": "UDC",
+		"BinaryAttributes": "",
+		"BlockingTimeout": "10000",
+		"ConnTimeout": "11000",
+		"Credentials": "secret2",
+		"HeartbeatDN": "dc=operator,dc=com",
+		"Host": "prov-4g-ccdm1-n182-vpod2.seli.gic.ericsson.se",
+		"IdleTimeout": "1",
+		"LongRetriesTimeInterval": "15000",
+		"MaxPoolSize": "10",
+		"NrOfRetries": "3",
+		"Port": "636",
+		"Principal": "cudbUser=provisioning,ou=admin,dc=operator,dc=com",
+		"ResponseTimeout": "11000",
+		"RetriesTimeInterval": "1000",
+		"RetryFactor": "2",
+		"Secure": "true",
+		"TlsPem": "server-certificate-n182-vpod2.pem",
+		"TlsVersion": "TLS 1.2"
+	},
+	"protocolType": "LDAP",
+	"version": ""
+}

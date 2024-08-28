@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>urn:ietf:params:netconf:base:1.0</capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="1">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+            <udr xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udr">
+                <consistency-check>
+                    <inconsistencies-threshold>5</inconsistencies-threshold>
+                    <sftp-server>
+                        <name>sftpServerForConsistency</name>
+                        <endpoints>
+                            <endpoint>
+                                <name>sftpServerForConsistency</name>
+                                <remote-address>10.130.34.217</remote-address>
+                                <remote-port>22</remote-port>
+                                <remote-path>/sftpuser/consistencyreport</remote-path>
+                                <client-identity>
+                                    <username>tsuser</username>
+                                    <public-key>
+                                        <local-definition>
+                                            <algorithm>rsa2048</algorithm>
+                                            <public-key-format>ssh-public-key-format</public-key-format>
+                                            <private-key-format>rsa-private-key-format</private-key-format>
+                                            <public-key>c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFCQVFESmJkdFN1TmZnL2lSRlBsemtFYjI5enNIK01SMHZ3bzhPM0dpRzFLaE1aR0h1Z2RoZFhTalFjMkZ0OE5oeHRkRzRxbDVwalBKbDQxYjNtbWJPQ3A2aXgrNVdtaFE4MGhHTU1lcFh5SDMwd3dFNE9VODR2cHJBUmJ3amFMaWJvc2VkNitTSEpxcTNScU9rN2kxNWNkM3FUbmQ2OU5LQk95bkRjT2s1MENXNVRqNkdYaXpwL3pkT2lmbElwODR1cmxwcW84RjFzVEJXSXAvbXJyLzJRQ0F4RmRFcGdoUHUxaExDZmJBRzF0RnZ3S1Vya3NVbmM4RCtETDRMaGFHeTlqazdrTXVrdkZtaGo2ZnBCVFo1MC8waXRyd3RQSTMrdCtGVEozL1J4b2NlUWZFSEZmZU9kWThGSldaRkZsQ0V0L2ZDdnJYandSQjZsTGZyYnB3WDNnOXggZWNjZEBuMjgwLWVjY2QxLXBvb2wxLTJ4N2xrLmVjY2QubG9jYWwK</public-key>
+                                            <private-key>LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBeVczYlVyalg0UDRrUlQ1YzVCRzl2YzdCL2pFZEw4S1BEdHhvaHRTb1RHUmg3b0hZClhWMG8wSE5oYmZEWWNiWFJ1S3BlYVl6eVplTlc5NXBtemdxZW9zZnVWcG9VUE5JUmpESHFWOGg5OU1NQk9EbFAKT0w2YXdFVzhJMmk0bTZMSG5ldmtoeWFxdDBhanBPNHRlWEhkNms1M2V2VFNnVHNwdzNEcE9kQWx1VTQraGw0cwo2ZjgzVG9uNVNLZk9McTVhYXFQQmRiRXdWaUtmNXE2LzlrQWdNUlhSS1lJVDd0WVN3bjJ3QnRiUmI4Q2xLNUxGCkozUEEvZ3krQzRXaHN2WTVPNURMcEx4Wm9ZK242UVUyZWRQOUlyYThMVHlOL3JmaFV5ZC8wY2FISGtIeEJ4WDMKam5XUEJTVm1SUlpRaExmM3dyNjE0OEVRZXBTMzYyNmNGOTRQY1FJREFRQUJBb0lCQUNzZjRQZnA2UlliY3dwOApHb2tkbjBEVzFrT2tvam9LYm5SaERlUG4vWXcxWlo0Wm9JZ0VuT3RiK0gwQU5tYko1WGVpeWduUkNraDBEcmQrCkVBcUd6WVhPUmlHMlpTVE1XTU5xSUdEZzVNNlZQVnFiTW5IVXBPOExQd2Rac1VSbzZsSE9JaVFwVEIxbSt6d2gKWGcwRkt0eXlKZlJtRy9kZEFrajhrSUkzSlF4eDZZV0VvK3ZQTnRFM250SnpGeS9xZU5TbXU1TWFuRU83b3ZXcApXRS9aY2U3Vm5aeDFYdG9EbUlxZVB0dzZzSnhWZmNOMUVIT0xmUzFLMVZFcUZYZGRueHRmQjVnSVR4YVBtUWUyCjBLdE1ab3JQbGNWeHlxQlVMVVZTOWl6cDFvcktsN04rcVoxVXhwc2lheUh3RHV3SkVvbi9yVHRkS3lGT1JNNm8KWlY5ekNVMENnWUVBOUNpLyt0QU5WN0xGYzRMMjk5ZURsMEFBbXozKzVROXkvU2xrTUhpQ0p6WSsrckRLTXNYTgpGMTdtSWlLVWp3NmFQUCtEYUJnRHAvQnFMSllkMUlGM2JiL0VjSVFiZTRKZ29rQS9FZHBkbm1nT0phU3dqcG5HCnh0N0ZFTzRTWVRMN05MR2E2ZWRGajkvbGhHNm9hUzBnTVhsUDk1NjZCNnZCeEhpTWR0eXNnbnNDZ1lFQTB6S2MKWFBnNW1rUzJGdnhEbS9TVFdXREN5RlNGUzF4dnNRVWl2KzNQS2VQekYzWERTNklIbzlOcjRtNkhyNFhFT2lQZQorb1pGVEtldUZvN250VHFpZExEVnZCVDRyaDdxYlZ3bGdSczRGVnhoOTlFZDBCbXFUUExSL29Bb01zQ1VidmpoCkN1cVl4OWg1Q2pVL0tXZ2ZpN01wQmhCdjZ1NkNSS1JKdVRqSEdBTUNnWUE1c0lzeit3YThDdnlHZjVKVkd6SDMKZ2VMaXkzSTNzei9MTzRWMXduT1dTa1gxTytKNnZxdm44cjlUbjNJVW56R29hZ01sakU4STFsQnYrb1JQMnN0YQpQaTV2RzNmVzVnWnBMOTczRys1MDZFYzNjOE5YM2xQT1Y0S2VybkhmVDRsMWVPV09rTnVwMUJCS0MwOTFrbmtCCjE1VWlmL21hcUdXZlE1Q0U0VDFOa3dLQmdRQ3YxOFhFeW8vN1dCWmNFUEdoMmdNTk9ia3ozdHVVb1lRRldZZFQKVWdkWWs0aUZFZkhtK1NOdlRjclhucnV1Y3F1czFNMEV2ZUxaTGd1T2tMRnZmVUJoOUJJaEpUemdqTEVYR00vSgpMUWFIRW9Jbk9aK2U4cCtPcmVZV0JsSngzMUkzQzFVa0o2dkpTUDJPZUVMOGtNc2pINnFhZC9rWEhEcXVPRE9CCjJqbzZUUUtCZ1FEbFJZT3RISllDNUN2KzY4MGp0U09aeVF1Qm8wbS9iQXhSU2RpdGpYUVpLK2h6U0VzeTB5VVkKTDdzQ2U2bDhrWjdrRGluVUhNNUlFczlFZ2dvWHl6eWpic3dUaFBUN3gwcnRSYmNxMzNwRmlsYmRXWXlxZkZOQQo5UjZiNDlvSzZ4LzFxZ1R1N2J5S3p3OVIzMXZIVmNCcG0xOG51T0NMdUVzTkhqdmw2MWdGSGc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=</private-key>
+                                        </local-definition>
+                                    </public-key>
+                                </client-identity>
+                                <server-authentication>
+                                    <ssh-host-keys>
+                                        <local-definition>
+                                            <host-key></host-key>
+                                        </local-definition>
+                                    </ssh-host-keys>
+                                </server-authentication>
+                            </endpoint>
+                        </endpoints>
+                    </sftp-server>
+                </consistency-check>
+            </udr>
+        </config>
+    </edit-config>
+</rpc>

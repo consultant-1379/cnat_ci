@@ -1,0 +1,509 @@
+global:
+  internalIPFamily: IPv4
+  externalIPv4:
+    enabled: true
+
+  timezone: CET
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: PACKET_CORE_CONTROLLER
+          customerId: 946060
+          swltId: STA-PCC-9
+  licensing:
+    sites:
+      - hostname: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+
+
+  sm:
+    pgw:
+      enabled: true
+    sgw:
+      enabled: true
+    smf:
+      enabled: true
+
+snmp-alarm-provider-secret-creation:
+  enabled: false
+
+eric-pc-routing-engine:
+  interfaces:
+    type: ovs
+    ovs:
+    - bridge: br_data
+      vlan_mode: trunk
+      mtu: 9000
+      trunk:
+        - minID: 2162 # sig_cn
+          maxID: 2162 # sig_cn
+        - minID: 2161 # media_cn
+          maxID: 2161 # media_cn
+        - minID: 2170 # vpngw_intraForward
+          maxID: 2170 # vpngw_intraForward
+
+eric-pc-mm:
+  global:
+    pcmm:
+      service:
+        useK8sNwSBI: true
+
+  eric-pc-mm-controller:
+    nodeSelector:
+      pcc-mm-pod: controller
+    appArmorProfile:
+      type: localhost
+      localhostProfile: docker-pcc
+
+  eric-pc-mm-forwarder:
+    nodeSelector:
+      pcc-mm-pod: non-controller
+    replicaCount: 8
+    ipv6: false
+    networks:
+    - name: ext1
+      cniVersion: 0.3.1
+      type: ovs
+      bridge: br_data
+      trunk:
+        - minID: 2063 # OM_CN
+          maxID: 2063 # OM_CN
+        - minID: 2064 # RAN_1
+          maxID: 2064 # RAN_1
+        - minID: 2069 # RAN_2
+          maxID: 2069 # RAN_2
+        - minID: 2062 # SIG_CN_1
+          maxID: 2062 # SIG_CN_1
+        - minID: 2070 # SIG_CN_2
+          maxID: 2070 # SIG_CN_2
+        - minID: 2061 # MEDIA_CN
+          maxID: 2061 # MEDIA_CN
+      mtu: 9000
+    appArmorProfile:
+      type: localhost
+      localhostProfile: docker-pcc
+
+  eric-pc-mm-mobility:
+    service:
+      useK8sNwSBI: true
+      sbi:
+        type: LoadBalancer
+        externalIPv4:
+          enabled: true
+          loadBalancerIP: 172.17.142.1
+    nodeSelector:
+      pcc-mm-pod: non-controller
+    replicaCount: 2
+    appArmorProfile:
+      type: localhost
+      localhostProfile: docker-pcc
+
+  eric-pc-mm-sctp:
+    nodeSelector:
+      pcc-mm-pod: non-controller
+    replicaCount: 2
+    appArmorProfile:
+      type: localhost
+      localhostProfile: docker-pcc
+
+  eric-pc-mm-br-agent:
+    nodeSelector:
+      pcc-mm-pod: non-controller
+
+eric-pc-sm:
+  eric-pc-sm-diameter:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+
+  eric-pc-sm-http-client:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+    replicaCount: 1
+
+  eric-pc-sm-ip-allocator:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+
+  eric-pc-sm-controller:
+    nodeSelector:
+      pcc-sm-pod: controller
+
+  eric-pc-sm-notification-forwarder:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+    services:
+      ipv4:
+        enabled: true
+      namfnotification-ipv4:
+        annotations:
+          metallb.universe.tf/address-pool: pcc-smf-notification
+          metallb.universe.tf/allow-shared-ip: pcc-smf-notification
+      nudmnotification-ipv4:
+        annotations:
+          metallb.universe.tf/address-pool: pcc-smf-notification
+          metallb.universe.tf/allow-shared-ip: pcc-smf-notification
+      npcfnotification-ipv4:
+        annotations:
+          metallb.universe.tf/address-pool: pcc-smf-notification
+          metallb.universe.tf/allow-shared-ip: pcc-smf-notification
+      nnrfnotification-ipv4:
+        annotations:
+          metallb.universe.tf/address-pool: pcc-smf-notification
+          metallb.universe.tf/allow-shared-ip: pcc-smf-notification
+      nchfnotification-ipv4:
+        annotations:
+          metallb.universe.tf/address-pool: pcc-smf-notification
+          metallb.universe.tf/allow-shared-ip: pcc-smf-notification
+      nsmfnotification-ipv4:
+        annotations:
+          metallb.universe.tf/address-pool: pcc-smf-notification
+          metallb.universe.tf/allow-shared-ip: pcc-smf-notification
+
+  eric-pc-sm-nsmf-forwarder:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+    services:
+      ipv4:
+        enabled: true
+      nsmf-ipv4:
+        loadBalancerIP: 172.17.142.2
+    replicaCount: 2
+
+  eric-pc-sm-smf-pgw-session:
+    replicaCount: 2
+    nodeSelector:
+      pcc-sm-pod: non-controller
+
+  eric-pc-sm-sgw-session:
+    replicaCount: 2
+    nodeSelector:
+      pcc-sm-pod: non-controller
+
+  eric-pc-sm-br-agent:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+
+  eric-pc-sm-target-database-master-rd:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+
+  eric-pc-sm-target-database-replica-rd:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+
+  eric-pc-sm-udp-forwarder:
+    nodeSelector:
+      pcc-sm-pod: non-controller
+    replicaCount: 1
+
+eric-pc-vpn-gateway-forwarder:
+  replicaCount: 2
+  resourceName: ovs-cni.network.kubevirt.io/br_data
+  resources:
+    dataPlane:
+      limits:
+        ovs-cni.network.kubevirt.io/br_data: 1
+      requests:
+        ovs-cni.network.kubevirt.io/br_data: 1
+  vpnGateway:
+    enabled: true
+    multiPod: intra
+  interfaces:
+    - name: net0
+      type: ovs
+      bridge: br_data
+      trunk:
+        - minVlan: 2162 # sig_cn
+          maxVlan: 2162 # sig_cn
+        - minVlan: 2161 # media_cn
+          maxVlan: 2161 # media_cn
+        - minVlan: 2170 # vpngw_intraForward
+          maxVlan: 2170 # vpngw_intraForward
+      l2Mtu: 9000
+
+
+eric-pc-kvdb-rd-server:
+  numberOfMaster: 3
+
+eric-pc-controller-ldap-admin-creds:
+  adminCredentials: null
+
+cnom-loadBalancer-service:
+  enabled: true
+  annotations:
+    metallb.universe.tf/address-pool: pcc-oam
+    metallb.universe.tf/allow-shared-ip: pcc-oam
+
+# Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+eric-pc-pm-init:
+  resources:
+    pmInit:
+      limits:
+        cpu: 50m
+
+# Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+eric-pm-resource-monitor:
+  resources:
+    pmrm:
+      requests:
+        memory: 128Mi
+
+
+eric-cloud-native-base:
+
+  eric-si-application-sys-info-handler:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    resources:
+      eric-si-application-sys-info-handler:
+        requests:
+          memory: 100Mi
+    asih:
+      applicationId: vpod2-pcc1
+
+  # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+  eric-log-transformer:
+    jvmHeap: 4096m
+    replicaCount: 5
+    resources:
+      logtransformer:
+        limits:
+          cpu: '2'
+          memory: 6Gi
+        requests:
+          memory: 6Gi
+      metrics:
+        requests:
+          memory: 128Mi
+      tlsproxy:
+        requests:
+          memory: 128Mi
+
+  eric-odca-diagnostic-data-collector:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    resources:
+      diagnostic-data-collector:
+        requests:
+          memory: 1Gi
+          cpu: 1000m
+          ephemeral-storage: 5Gi
+        limits:
+          memory: 4Gi
+          cpu: 1500m
+          ephemeral-storage: 20Gi
+
+  eric-pm-server:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    persistentVolume:
+      size: 32Gi
+    resources:
+      eric-pm-exporter:
+        requests:
+          memory: 64Mi
+      eric-pm-server:
+        limits:
+          memory: 12000Mi
+        requests:
+          memory: 8000Mi
+
+  eric-sec-key-management:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    resources:
+      metrics:
+        requests:
+          memory: 50Mi
+
+  eric-cm-mediator:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    resources:
+      eric-cm-mediator:
+        limits:
+          memory: 1Gi
+        requests:
+          memory: 512Mi
+
+  eric-data-message-bus-kf:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    resources:
+      messagebuskf:
+        requests:
+          cpu: '2'
+          memory: 2Gi
+
+  eric-data-object-storage-mn:
+    resources:
+      # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+      server:
+        limits:
+          cpu: 1100m
+          memory: 8Gi
+        requests:
+          cpu: 1100m
+          memory: 2Gi
+
+  eric-fh-snmp-alarm-provider:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    resources:
+      alarmprovider:
+        limits:
+          memory: 1024Mi
+    service:
+      externalIPv4:
+        enabled: true
+        annotations:
+          sharedVIPLabel: pcc-oam
+          addressPoolName: pcc-oam
+    sourceIdentifierType: 1
+    sourceIdentifier: "10.221.125.6"
+
+  # This is a YAML-formatted file used for dimensioning Search Engine.
+  # Declare variables to be passed into your templates at deploy time using
+  # “--values <path>/search-engine.medium.yaml” during helm install.
+  # Configuration of Search Engine
+  # Note that the storage size and numbers of replicas for Search Engine affect the retention mechanism provided by Search Engine Curator
+  # Use the deployment variants for Search Engine to guarantee intact functionality
+  eric-data-search-engine:
+    #
+    # Custom parameter to disable modification of sysctl by CNFs
+    autoSetRequiredWorkerNodeSysctl: false
+    #
+
+    replicaCount:
+      data: 3
+    persistence:
+      data:
+        persistentVolumeClaim:
+          size: "48Gi"
+    jvmHeap:
+      data: "2048m"
+    resources:
+      data:
+        limits:
+          cpu: "1000m"
+          memory: "4Gi"
+        requests:
+          cpu: "1000m"
+          memory: "4Gi"
+    index_management:
+      enabled: true
+      job_interval_in_minutes: 1
+      policies:
+        - description: "Delete indices older than 7 days (based on creation_date), for adp-app-logs and some legacy indices"
+          indices:
+            - pc-mm-*
+            - pc-sm-app-log*
+            - pc-routing-app*
+            - vpn-gw-app*
+            - pcc-kvdbrd-app-log*
+            - adp-app-logs*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=7d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Delete indices older than 1 days (based on creation_date), for specific pc-mm legacy indices"
+          indices:
+            - pc-mm-worker-report-log*
+            - pc-mm-list-subscriber-result-log*
+            - pc-mm-gf-imeicheck-log*
+            - pc-mm-n17-pei-check-log*
+          priority: 2
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=1d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Delete indices older than 30 days (based on creation_date), for audit and alarm log indices"
+          indices:
+            - adp-app-audit-logs*
+            - adp-app-alarm-log*
+            - adp-app-asi-logs*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=30d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Delete indices older than 60 days (based on creation_date), for ISP log indices"
+          indices:
+            - pcc-isp-log*
+            - isp-logs*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=60d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+        - description: "Delete indices older than 1 day (based on creation_date), for debug log indices"
+          indices:
+            - adp-app-debug-logs*
+          priority: 1
+          states:
+            - name: init
+              transitions:
+                - condition: min_index_age=1d
+                  destination_state: delete
+            - name: delete
+              actions:
+                - delete
+      delete_indices_by_diskspace:
+        - index: pc*
+          size: 2gb
+        - index: adp-app-logs*
+          size: 53gb
+        - index: adp-app-a*
+          size: 2gb
+        - index: isp-logs*
+          size: 2gb
+        - index: adp-app-debug-logs*
+          size: 2gb
+
+
+eric-cloud-native-nf-additions:
+
+  eric-pm-bulk-reporter:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    resources:
+      bulkreporter:
+        requests:
+          memory: 200Mi
+    env:
+      nodeName: vpod2-pcc1
+
+  eric-cm-yang-provider:
+    # Dimensioning from ADP pods in resources-max-size-pcc.yaml from csar pkg
+    resources:
+      schemaSynchronizer:
+        requests:
+          memory: 128Mi
+      sshd:
+        requests:
+          memory: 256Mi
+      yangDbAdapter:
+        requests:
+          memory: 256Mi
+    service:
+      externalIPv4:
+        enabled: true
+        annotations:
+          sharedVIPLabel: pcc-oam
+          addressPoolName: pcc-oam
+
+  eric-data-sftp-server:
+    service:
+      externalIPv4:
+        enabled: true
+        annotations:
+          sharedVIPLabel: pcc-oam
+          addressPoolName: pcc-oam

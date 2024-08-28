@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- version: 1.1.0 -->
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+</hello>]]>]]>
+
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="1">
+  <edit-config>
+    <target>
+      <running/>
+    </target>
+    <config>
+      <udr-application-counters xmlns="urn:rdns:com:ericsson:oammodel:ericsson-app-counters-udr">
+
+
+        <counter-group>
+          <name>ALL_EIR</name>
+          <description>EIR application subscriber counters</description>
+          <administrative-state>unlocked</administrative-state>
+          <periodicity>one-day</periodicity>
+          <data-type>ldap-entry</data-type>
+          <counter>
+            <name>NBR_IMEI</name>
+            <description>Number of IMEIs stored in UDR</description>
+            <condition>The value is incremented for every NBR_IMEI record provisioned</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>(EI6.imeiSvn != null)</rule>
+          </counter>
+          <counter>
+            <name>NBR_IMEI_CLONE</name>
+            <description>Number of cloned IMEIs</description>
+            <condition>The value is incremented for every cloned IMEI record provisioned</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>OQL[SELECT SUM(e.value.mvReadableAttributes['clonedImeiSvn'].size()) FROM /LdapRegularData.entrySet e WHERE e.value.mvReadableAttributes['clonedImeiSvn'].size() > 0 AND e.value.mvReadableAttributes['clonedImeiSvn'] != null AND e.value.readableAttributes['structuralObjectClass'] = 'EI8']</rule>
+          </counter>
+          <counter>
+            <name>NBR_IMSI_EXEMP</name>
+            <description>Number of IMSI exemptions to cloned IMEIs</description>
+            <condition>The value is incremented for every IMSI record provisioned that contains one or more cloned IMEIs</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>(EI8.IMSI != null) AND (multiValued(EI8.clonedImeiSvn) != null)</rule>
+          </counter>
+          <counter>
+            <name>NBR_IMEI_BLACK_GSMA</name>
+            <description>Number of remote black IMEIs (downloaded from GSMA)</description>
+            <condition>The value is incremented for every black IMEI record provisioned from GSMA</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>(binary(EI6.l3) = 1)</rule>
+          </counter>
+          <counter>
+            <name>NBR_IMEI_LOCK</name>
+            <description>Number of different IMEIs provisioned with locked IMSI</description>
+            <condition>The value is incremented for every locked IMEI record provisioned with locked IMSI</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>(EI6.lockedImsi != null)</rule>
+          </counter>
+          <counter>
+            <name>NBR_IMSI_LOCK</name>
+            <description>Number of different IMSIs provisioned with locked IMEI</description>
+            <condition>The value is incremented for every locked IMSI record provisioned with locked IMEI</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>(EI8.lockedImeiSvn != null)</rule>
+          </counter>
+          <counter>
+            <name>NBR_IMEI_WHITE</name>
+            <description>Number of white IMEIs</description>
+            <condition>The value is incremented for every white IMEI record provisioned</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>(binary(EI6.l0) = 1)</rule>
+          </counter>
+          <counter>
+            <name>NBR_IMEI_BLACK</name>
+            <description>Number of black IMEIs</description>
+            <condition>The value is incremented for every black IMEI record provisioned</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>(binary(EI6.l0) = 0) AND (binary(EI6.l1) = 1)</rule>
+          </counter>
+          <counter>
+            <name>NBR_IMEI_GREY</name>
+            <description>Number of grey IMEIs</description>
+            <condition>The value is incremented for every grey IMEI record provisioned</condition>
+            <administrative-state>unlocked</administrative-state>
+            <data-subtype>servCommonData</data-subtype>
+            <rule>(binary(EI6.l0) = 0) AND (binary(EI6.l1) = 0) AND (binary(EI6.l2) = 1)</rule>
+          </counter>
+        </counter-group>
+      </udr-application-counters>
+    </config>
+  </edit-config>
+</rpc>

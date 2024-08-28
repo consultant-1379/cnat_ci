@@ -1,0 +1,99 @@
+######################################
+## CNF general information
+######################################
+nodeName: n182-vpod2-ccrc1
+nodeType: CCRC
+
+vnflcm:
+  clusterName: n182-eccd2
+  namespace: ccrc
+
+users:
+  day1:
+  - username: ccrc-admin
+    password: Changeme@1st
+    groups:
+    - nrf-admin
+    - nssf-admin
+    - nrfagent-admin
+    - system-admin
+  - username: ccrc-sec
+    password: Changeme@1st
+    groups:
+    - nrf-security-admin
+    - nssf-security-admin
+    - nrfagent-security-admin
+    - system-security-admin
+vtap:
+  remotePath: vtap/node182-cluster2-ccrc1
+cnom:
+  fqdn: cnom.ccrc1.n182.vpod2.seli.gic.ericsson.se
+
+snmp:
+  agentEngineId: 800000c104636372633163347331
+  sourceIdentifier: 10.221.125.13
+
+license:
+  customerId: "946060"
+  swltId: STA-CCRC-27
+
+ddc:
+  remotePath: /mnt/ddc/node182-cluster2-ccrc1
+
+######################################
+## CNF specific information
+######################################
+ccrc:
+  nrf:
+    instanceId: 0c765084-9cc5-49c6-9876-4e5246a1c4d2
+    host: ccrc1-nrf-sig-n182-vpod2
+    port: 443
+  nssf:
+    instanceId: 13a1de33-ec45-4cd6-a842-4e5353a1c4d2
+    host: ccrc1-nssf-sig-n182-vpod2
+    port: 443
+    provisioning:
+      fqdn: nssf-prov.ccrc1.n182.vpod2.seli.gic.ericsson.se
+      amf:
+        regionId: 225
+        setId: 2
+        instanceId:
+        - 8b85f3f9-2f66-4698-b07e-414d46a1c4d2
+
+######################################
+## CNF certificates specific
+######################################
+certs:
+  iccr-external-tls-certificate:
+    p12: ../certificates/ccrc1/ccrc1-iccr-server.p12
+  eric-ccrc-nrf-sbi-server-certificate:
+    p12: ../certificates/ccrc1/ccrc1-nrf-sbi-server.p12
+  eric-ccrc-nrf-sbi-client-certificate:
+    p12: ../certificates/ccrc1/ccrc1-nrf-sbi-client.p12
+  eric-ccrc-nssf-sbi-server-certificate:
+    p12: ../certificates/ccrc1/ccrc1-nssf-sbi-server.p12
+  eric-ccrc-nssf-sbi-client-certificate:
+    p12: ../certificates/ccrc1/ccrc1-nssf-sbi-client.p12
+  eric-ccrc-nssf-provisioning-server-certificate:
+    p12: ../certificates/ccrc1/ccrc1-iccr-server.p12
+  eric-ccrc-nrf-kvdb-server-certificate:
+    p12: ../certificates/ccrc1/ccrc1-nrf-kvdb-server.p12
+  eric-ccrc-nrf-kvdb-client-certificate:
+    p12: ../certificates/ccrc1/ccrc1-nrf-kvdb-client.p12
+  eric-ccrc-nssf-kvdb-server-certificate:
+    p12: ../certificates/ccrc1/ccrc1-nssf-kvdb-server.p12
+  eric-ccrc-nssf-kvdb-client-certificate:
+    p12: ../certificates/ccrc1/ccrc1-nssf-kvdb-client.p12
+
+
+######################################
+## CNF dimensioning specific
+######################################
+hpaReplica:
+  eric-nrf-discovery: {min: 2, max: 10}
+  eric-nrf-management: {min: 2, max: 6}
+  eric-nrf-management-notification: {min: 2, max: 18}
+  eric-nssf-slice-selection-control: {min: 2, max: 5}
+  eric-nssf-nssai-availability: {min: 2, max: 3}
+  eric-nssf-notification: {min: 2, max: 3}
+

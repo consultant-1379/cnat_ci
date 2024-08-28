@@ -1,0 +1,143 @@
+global:
+  timezone: CET
+  domainName: seln.ete.ericsson.se
+  clusterName: eda.pod56-eccd1
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: EDA
+          customerId: 946060
+          swltId: STA-EDA-1
+  licensing:
+    sites:
+      - hostname: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+  activation:
+    service:
+      prov:
+        annotations:
+          metallb.universe.tf/allow-shared-ip: eda-oam
+          metallb.universe.tf/address-pool: eda-oam
+      oam:
+        annotations:
+          metallb.universe.tf/allow-shared-ip: eda-oam
+          metallb.universe.tf/address-pool: eda-oam
+      notif:
+        annotations:
+          metallb.universe.tf/allow-shared-ip: eda-oam
+  kubeApi:
+    port: 6443
+
+
+eric-tm-ingress-controller-cr:
+  service:
+    annotations:
+      sharedVIPLabel: eda-oam
+  annotations:
+    metallb.universe.tf/address-pool: eda-oam
+  replicaCount:
+    envoy: 2
+  resources:
+    envoy:
+      limits:
+        memory: 500M
+
+eric-data-wide-column-database-cd:
+  persistence:
+    dataVolume:
+      persistentVolumeClaim:
+        size: 103G
+        storageClassName: csi-cinder-sc-delete
+
+eric-act-activation-engine:
+  statefulset:
+    storageClass: csi-cinder-sc-delete
+  initContainers:
+    eric-act-hss-validator:
+      imageName: hss-validator-image
+      tag: 1.29.102
+
+eric-cloud-native-base:
+  eric-data-document-database-pg:
+    persistentVolumeClaim:
+      storageClassName: csi-cinder-sc-delete
+
+  eric-data-search-engine:
+    persistence:
+      data:
+        persistentVolumeClaim:
+          storageClassName: csi-cinder-sc-delete
+      master:
+        persistentVolumeClaim:
+          storageClassName: csi-cinder-sc-delete
+
+  eric-data-message-bus-kf:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+        size: 2G
+
+  eric-data-coordinator-zk:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+
+  eric-data-distributed-coordinator-ed:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+
+  eric-ctrl-bro:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: csi-cinder-sc-delete
+
+  eric-pm-server:
+    server:
+      persistentVolume:
+        storageClass: csi-cinder-sc-delete
+
+  eric-fh-snmp-alarm-provider:
+    service:
+      annotations:
+        sharedVIPLabel: eda-oam
+        addressPoolName: eda-oam
+    sourceIdentifierType: 1
+    sourceIdentifier: "10.130.34.249"
+
+  eric-si-application-sys-info-handler:
+    asih:
+      applicationId: pod56-eda1
+
+eric-act-aaa:
+  misc:
+    replicaCount: 1
+
+eric-act-activation-orchestrator:
+  aoe:
+    misc:
+      replicaCount: 2
+
+eric-act-inbound-async:
+  misc:
+    replicaCount: 1
+
+eric-act-inbound-interfaces:
+  misc:
+    replicaCount: 1
+
+eric-act-inbound-mml:
+  misc:
+    replicaCount: 1
+
+eric-act-proclog-cassandra-stasher:
+  misc:
+    proclog_stasher:
+      replicaCount: 1
+
+eric-act-rest-provisioning:
+  misc:
+    replicaCount: 1
+
+eric-act-web-server:
+  misc:
+    replicaCount: 1

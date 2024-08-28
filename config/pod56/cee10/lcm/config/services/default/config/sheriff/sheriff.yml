@@ -1,0 +1,19 @@
+licenseManagement:
+  # List of license servers (NeLS)
+  licenseServers:
+    # the first license server is mandatory
+    - name: primary     # used in logs, but no meaning for the code
+      licenseService:           # parameters specific to the NeLS Client API
+        remoteServer: <PRIMARY_LICENSE_SERVER>     # name of a remote TLS server instance managed via the LCM API
+        tlsProtocols: <OPENSSL_PROTOCOLS>
+        tlsCipherSuites: <OPENSSL_CIPHERSUITES>
+    # the second license server is optional, needed when NeLS is geo-redundant
+    - name: secondary
+      licenseService:
+        remoteServer: <SECONDARY_LICENSE_SERVER>
+        tlsProtocols: <OPENSSL_PROTOCOLS>
+        tlsCipherSuites: <OPENSSL_CIPHERSUITES>
+  customerId: <CUSTOMER_ID>  # from SW Supply
+  swltId:                    # Software License Target IDs
+    cee: <CEE_SWLT_ID>       # mandatory
+    csc: <CSC_SWLT_ID>       # conditional, required when CSC is present

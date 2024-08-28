@@ -1,0 +1,957 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--XML template for UDR configuratio for CCDM 1.10-->
+<!--
+     ------------------
+     README:
+     ------------------
+     - Template should be used by replacing the variable placeholders with actual values.
+     - OPTIONAL containers which will not be configured should be deleted.
+     - OPTIONAL parameters are commented. To set value for OPTIONAL parameter it is needed to remove
+       sequences defining start and end of the comment: <!--    -->
+<!--   which are located above and below element tag. Replace variable placeholder with actual value.
+     ------------------
+     !! ATTENTION !!
+     ------------------
+     To properly define parameter values refer to CCDM Day-1 Parameters Description document located
+     in CCDM CPI library as it contains detail information about parameters. -->
+
+<!-- HELLO message. It is needed before sending "edit-config".-->
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>urn:ietf:params:netconf:base:1.0</capability>
+    </capabilities>
+</hello>]]>]]>
+
+<!-- edit-config rpc -->
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="1">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <!-- Configuration for the UDR Network Function instance. -->
+            <udr xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udr">
+              <administrative-state>unlocked</administrative-state>
+                <!-- Configuration for UDR geographical redundancy. MANDATORY. -->
+                <geo-redundancy>
+                    <!-- Contains UDR site information. Up to three sites can be configured.
+                    At least the local site configuration must be provided. -->
+                    <site>
+                        <!-- Id of the UDR site. It can only be set at parent node creation. Valid values are from 1 to 255. MANDATORY. Used as list key. -->
+                        <id>1</id>
+
+                        <!-- Name of the UDR site. OPTIONAL and must be unique. -->
+                        <name>site-1</name>
+
+                        <!-- Determines if the site configuration is for the local or for a remote UDR instance. OPTIONAL. -->
+                        <is-local-site>true</is-local-site>
+
+                        <!-- Determines the priority of a UDR site for handling provisioning requests in case of network splits. A higher number means higher priority
+                        in the election of instance to allow provisioning in even split scenarios.
+                        Priority -1 means that provisioning is disabled for a site. If provisioning priority is not set, the value of site
+                        id will be used as provisioning priority. OPTIONAL. -->
+                        <provisioning-priority>3</provisioning-priority>
+
+                        <!-- IP endpoint where the Ud service is externally reachable from other UDR instance for geo-redundancy.
+                        It is MANDATORY when ldap-access is configured.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <ldap-endpoint>
+                            <host>udr1-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>636</port>
+                        </ldap-endpoint>
+
+                        <!-- IP endpoint where the Nudr-DR service is externally reachable from other UDR instance for geo-redundancy.
+                        If no ldap-endpoint is configured, then nudr-dr-endpoint is MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <nudr-dr-endpoint>
+                            <host>udr1-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>443</port>
+                        </nudr-dr-endpoint>
+
+                        <!-- IP endpoint where the UDR provisioning service is externally reachable from other UDR instance for geo-redundancy.
+                        It is MANDATORY when nudr-dr-endpoint or ldap-endpoint is configured.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <nudr-provisioning-endpoint>
+                            <host>udr1-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>443</port>
+                        </nudr-provisioning-endpoint>
+
+                        <!-- IP endpoint where the database locator service is externally reachable. MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <db-locator-endpoint>
+                            <host>udr1-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>10334</port>
+                        </db-locator-endpoint>
+
+                        <!-- IP endpoint where the database replication receiver service is externally reachable. MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <db-receiver-endpoint>
+                            <host>udr1-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>31000</port>
+                        </db-receiver-endpoint>
+
+                        <!-- IP endpoint where the data coordinator service is externally reachable. MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <db-coordinator-endpoint>
+                            <host>udr1-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>2181</port>
+                        </db-coordinator-endpoint>
+
+                        <!-- IP endpoint where the UDR consistency check orchestrator is externally reachable from other UDR instance for geo-redundancy. MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <consistency-check-orchestrator-endpoint>
+                            <host>udr1-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>443</port>
+                        </consistency-check-orchestrator-endpoint>
+                    </site>
+                    <site>
+                        <!-- Id of the UDR site. It can only be set at parent node creation. Valid values are from 1 to 255. MANDATORY. Used as list key. -->
+                        <id>2</id>
+
+                        <!-- Name of the UDR site. OPTIONAL and must be unique. -->
+                        <name>site-2</name>
+
+                        <!-- Determines if the site configuration is for the local or for a remote UDR instance. OPTIONAL. -->
+                        <is-local-site>false</is-local-site>
+
+                        <!-- Determines the priority of a UDR site for handling provisioning requests. A higher number means higher priority.
+                        Priority -1 means that provisioning is disabled for a site. If provisioning priority is not set, the value of site
+                        id will be used as provisioning priority. OPTIONAL. -->
+                        <provisioning-priority>2</provisioning-priority>
+
+                        <!-- IP endpoint where the Ud service is externally reachable from other UDR instance for geo-redundancy.
+                        It is MANDATORY when ldap-access is configured.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <ldap-endpoint>
+                            <host>udr2-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>636</port>
+                        </ldap-endpoint>
+
+                        <!-- IP endpoint where the Nudr-DR service is externally reachable from other UDR instance for geo-redundancy.
+                        If no ldap-endpoint is configured, then nudr-dr-endpoint is MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <nudr-dr-endpoint>
+                            <host>udr2-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>443</port>
+                        </nudr-dr-endpoint>
+
+                        <!-- IP endpoint where the UDR provisioning service is externally reachable from other UDR instance for geo-redundancy.
+                        It is MANDATORY when nudr-dr-endpoint or ldap-endpoint is configured.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <nudr-provisioning-endpoint>
+                            <host>udr2-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>443</port>
+                        </nudr-provisioning-endpoint>
+
+                        <!-- IP endpoint where the database locator service is externally reachable. MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <db-locator-endpoint>
+                            <host>udr2-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>10334</port>
+                        </db-locator-endpoint>
+
+                        <!-- IP endpoint where the database replication receiver service is externally reachable. MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <db-receiver-endpoint>
+                            <host>udr2-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>31000</port>
+                        </db-receiver-endpoint>
+
+                        <!-- IP endpoint where the data coordinator service is externally reachable. MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <db-coordinator-endpoint>
+                            <host>udr2-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>2181</port>
+                        </db-coordinator-endpoint>
+
+                        <!-- IP endpoint where the UDR consistency check orchestrator is externally reachable from other UDR instance for geo-redundancy. MANDATORY.
+                        Note: Once set at deployment time, the value of this parameter must not be changed. -->
+                        <consistency-check-orchestrator-endpoint>
+                            <host>udr2-intersite.pod56.5gc.mnc081.mcc240.3gppnetwork.org</host>
+                            <port>443</port>
+                        </consistency-check-orchestrator-endpoint>
+                    </site>
+                </geo-redundancy>
+
+                <!-- Configuration of the UDR Ud (LDAP) interface. -->
+                <ldap-access>
+                    <!-- DN for the root entry in the LDAP Directory Information Tree(DIT). MANDATORY. -->
+                    <root-entry-dn>dc=operator,dc=com</root-entry-dn>
+
+                    <!-- Password for the rootdn user. MANDATORY. -->
+                    <ldap-root-password>normal</ldap-root-password>
+
+                    <!-- List of distinguished names of entries whose children are collocated within the same data partition in the UDR database. OPTIONAL. -->
+                    <!--
+                    <collocated-dn>${COLLOCATED_DN}</collocated-dn>
+                    -->
+
+                    <!-- List of LDAP schemas for storing application data in UDR. -->
+                    <ldap-schema>
+                        <!-- Name of the LDAP schema. Type is string. MANDATORY. Used as list key. -->
+                        <name>identities.schema</name>
+
+                        <!-- The actual LDAP schema definition, according to RFC 4519. MANDATORY.
+                        Note: Replace ${LDAP_SCHEMA_CONTENT} with actual schema definition. -->
+                        <content><![CDATA[
+attributetype ( 1.3.6.1.4.1.193.169.2.200 NAME 'IMSI'
+        EQUALITY numericStringMatch
+        ORDERING numericStringOrderingMatch
+        SUBSTR numericStringSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{15}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.201 NAME 'MSISDN'
+        EQUALITY numericStringMatch
+        ORDERING numericStringOrderingMatch
+        SUBSTR numericStringSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{15}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.202 NAME 'IMPI'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.203 NAME 'IMPU'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.220 NAME 'WIMPU'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.204 NAME 'IPADDRESS'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{45}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.211 NAME 'SUBSID'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.212 NAME 'TRAFFICID'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.213 NAME 'USERNAME'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.227 NAME 'ExternalIdHash'
+        EQUALITY numericStringMatch
+        SUBSTR numericStringSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{5}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.228 NAME 'ExternalId'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.229 NAME 'EXTID'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.230 NAME 'NAI'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+objectclass ( 1.3.6.1.4.1.193.169.1.100 NAME 'IMSI'
+   SUP top
+   AUXILIARY
+   MUST ( IMSI ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.101 NAME 'MSISDN'
+   SUP top
+   AUXILIARY
+   MUST ( MSISDN ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.102 NAME 'IMPI'
+   SUP top
+   AUXILIARY
+   MUST ( IMPI ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.103 NAME 'IMPU'
+   SUP top
+   AUXILIARY
+   MUST ( IMPU ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.104 NAME 'IPADDRESS'
+   SUP top
+   AUXILIARY
+   MUST ( IPADDRESS ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.106 NAME 'SUBSID'
+   SUP top
+   AUXILIARY
+   MUST ( SUBSID ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.107 NAME 'TRAFFICID'
+   SUP top
+   AUXILIARY
+   MUST ( TRAFFICID ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.108 NAME 'WIMPU'
+   SUP top
+   AUXILIARY
+   MUST ( WIMPU ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.109 NAME 'USERNAME'
+   SUP top
+   AUXILIARY
+   MUST ( USERNAME ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.113 NAME 'NAI'
+   SUP top
+   AUXILIARY
+   MUST ( NAI ))
+
+objectclass ( 1.3.6.1.4.1.193.169.1.114 NAME 'EXTID'
+   SUP top
+   AUXILIARY
+   MUST ( EXTID ))
+                ]]></content>
+                    </ldap-schema>
+                    <ldap-schema>
+                        <name>mscIdentities.schema</name>
+                        <content><![CDATA[
+attributetype ( 1.3.6.1.4.1.193.169.2.205 NAME 'imsiMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.206 NAME 'msisdnMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.207 NAME 'impiMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.209 NAME 'IMSIAux'
+        EQUALITY numericStringMatch
+        SUBSTR numericStringSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{15}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.210 NAME 'imsiAuxMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+        SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.169.2.214 NAME 'IMSICHOSTATUS'
+   EQUALITY integerMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.27{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.169.2.215 NAME 'IMSIEXPIRYDATE'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{3}
+   SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.222 NAME 'IMPIAux'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.223 NAME 'IMPUCHOIDS'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{511})
+
+attributetype ( 1.3.6.1.4.1.193.169.2.216 NAME 'IMSICHOEXEC'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.217 NAME 'secImpi'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255} )
+
+attributetype ( 1.3.6.1.4.1.193.169.2.218 NAME 'usernameMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.219 NAME 'mscIdAux'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{32}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.224 NAME 'notifInfo'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{300}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.225 NAME 'ExtIdList'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255}        )
+
+attributetype (1.3.6.1.4.1.193.169.2.226 NAME 'UeFunctionMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{63}
+        SINGLE-VALUE )
+
+attributetype ( 1.3.6.1.4.1.193.169.2.231 NAME 'imsiList'
+        EQUALITY numericStringMatch
+        ORDERING numericStringOrderingMatch
+        SUBSTR numericStringSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{15})
+
+attributetype ( 1.3.6.1.4.1.193.169.2.232 NAME 'msisdnList'
+        EQUALITY numericStringMatch
+        ORDERING numericStringOrderingMatch
+        SUBSTR numericStringSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{15})
+
+attributetype ( 1.3.6.1.4.1.193.169.2.233 NAME 'trafficIdList'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255})
+
+attributetype ( 1.3.6.1.4.1.193.169.2.234 NAME 'naiMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.235 NAME 'naiList'
+        EQUALITY caseExactMatch
+        ORDERING caseExactOrderingMatch
+        SUBSTR caseExactSubstringsMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{255})
+
+attributetype ( 1.3.6.1.4.1.193.169.2.236 NAME 'imsiExtMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{32}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.237 NAME 'msisdnExtMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{32}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.238 NAME 'naiExtMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{32}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.239 NAME 'imsiAuxExtMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{32}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.240 NAME 'impiExtMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{32}
+        SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.169.2.241 NAME 'usernameExtMask'
+        EQUALITY bitStringMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{32}
+        SINGLE-VALUE)
+
+objectclass ( 1.3.6.1.4.1.193.169.1.105 NAME 'mscIdentities'
+   SUP top
+   AUXILIARY
+   MUST ( CDC )
+   MAY ( IMSI $ imsiMask $ MSISDN $ msisdnMask $ IMPI $ impiMask $ IMSIAux $ imsiAuxMask
+         $ IMSICHOSTATUS $ IMSIEXPIRYDATE $ IMSICHOEXEC $ secImpi $ USERNAME $ usernameMask
+         $ mscIdAux $ IMPIAux $ IMPUCHOIDS $ notifInfo $ ExtIdList $ UeFunctionMask
+         $ trafficIdList $ imsiList $ msisdnList $ NAI $ naiList $ naiMask $ imsiExtMask
+         $ msisdnExtMask $ naiExtMask $ imsiAuxExtMask $ impiExtMask $ usernameExtMask))
+                ]]></content>
+                    </ldap-schema>
+                    <!-- Contains LDAP attributes that are indexed (indexing improves database search performance). OPTIONAL. -->
+                    <!--
+                    <index>${LDAP_INDEX_1}</index>
+                    -->
+                    <!--
+                    <index>${LDAP_INDEX_N}</index>
+                    -->
+                    <!-- List of rules for LDAP Access Control. -->
+                    <ldap-acl>
+                        <!-- Name of the LDAP Access Control List (ACL). MANDATORY. Used as list key. -->
+                        <name>acls.conf</name>
+                        <!-- LDAP Access Control List definition. MANDATORY. -->
+                        <content>access to dn.children="ou=admin,dc=operator,dc=com"
+ by * auth
+
+access to *
+ by users write
+                </content>
+                    </ldap-acl>
+                    <!-- List of users with LDAP DIT access. -->
+                    <ldap-user>
+                        <!-- Name of LDAP user. MANDATORY. Used as list key. -->
+                        <name>provisioning</name>
+                        <!-- Password for LDAP user. MANDATORY. -->
+                        <password>secret2</password>
+                        <!-- Determines is the LDAP user is considered to be a provisioning user. OPTIONAL. -->
+                        <is-provisioning-user>true</is-provisioning-user>
+                        <!-- Indicates that updates coming from the LDAP user shall not raise any network notification (4G or 5G). OPTIONAL. -->
+                        <!--
+                        <avoid-notify-updates>${LDAP_USER_AVOID_NOTIFY_UPDATES}</avoid-notify-updates>
+                        -->
+                        <!-- Indicates that LDAP user can perform changes on locked entries. OPTIONAL. -->
+                        <!--
+                        <allow-lock-changess>${LDAP_USER_ALLOW_LOCK_CHANGES}</allow-lock-changes>
+                        -->
+                        <!-- Indicates associated network function type that will be registered in NRF. OPTIONAL. -->
+                        <!--
+                        <maps-to-nf-type>${LDAP_USER_MAPS_TO_NF_TYPE}</maps-to-nf-type>
+                        -->
+                        <!-- Determines if the LDAP user is used for replay of provisioning operations. OPTIONAL. -->
+                        <!--
+                        <is-reprovisioning-user>${LDAP_USER_IS_REPROVISIONING_USER}</is-reprovisioning-user>
+                        -->
+                        <!-- Determines if the LDAP user can proxy requests to CUDB system. OPTIONAL. -->
+                        <!--
+                        <allow-proxy-to-cudb>${LDAP_USER_ALLOW_PROXY_TO_CUDB}</allow-proxy-to-cudb>
+                        -->
+                    </ldap-user>
+                    <ldap-user>
+                        <name>traffic</name>
+                        <password>secret1</password>
+                        <is-provisioning-user>false</is-provisioning-user>
+                    </ldap-user>
+                </ldap-access>
+                <!-- Configuration of SOAP Notifications that are sent to End Point Groups based on data changes in the LDAP DIT. -->
+                <!-- <soap-notifications> -->
+                    <!-- Configuration of the event types that will trigger sending of SOAP notifications to End Point Groups. Allowed only when ldap-access is configured. -->
+                    <!-- <event-type> -->
+                        <!-- Unique Id for the event type. MANDATORY when configuring notifications. Used as list key. -->
+                        <!--
+                        <id>${SOAP_NOTIFICATIONS_EVENT_TYPE_ID}</id>
+                        -->
+                        <!-- Descriptive name for the event type. MANDATORY when configuring notifications. -->
+                        <!--
+                        <name>${SOAP_NOTIFICATIONS_EVENT_TYPE_NAME}</name>
+                        -->
+                        <!-- Enables and disables the generation of the event. OPTIONAL. -->
+                        <!--
+                        <enabled>${SOAP_NOTIFICATIONS_EVENT_TYPE_ENABLED}</enabled>
+                        -->
+                        <!-- Name of the End Point Group where the notification should be sent. MANDATORY when configuring notifications. -->
+                        <!--
+                        <ep-group>${SOAP_NOTIFICATIONS_EP_GROUP_REF}</ep-group>
+                        -->
+                        <!-- LDAP entries in the LDAP DIT that are going to be monitored. MANDATORY when configuring notifications. -->
+                            <!-- <target-entry> -->
+                                <!-- Unique id for target-entry. MANDATORY. Used as list key. -->
+                                <!--
+                                <id>${SOAP_NOTIFICATIONS_TARGET_ENTRY_ID}</id>
+                                -->
+                                <!-- LDAP Entry whose attributes will be monitored. DN format must be used. MANDATORY when configuring notifications. -->
+                                <!--
+                                <entry-dn>${SOAP_NOTIFICATIONS_TARGET_ENTRY_DN}</entry-dn>
+                                -->
+                                <!-- LDAP attributes to be considered for the notification. MANDATORY when configuring notifications. -->
+                                <!-- <target-attribute> -->
+                                    <!--"Unique id for target attribute. MANDATORY when configuring notifications. Used as list key. -->
+                                    <!--
+                                    <id>${SOAP_NOTIFICATIONS_TARGET_ATTRIBUTE_ID}</id>
+                                    -->
+                                    <!-- Name of the attribute to watch. MANDATORY when configuring notifications. -->
+                                    <!--
+                                    <attribute-name>${SOAP_NOTIFICATIONS_TARGET_ATTRIBUTE_NAME}</attribute-name>
+                                    -->
+                                    <!-- Specifies the type of interest in this particular attribute. MANDATORY when configuring notifications. -->
+                                    <!--
+                                    <attribute-type>${SOAP_NOTIFICATIONS_TARGET_ATTRIBUTE_TYPE}</attribute-type>
+                                    -->
+                                    <!-- Comparison value used when attribute-type is "check". MANDATORY when attribute is "check". -->
+                                    <!--
+                                    <check-value>${SOAP_NOTIFICATIONS_TARGET_ATTRIBUTE_CHECK_VALUE}</check-value>
+                                    -->
+                                    <!-- Defines if "check" attribute and its value will be included in the notification. OPTIONAL. -->
+                                    <!--
+                                    <is-value-sent>${SOAP_NOTIFICATIONS_TARGET_ATTRIBUTE_IS_VALUE_SENT}</is-value-sent>
+                                    -->
+                                <!-- </target-attribute> -->
+                            <!-- </target-entry> -->
+                        <!-- </event-type> -->
+                        <!-- List of End Point groups for SOAP notifications (each event is sent to all group members). -->
+                        <!-- <end-point-group> -->
+                            <!-- End Point group name. MANDATORY when configuring notifications. Used as list key. -->
+                            <!--
+                            <name>${SOAP_NOTIFICATIONS_EP_GROUP_NAME}</name>
+                            -->
+
+                            <!-- List of End Points. MANDATORY. -->
+                            <!-- <end-point> -->
+                                <!-- End Point name. MANDATORY when configuring notifications. Used as list key. -->
+                                <!--
+                                <name>${SOAP_NOTIFICATIONS_EP_NAME}</name>
+                                -->
+
+                                <!-- End Point URI. MANDATORY when configuring notifications. -->
+                                <!--
+                                <uri>${SOAP_NOTIFICATIONS_EP_URI}</uri>
+                                -->
+
+                                <!-- End Point weight for load balancing. A higher value means that more notifications will be sent to the End Point.
+                                Value 0 means that the notification will always be sent to the End Point. -->
+                                <!--
+                                <weight>${SOAP_NOTIFICATIONS_EP_WEIGTH}</weight>
+                                -->
+                                <!-- Configuration of tls autentication mode (simple or mutual) when the uri define a https destination (uri starts with https),
+                                If this parameter is not available endpoint will be http cleart-text. -->
+                                <!--
+                                <tls-mode>${SOAP_NOTIFICATIONS_TLS_MODE}</tls-mode>
+                                -->
+
+                        <!-- </end-point> -->
+                    <!-- </end-point-group> -->
+                <!-- </soap-notifications> -->
+
+                <!-- Configuration of Oauth 2.0 protocol. -->
+                <!-- <oauth2-producer> -->
+                    <!-- List of Oauth 2.0 keys -->
+                    <!-- <registered-key> -->
+                        <!-- ID for the OAuth2.0 key -->
+                        <!--
+                        <key-id>${OAUTH_KEY_ID}</key-id>
+                        -->
+                        <!-- Public key of issuers, in PEM format. -->
+                        <!--
+                        <public-key>${PUBLIC_KEY}</public-key>
+                        -->
+                    <!-- </registered-key> -->
+                <!-- </oauth2-producer> -->
+
+                <!-- Configuration of Nudr_DR Notifications that are sent to the notification callback URIs of remote network functions,
+                based on data changes in the UDR database. -->
+                <nudr-dr-notifications>
+                    <!-- Number of seconds used to calculate the notification subscription expiration time. It applies to explicit notification subscriptions. Allowed range is between 15 and 1209600. OPTIONAL. -->
+                    <maximum-subscription-duration>43200</maximum-subscription-duration>
+
+                    <!-- List of references to End Points for implicit Nudr_DR notifications (/udr/remote-nf-profile/instance-id). OPTIONAL. -->
+                    <!--
+                    <end-point>${REST_NOTIFICATIONS_END_POINT_REF}</end-point>
+                    -->
+                </nudr-dr-notifications>
+
+                <!-- Configuration of data to be used for registering the NF instance in NRF. At least one of the addressing parameters (fqdn, ipv4address, ipv6adress) must be included in the NF Profile. -->
+                <nf-profile>
+                    <!-- UUID of the NF Instance. MANDATORY. -->
+                    <instance-id>f8b5865c-49e8-463e-8f16-56eccd1d3f41</instance-id>
+
+                    <!-- Administrative status requested to be set in registration process at NRF. MANDATORY. -->
+                    <requested-status>registered</requested-status>
+
+                    <!-- Time in seconds expected between 2 consecutive heart-beat messages from an NF Instance to the NRF. OPTIONAL. -->
+                    <requested-heartbeat-timer>60</requested-heartbeat-timer>
+
+                    <!-- List of PLMNs to which the NF belongs. OPTIONAL. -->
+                    <plmn-id>
+                        <!--Mobile Country Code. MANDATORY when configuring plmn-id. -->
+                        <mcc>240</mcc>
+
+                        <!--Mobile Network Code. MANDATORY when configuring plmn-id. -->
+                        <mnc>81</mnc>
+                    </plmn-id>
+
+                    <!-- List of S-NSSAIs for the NF. OPTIONAL. -->
+                    <snssai>
+                        <!-- Id of S-NSSAI. MANDATORY when configuring S-NSSAI. Used as list key. -->
+                        <id>1</id>
+
+                        <!-- Slice/Service Type. MANDATORY when configuring S-NSSAI. -->
+                        <sst>1</sst>
+
+                        <!-- Slice Differentiator. OPTIONAL. -->
+                        <sd>000002</sd>
+                    </snssai>
+
+                    <!-- List of NSI identities of the Network Function. OPTIONAL. -->
+                    <!--
+                    <nsi>${NF_PROFILE_NSI}</nsi>
+                    -->
+
+                    <!-- FQDN of the Network Function. OPTIONAL. -->
+                    <fqdn>udr1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+
+                    <!-- FQDN used for inter PLMN routing as specified in 3GPP TS 23.003. OPTIONAL. -->
+                    <!--
+                    <inter-plmn-fqdn>${NF_PROFILE_INTER_PLMN_FQDN}</inter-plmn-fqdn>
+                    -->
+
+                    <!-- List of IPv4 addresses of the Network Function. OPTIONAL. -->
+                    <!--
+                    <ipv4-address>${NF_PROFILE_IPV4_ADDRESS}</ipv4-address>
+                    -->
+
+                    <!-- List of IPv6 addresses of the Network Function. OPTIONAL. -->
+                    <!--
+                    <ipv6-address>${NF_PROFILE_IPV6_ADDRESS}</ipv6-address>
+                    -->
+
+                    <!-- List of PLMNs allowed to access the NF instance. OPTIONAL. -->
+                    <!-- <allowed-plmn> -->
+                    <!-- Mobile Country Code. MANDATORY when configuring allowed-plmn. -->
+                    <!--
+                    <mcc>${NF_PROFILE_ALLOWED_PLMN_MCC}</mcc>
+                    -->
+
+                    <!-- Mobile Network Code. MANDATORY when configuring allowed-plmn. -->
+                    <!--
+                    <mnc>${NF_PROFILE_ALLOWED_PLMN_MNC}</mnc>
+                    -->
+                    <!-- </allowed-plmn> -->
+
+                    <!-- List of NF types allowed to access the NF instance. -->
+                    <allowed-nf-type>udm</allowed-nf-type>
+                    <allowed-nf-type>pcf</allowed-nf-type>
+                    <allowed-nf-type>nef</allowed-nf-type>
+                    <allowed-nf-type>5g-eir</allowed-nf-type>
+                    <allowed-nf-type>hss</allowed-nf-type>
+
+                    <!-- List of patterns representing the NF domain names allowed to access the NF service instance. OPTIONAL. -->
+                    <!--
+                    <allowed-nf-domain>${NF_PROFILE_ALLOWED_NF_DOMAIN}</allowed-nf-domain>
+                    -->
+
+                    <!-- List of S-NSSAI of the slices allowed to access the NF instance. OPTIONAL. -->
+                    <!-- <allowed-nssai> -->
+                    <!-- Type is uint32. MANDATORY when configuring allowed-nssai. Used as list key. -->
+                    <!--
+                    <id>${NF_PROFILE_SNSSAI_ID}</id>
+                    -->
+                    <!-- Slice/Service Type. MANDATORY when configuring allowed-nssai. -->
+                    <!--
+                    <sst>${NF_PROFILE_SNSSAI_SST}</sst>
+                    -->
+                    <!-- Slice Differentiator. OPTIONAL. -->
+                    <!--
+                    <sd>${NF_PROFILE_SNSSAI_SD}</sd>
+                    -->
+                    <!-- </allowed-nssai> -->
+                    <!-- Priority (relative to other NFs of the same type) to be used for NF selection. OPTIONAL. -->
+                    <priority>1</priority>
+                    <!-- Operator defined information about the location of the NF instance. OPTIONAL. -->
+                    <locality>LN1</locality>
+                    <!-- The served area(s) of the NF instance. OPTIONAL. -->
+                    <!--
+                    <serving-scope>${NF_SERVING_SCOPE}</serving-scope>
+                    -->
+                    <!-- List of set identifiers of the Network Function. Format must be: set<Set ID>.<nftype>set.5gc.mnc<MNC>.mcc<MCC>. OPTIONAL. -->
+                    <!--
+                    <nf-set-id>${NF_SET_ID}</nf-set-id>
+                    -->
+                    <!-- List of services provided by the NF instance. -->
+                    <service>
+                        <!-- Unique ID of the service instance within the NF Instance. -->
+                        <instance-id>nudr-dr</instance-id>
+                        <!-- Name of the service instance. -->
+                        <name>nudr-dr</name>
+                        <!-- URI scheme. MANDATORY. -->
+                        <scheme>https</scheme>
+
+                        <!-- Requested status of the service instance. -->
+                        <requested-status>registered</requested-status>
+
+                        <!-- List of NF types allowed to access the NF service instance. -->
+                        <allowed-nf-type>udm</allowed-nf-type>
+                        <allowed-nf-type>pcf</allowed-nf-type>
+                        <allowed-nf-type>nef</allowed-nf-type>
+
+                        <!-- Enable authorization based on OAuth 2.0. -->
+                        <!--
+                        <oauth2-required>${OAUTH2_REQUIRED}</oauth2-required>
+                        -->
+                    </service>
+
+                    <service>
+                        <!-- Unique ID of the service instance within the NF Instance. -->
+                        <instance-id>ncudr-gud-dr</instance-id>
+
+                        <!-- Name of the service instance. -->
+                        <name>ncudr-gud-dr</name>
+
+                        <!-- URI scheme. MANDATORY. -->
+                        <scheme>https</scheme>
+
+                        <!-- Requested status of the service instance. -->
+                        <requested-status>registered</requested-status>
+
+                        <!-- List of NF types allowed to access the NF service instance. -->
+                        <allowed-nf-type>5g-eir</allowed-nf-type>
+                        <allowed-nf-type>hss</allowed-nf-type>
+                    </service>
+
+                    <!-- <service> -->
+                        <!-- Unique ID of the service instance within the NF Instance. .-->
+                        <!-- <instance-id>ncudr-pei-dr</instance-id> -->
+
+                        <!-- Name of the service instance. -->
+                        <!-- <name>ncudr-pei-dr</name> -->
+
+                        <!-- URI scheme. MANDATORY. -->
+                        <!-- <scheme>${NF_SERVICE_SCHEME}</scheme> -->
+
+                        <!-- Requested status of the service instance. -->
+                        <!-- <requested-status>registered</requested-status> -->
+
+                        <!-- List of NF types allowed to access the NF service instance. -->
+                        <!-- <allowed-nf-type>udm</allowed-nf-type> -->
+                    <!-- </service> -->
+                    <!-- Specific UDR data. OPTIONAL.-->
+                    <udr-info>
+                        <!-- Identity of the UDR group that is served by the UDR instance. OPTIONAL. -->
+                        <group-id>1</group-id>
+
+                        <!-- List of ranges of SUPIs whose profile data is available in the UDR instance. OPTIONAL.
+                        EITHER the start and end attributes, or the pattern attribute, SHALL BE PRESENT.
+                        Note: Values for parameters under this element can be set but associated functionality has not been verified. -->
+                        <supi-range>
+                            <!-- SUPI range ID. MANDATORY when configuring supi-range. It used as list key. -->
+                            <id>1</id>
+
+                            <!-- Pattern representing the set of SUPIs belonging to this range. OPTIONAL. -->
+                            <supi-pattern>'[0-9]+'</supi-pattern>
+
+                            <!-- First value identifying the start of a SUPI range. OPTIONAL. -->
+                            <supi-start>240810000000000</supi-start>
+
+                            <!-- Last value identifying the end of a SUPI range. OPTIONAL. -->
+                            <supi-end>240819999999999</supi-end>
+                        </supi-range>
+
+                        <!-- List of ranges of GPSIs whose profile data is available in the UDR instance. OPTIONAL.
+                        EITHER the start and end attributes, or the pattern attribute, SHALL BE PRESENT.
+                        Note: Values for parameters under this element can be set but associated functionality has not been verified. -->
+                        <gpsi-range>
+                            <!-- GPSI range ID. MANDATORY when configuring gpsi-range. Used as list key. -->
+                            <id>1</id>
+
+                            <!-- Pattern representing the set of GPSIs belonging to this range. OPTIONAL. -->
+                            <identity-pattern>'[0-9]+'</identity-pattern>
+
+                            <!-- First value identifying the start of a GPSI range. OPTIONAL. -->
+                            <identity-start>491720000000000</identity-start>
+
+                            <!-- Last value identifying the end of a GPSI range. OPTIONAL. -->
+                            <identity-end>491729999999999</identity-end>
+                        </gpsi-range>
+
+                        <!-- List of ranges of external groups whose profile data is available in the UDR instance. OPTIONAL.
+                        EITHER the start and end attributes, or the pattern attribute, SHALL BE PRESENT.
+                        Note: Values for parameters under this element can be set but associated functionality has not been verified. -->
+                        <!-- <external-group-identifiers-range> -->
+                            <!-- Identifier range ID. MANDATORY when confgiring external-group-identifiers-range. Used as list key.-->
+                            <!--
+                            <id>${UDR_INFO_IDENTIDIER_RANGE_ID}</id>
+                            -->
+
+                            <!-- Pattern representing the set of identities belonging to this range. OPTIONAL. -->
+                            <!--
+                            <identity-pattern>${UDR_INFO_EXT_GROUP_ID_RANGE_PATTERN}</identity-pattern>
+                            -->
+
+                            <!-- First value identifying the start of an identity range. OPTIONAL. -->
+                            <!--
+                            <identity-start>${UDR_INFO_EXT_GROUP_ID_RANGE_START}</identity-start>
+                            -->
+
+                            <!-- Last value identifying the end of an identity range. OPTIONAL. -->
+                            <!--
+                            <identity-end>${UDR_INFO_EXT_GROUP_ID_RANGE_END}</identity-end>
+                            -->
+                        <!-- </external-group-identifiers-range> -->
+
+                        <!-- List of supported data sets in the UDR instance. Only 'subscription' and 'policy' data sets are supported by UDR. OPTIONAL.-->
+                        <!--
+                        <supported-data-set>${UDR_INFO_SUPPORTED_DATA_SET}</supported-data-set>
+                        -->
+                    </udr-info>
+                </nf-profile>
+
+                <!-- Configuration of local connectivity information for remote Network functions. It is used for sending implicit Nudr_DR notifications.
+                and it is needed in deployments where NRF is NOT PRESENT. OPTIONAL. -->
+                <!-- <remote-nf-profile> -->
+                    <!-- Id of the remote NF instance. MANDATORY when configuring remote-nf-profile. -->
+                    <!--
+                    <instance-id>${REMOTE_NF_ID}</instance-id>
+                    -->
+
+                    <!-- Type of remote NF. -->
+                    <!--
+                    <type>udm</type>
+                    -->
+
+                    <!-- List of services provided by the NF instance. MANDATORY when configuring remote-nf-profile. -->
+                    <!-- <service> -->
+                        <!-- Id of the remote NF Service instance. MANDATORY when configuring remote-nf-profile. -->
+                        <!--
+                        <instance-id>${REMOTE_SERVICE_ID}</instance-id>
+                        -->
+
+                        <!-- Name of the service instance. -->
+                        <!--
+                        <name>nudm-uecm</name>
+                        -->
+
+                        <!-- List of default notification subscriptions for the remote NF instance. MANDATORY when configuring remote-nf-profile. -->
+                        <!-- <default-notification-subscription> -->
+                            <!-- Type of notification for which the corresponding callback URI is provided. -->
+                            <!--
+                            <notification-type>${NOTIFICATION_TYPE}</notification-type>
+                            -->
+                            <!-- Callback URI for the notification. MANDATORY when configuring remote-nf-profile. -->
+                            <!--
+                            <callback-uri>${REMOTE_SERVICE_NOTIF_SUB_CALLBACK_URI}</callback-uri>
+                            -->
+                        <!-- </default-notification-subscription> -->
+                    <!-- </service> -->
+                <!-- </remote-nf-profile> -->
+                <!-- Container with configuration for  HTTP Custom Headers feature. -->
+                <http-header>
+                    <!--Administrative state of 3gpp-Sbi-NF-Peer-Info header support. -->
+                    <nf-peer-info-enabled>false</nf-peer-info-enabled>
+                </http-header>
+            </udr>
+        </config>
+    </edit-config>
+</rpc>

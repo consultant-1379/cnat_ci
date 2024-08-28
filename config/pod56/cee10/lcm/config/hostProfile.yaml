@@ -1,0 +1,232 @@
+#
+# Configuration file of roles of servers in a cluster
+#
+---
+hostProfiles:
+  - name: lcm
+    interfaceAssignment: lcm
+    diskAssignment: lcm-disks
+    hostConfigAssignment: virtual_host_config
+    controlGroupScheme: lcm
+    hostComponentGroups: 
+      - host_services_common
+      - host_services_chrony_server
+      - host_services_rsyslog_generator
+      - host_services_shared_filesystem
+    serviceComponentGroups:
+      - toolbox
+      - loadbalancer
+      - database_infra
+      - messagebus
+      - clustering_infra
+      - keystone_infra
+      - lcm
+      - serviceassurance_agents
+      - internal_pki_client
+      - internal_pki_server
+      - idam
+      - idam_agents
+    softwareAllocation:
+      - hostOS_sp3
+    type: virtualMachine
+    vmResources:
+      coreCount: 4
+      memGiB: 16
+  - name: controller
+    interfaceAssignment: controller_lcm
+    diskAssignment: controller-disks
+    hostConfigAssignment: control_host_config
+    memoryAssignment: controller_memory
+    controlGroupScheme: controller
+    firewallProfile: allowssh
+    hostComponentGroups: 
+      - host_services_common
+      - host_services_chrony
+      - host_services_rsyslog_generator
+      - host_services_css_r630
+      - host_services_hypervisor
+    serviceComponentGroups:
+      - clustering_openstack
+      - database_openstack
+      - loadbalancer
+      - messagebus
+      - keystone_openstack
+      - serviceassurance_agents
+      - openstack_control_default
+      - openstack_openvswitch_agent
+      - openstack_neutron_dhcp_agent
+      - openstack_neutron_metadata_agent
+      - idam_agents
+      - openstack_cinder
+      - openstack_swift
+      - toolbox
+      - internal_pki_client
+      - vxsds_sdc
+    softwareAllocation:
+      - hostOS_sp3
+      - CSS_v1
+      - openstack-v1
+      - vxsds_client_sp3
+  - name: serviceassurance
+    interfaceAssignment: serviceassurance
+    diskAssignment: serviceassurance-disks
+    hostConfigAssignment: virtual_host_config
+    controlGroupScheme: monitoring
+    hostComponentGroups:
+      - host_services_common
+      - host_services_chrony
+      - host_services_rsyslog_aggregator
+    serviceComponentGroups:
+      - toolbox
+      - loadbalancer
+      - database_serviceassurance
+      - messagebus
+      - clustering_serviceassurance
+      - serviceassurance
+      - serviceassurance_frontend
+      - idam_agents
+      - serviceassurance_agents
+      - internal_pki_client
+    softwareAllocation:
+      - hostOS_sp3
+    type: virtualMachine
+    vmResources:
+      coreCount: 4
+      memGiB: 16
+
+## compute
+  - name: compute_r640
+    interfaceAssignment: compute
+    diskAssignment: compute-with-one-disk
+    hostConfigAssignment: compute_host_config
+    memoryAssignment: compute_r640_memory
+    controlGroupScheme: compute_r640
+    hostComponentGroups:
+      - host_services_common
+      - host_services_chrony
+      - host_services_rsyslog_generator
+      - host_services_css_r640
+      - host_services_hypervisor
+    serviceComponentGroups:
+      - serviceassurance_agents
+      - openstack_computes_default
+      - idam_agents
+      - openstack_computes
+      - openstack_openvswitch_agent
+      - internal_pki_client
+      - vxsds_sdc
+    softwareAllocation:
+      - hostOS_sp3
+      - CSS_v1
+      - vxsds_client_sp3
+  - name: compute_r740_passthrough
+    interfaceAssignment: compute_passthrough
+    diskAssignment: compute-with-one-disk
+    hostConfigAssignment: compute_host_config
+    memoryAssignment: compute_r740_memory
+    controlGroupScheme: compute_r740
+    hostComponentGroups:
+      - host_services_common
+      - host_services_chrony
+      - host_services_rsyslog_generator
+      - host_services_css_r740
+      - host_services_hypervisor
+    serviceComponentGroups:
+      - serviceassurance_agents
+      - openstack_computes_default
+      - idam_agents
+      - openstack_computes_r740
+      - openstack_computes_passthrough
+      - openstack_openvswitch_agent
+      - internal_pki_client
+      - vxsds_sdc
+    softwareAllocation:
+      - hostOS_sp3
+      - CSS_v1
+      - vxsds_client_sp3
+
+## vxsds embedded hyperconverged
+  - name: compute_mdm_sds_gw
+    interfaceAssignment: compute_embedded_vxsds
+    diskAssignment: compute-with-8-disks-scaleio
+    hostConfigAssignment: compute_host_config
+    memoryAssignment: compute_r740_vxsds_memory
+    controlGroupScheme: compute_r740_vxsds
+    hostComponentGroups:
+      - host_services_common
+      - host_services_chrony
+      - host_services_rsyslog_generator
+      - host_services_css_r740_vxsds
+      - host_services_hypervisor
+    serviceComponentGroups:
+      - serviceassurance_agents
+      - openstack_computes_default
+      - idam_agents
+      - openstack_computes_r740_vxsds
+      - openstack_openvswitch_agent
+      - internal_pki_client
+      - vxsds_sdc
+      - vxsds_sds
+      - vxsds_mdm
+      - vxsds_gw_hyperconverged
+    softwareAllocation:
+      - hostOS_sp3
+      - vxsds_sp3
+      - vxsds_client_sp3
+      - CSS_v1
+      - openstack-v1
+  - name: compute_mdm_sds
+    interfaceAssignment: compute_embedded_vxsds
+    diskAssignment: compute-with-8-disks-scaleio
+    hostConfigAssignment: compute_host_config
+    memoryAssignment: compute_r740_vxsds_memory
+    controlGroupScheme: compute_r740_vxsds
+    hostComponentGroups:
+      - host_services_common
+      - host_services_chrony
+      - host_services_rsyslog_generator
+      - host_services_css_r740_vxsds
+      - host_services_hypervisor
+    serviceComponentGroups:
+      - serviceassurance_agents
+      - openstack_computes_default
+      - idam_agents
+      - openstack_computes_r740_vxsds
+      - openstack_openvswitch_agent
+      - internal_pki_client
+      - vxsds_sdc
+      - vxsds_sds
+    softwareAllocation:
+      - hostOS_sp3
+      - vxsds_sp3
+      - vxsds_client_sp3
+      - CSS_v1
+      - openstack-v1
+  - name: compute_tb_sds
+    interfaceAssignment: compute_embedded_vxsds
+    diskAssignment: compute-with-8-disks-scaleio
+    hostConfigAssignment: compute_host_config
+    memoryAssignment: compute_r740_vxsds_memory
+    controlGroupScheme: compute_r740_vxsds
+    hostComponentGroups:
+      - host_services_common
+      - host_services_chrony
+      - host_services_rsyslog_generator
+      - host_services_css_r740_vxsds
+      - host_services_hypervisor
+    serviceComponentGroups:
+      - serviceassurance_agents
+      - openstack_computes_default
+      - idam_agents
+      - openstack_computes_r740_vxsds
+      - openstack_openvswitch_agent
+      - internal_pki_client
+      - vxsds_sdc
+      - vxsds_sds
+      - vxsds_tb
+    softwareAllocation:
+      - hostOS_sp3
+      - vxsds_sp3
+      - vxsds_client_sp3
+      - CSS_v1
+...

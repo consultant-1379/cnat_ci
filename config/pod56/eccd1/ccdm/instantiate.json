@@ -1,0 +1,13 @@
+{
+  "clusterName": "pod56-eccd1",
+  "additionalParams": {
+    "skipJobVerification": true,
+    "skipVerification": true,
+    "namespace": "ccdm",
+    "helmNoHooks": false,
+    "cleanUpResources": true,
+    "applicationTimeOut": "2000",
+    "disableOpenapiValidation": false,
+    "helm_client_version": "3.8"
+  }
+}

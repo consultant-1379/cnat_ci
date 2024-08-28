@@ -1,0 +1,210 @@
+---
+
+## Set multiple parameter values at once ##
+
+definitions:
+  ## VIP_OAM: the virtual IP address for OAM traffic
+  VIP_OAM: &VIP_OAM ""
+  ## VIP_SIG_SCP: the virtual IP address for signaling traffic of SCP
+  VIP_SIG_SCP: &VIP_SIG_SCP ""
+  VIP_SIG2_SCP: &VIP_SIG2_SCP ""
+  ## VIP_SIG_SEPP: the virtual IP address for signaling traffic of SEPP
+  VIP_SIG_SEPP: &VIP_SIG_SEPP ""
+  VIP_SIG2_SEPP: &VIP_SIG2_SEPP ""
+  ## VIP_SIG_BSF: the virtual IP address for signaling traffic of BSF over the http interface
+  VIP_SIG_BSF: &VIP_SIG_BSF ""
+  ## VIP_SIG_Diameter: the virtual IP address for signaling traffic of BSF over the diameter interface
+  VIP_SIG_Diameter: &VIP_SIG_Diameter ""
+  ## storage class for all OAM state
+  oam_storage_class: &oam_storage_class csi-cinder-sc-delete
+  ## shared VIP label for OAM
+  shared_vip_oam_label: &shared_vip_oam_label "sc-oam"
+
+global:
+  timezone: CET
+#  pullSecret: ""
+#  registry:
+#    url: "armdocker.rnd.ericsson.se"
+  ericsson:
+    bsf:
+      enabled: false
+    nlf:
+      enabled: false
+    scp:
+      enabled: false
+    sepp:
+      enabled: false
+    rlf:
+      enabled: false
+    slf:
+      enabled: false
+    wcdb:
+      enabled: false
+    pvtb:
+      enabled: false
+    objectStorage: ## ROP File Storage Backend (Alpha Feature)
+      enabled: false
+    sftp: ## ROP File Storage Backend (Alpha Feature)
+      enabled: false
+    licensing:
+      nelsConfiguration:
+        primary:
+          hostname: "nelsaas-vnf1-thrift.sero.gic.ericsson.se"
+          ip: ""
+      licenseDomains:
+        - productType: "SIGNALING_CONTROLLER" ## DO NOT CHANGE THIS VALUE
+          customerId: "946060"
+          swltId: "STA-SC-8"
+
+## Set application specific parameter values ##
+eric-sc:
+  routes:
+    nbi:
+      fqdn: cnom.sc.pod56-eccd1.seln.ete.ericsson.se
+
+
+
+
+eric-sc-nlf:
+  replicaCount: 2
+
+eric-sc-rlf:
+  spec:
+    rlf:
+      replicaCount: 2
+
+eric-sc-slf:
+  spec:
+    slf:
+      replicaCount: 2
+
+## ADP microservices parameter values ##
+
+## Distributed Coordinator ED used by SC's Service Producer Registry (SPR) optional functionality
+eric-data-distributed-coordinator-ed-sc:
+  persistence:
+    persistentVolumeClaim:
+      storageClassName: *oam_storage_class
+
+## Backup and Restore Orchestrator
+eric-ctrl-bro:
+  persistence:
+    persistentVolumeClaim:
+      storageClassName: *oam_storage_class
+
+## LDAP Server
+eric-sec-ldap-server:
+  persistentVolumeClaim:
+    storageClassName: *oam_storage_class
+
+## Ingress Controller CR
+eric-tm-ingress-controller-cr:
+  service:
+    annotations:
+      sharedVIPLabel: *shared_vip_oam_label
+      addressPoolName: "sc-oam"
+    loadBalancerIP: *VIP_OAM
+
+## Distributed Coordinator ED
+eric-data-distributed-coordinator-ed:
+  persistence:
+    persistentVolumeClaim:
+      storageClassName: *oam_storage_class
+
+## Configuration Management Yang Provider
+eric-cm-yang-provider:
+  service:
+    annotations:
+      sharedVIPLabel: *shared_vip_oam_label
+      addressPoolName: "sc-oam"
+    loadBalancerIP: *VIP_OAM
+    certificates:
+      asymmetricKeyCertificateName: "netconf-default-key-cert"
+      trustedCertificateListName: "sc-trusted-default-cas"
+  externalTls:
+    netconf:
+      enabled: false
+
+## Data Coordinator ZK
+eric-data-coordinator-zk:
+  persistence:
+    persistentVolumeClaim:
+      storageClassName: *oam_storage_class
+
+## Document Database PG
+eric-data-document-database-pg:
+  persistentVolumeClaim:
+    storageClassName: *oam_storage_class
+
+## Message Bus KF
+eric-data-message-bus-kf:
+  persistence:
+    persistentVolumeClaim:
+      storageClassName: *oam_storage_class
+
+
+## SNMP Alarm Provider
+eric-fh-snmp-alarm-provider:
+  service:
+    annotations:
+      sharedVIPLabel: *shared_vip_oam_label
+      addressPoolName: "sc-oam"
+    loadBalancerIP: *VIP_OAM
+    secretName: 'snmp-alarm-provider-config'
+
+## PM Server
+eric-pm-server:
+  server:
+    persistentVolume:
+      storageClass: *oam_storage_class
+    retention: "3d"
+
+## Search Engine
+eric-data-search-engine:
+  autoSetRequiredWorkerNodeSysctl: false
+  persistence:
+    data:
+      persistentVolumeClaim:
+        # size: "100Gi"
+        storageClassName: *oam_storage_class
+    master:
+      persistentVolumeClaim:
+        # size: "64Mi"
+        storageClassName: *oam_storage_class
+
+## PM Bulk Reporter
+eric-pm-bulk-reporter:
+  persistentVolumeClaim:
+    storageClassName: *oam_storage_class
+    # size: 10Gi
+  service:
+    annotations:
+      sharedVIPLabel: *shared_vip_oam_label
+      addressPoolName: "sc-oam"
+    loadBalancerIP: *VIP_OAM
+
+## License Manager
+eric-lm-combined-server:
+  licenseServerClient:
+    licenseServer:
+      thrift:
+        host: "nelsaas-vnf1-thrift.sero.gic.ericsson.se"
+
+## Object Staorage MN
+eric-data-object-storage-mn:
+  persistentVolumeClaim:
+    storageClassName: *oam_storage_class
+
+## SFTP Server
+eric-data-sftp-server:
+  service:
+    annotations:
+      sharedVIPLabel: *shared_vip_oam_label
+      addressPoolName: "sc-oam"
+    loadBalancerIP: *VIP_OAM
+
+## Application Sys Info Handler
+eric-si-application-sys-info-handler:
+  asih:
+    applicationId: pod56-sc1
+

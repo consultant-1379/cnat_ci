@@ -1,0 +1,15 @@
+{
+  "agentEngineId": "8000137001C0A88A9FD5C92D86",
+  "heartbeatInterval": 600,
+  "trapTargets": [
+    {
+      "address": "10.130.34.243",
+      "user": "snmpuser",
+      "securityLevel": "authPriv",
+      "authPassphrase": "myAuthPassword",
+      "authProtocol": "SHA1",
+      "privPassphrase": "myPrivPassword",
+      "privProtocol": "AES128"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <edit-config>
+    <target><running/></target>
+    <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <!--
+        Configuration for the hssepc Network Function.
+      -->
+      <hssepc xmlns="urn:rdns:com:ericsson:oammodel:ericsson-hssepc">
+        <!-- Multi-NF features state  -->
+        <features>
+          <!--
+            Contains configuration parameters for epc feature.
+          -->
+          <iratmobility4g5g>
+            <!--
+              The feature can be activated/deactivated by the operator, in runtime, via the NBI.
+            -->
+            <oam-activated>true</oam-activated>
+            <!-- feature activation oam parameter exposed or not -->
+            <oam-exposed>true</oam-exposed>
+          </iratmobility4g5g>
+          <!-- <epc-aaa-interworking> -->
+            <!--
+              The feature can be activated/deactivated by the operator, in runtime, via the NBI.
+            -->
+            <!-- <oam-activated>{EPC_OAM_ACTIVATED}</oam-activated> -->
+            <!-- feature activation oam parameter exposed or not -->
+            <!-- <oam-exposed>{EPC_OAM_EXPOSED}</oam-exposed> -->
+          <!-- </epc-aaa-interworking> -->
+        </features>
+        <!-- States the eps-diameter -->
+        <eps-diameter>
+            <server>
+                <!-- Specify the origin realm of the Diameter Node, by default it should be read from environment variable -->
+                <realm>ericsson.se</realm>
+                <!-- Specify the origin host of the Diameter Node, by default it should be read from environment variable -->
+                <host>esm.ericsson.se</host>
+            </server>
+        </eps-diameter>
+        <!-- States the swx-diameter -->
+        <!-- <swx-diameter> -->
+            <!-- <server> -->
+                <!-- Specify the origin realm of the Diameter Node, by default it should be read from environment variable -->
+                <!-- <realm>{HSSEPC_DIAMETER_REALM}</realm> -->
+                <!-- Specify the origin host of the Diameter Node, by default it should be read from environment variable -->
+                <!-- <host>{HSSEPC_DIAMETER_HOST}</host> -->
+            <!-- </server> -->
+        <!-- </swx-diameter> -->
+        <!-- States the eps parameter -->
+        <eps-parameter>
+            <!-- The attribute means Each bit represents one service type:Bit 0: Circuit Switch Packet Switch (CSPS) Bit 1: reserved Bit 2: reserved Bit 3: reserved Bit 4: AuC Bit 5~15: reserved. -->
+            <common-services-in-extdb>0000000000000000</common-services-in-extdb>
+            <send-full-apn>true</send-full-apn>
+            <!-- This attribute indicates if the Roaming Area of EPC users is matched with either MME host, MME realm or both. -->
+            <ra-matching-policy>only-mme-host</ra-matching-policy>
+            <apn-config-can-be-deleted>false</apn-config-can-be-deleted>
+            <profile-can-be-deleted>false</profile-can-be-deleted>
+            <roaming-can-be-deleted>false</roaming-can-be-deleted>
+            <!-- <send-ue-usage-type-in-swx>false</send-ue-usage-type-in-swx> -->
+        </eps-parameter>
+        <!-- States the list of eps profile -->
+        <eps-profile>
+            <!-- Identifier of the eps profile. it is key of eps-profile EPS Profile is mandatory for EPS user. At least one needs to be defined-->
+            <profile-id>HSS-EsmProfile_Default</profile-id>
+            <can-be-deleted>true</can-be-deleted>
+            <!-- States the am data of eps profile -->
+            <am-data>
+                <ambr-max-dl>41943040</ambr-max-dl>
+                <ambr-max-ul>20971520</ambr-max-ul>
+            </am-data>
+            <!-- States the sm data of eps profile -->
+            <sm-data>
+                <context-id>11</context-id>
+                <context-id>12</context-id>
+                <default-context-id>11</default-context-id>
+            </sm-data>
+        </eps-profile>
+        <!-- States the list of apn configuration -->
+        <eps-apn-configuration>
+            <!-- Identifier the eps profile. it is key of eps-profile -->
+            <context-id>11</context-id>
+            <apn-name>internet</apn-name>
+            <ambr-max-dl>41943040</ambr-max-dl>
+            <ambr-max-ul>20971520</ambr-max-ul>
+            <pdn-type>ipv4v6</pdn-type>
+            <qos-profile-arp>1</qos-profile-arp>
+            <qos-profile-qci>5</qos-profile-qci>
+            <iwk5gs-indicator>subscribed</iwk5gs-indicator>
+        </eps-apn-configuration>
+        <eps-apn-configuration>
+            <!-- Identifier the eps profile. it is key of eps-profile -->
+            <context-id>12</context-id>
+            <apn-name>ims</apn-name>
+            <ambr-max-dl>41943040</ambr-max-dl>
+            <ambr-max-ul>20971520</ambr-max-ul>
+            <pdn-type>ipv4v6</pdn-type>
+            <qos-profile-arp>1</qos-profile-arp>
+            <qos-profile-qci>5</qos-profile-qci>
+            <iwk5gs-indicator>subscribed</iwk5gs-indicator>
+        </eps-apn-configuration>
+        <eps-plmn>
+           <plmn-id>24081</plmn-id>
+            <is-home>true</is-home>
+          </eps-plmn>
+      </hssepc>
+    </config>
+  </edit-config>
+  </rpc>
+  <close-session/>

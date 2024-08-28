@@ -1,0 +1,8 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: kvdbprioclass
+value: 5000000
+preemptionPolicy: PreemptLowerPriority
+globalDefault: false
+description: "KVDB Priority Class"

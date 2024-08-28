@@ -1,0 +1,15 @@
+{
+    "name": "CCDM_PF_MAPI",
+    "groupType": "CCDM-Failover",
+    "active": true,
+    "networkElements": [
+            {
+                    "name": "CCDM_PF_MAPI_1",
+                    "order": 1
+            },
+            {
+                    "name": "CCDM_PF_MAPI_2",
+                    "order": 2
+            }
+    ]
+}

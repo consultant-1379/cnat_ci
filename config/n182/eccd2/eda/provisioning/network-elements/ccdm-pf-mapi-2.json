@@ -1,0 +1,21 @@
+{
+	"active": true,
+	"name": "CCDM_PF_MAPI_2",
+	"protocolAttributes": {
+		"MaxPoolSize": "100",
+		"IdleTimeout": "1",
+		"BlockingTimeout": "10000",
+		"host": "prov-ccdm1-n182-vpod2.seli.gic.ericsson.se",
+		"port": "443",
+		"oauthTokenHost": "prov-ccdm1-n182-vpod2.seli.gic.ericsson.se",
+		"oauthTokenPort": "443",
+		"oauthTokenBaseUri": "auth/realms/oam/protocol/openid-connect/token",
+		"oauthClientId": "mapi-client",
+		"oauthClientSecret": "mapi-secret",
+		"secure": "true",
+		"truststorePassword": "ericsson",
+		"truststoreFile": "/app/client-certificate/ccdmkeystore-n182-vpod2.p12"
+	},
+	"protocolType": "M-API",
+	"version": ""
+}

@@ -1,0 +1,10 @@
+## CEE10.1 EP1 - fix for HZ89196 and HZ89198
+## additional to perform the below action for CEE10.1 EP apply
+
+Modify the apparmor template of nova-compute in /var/lib/cee/main/system/<systemname>/orchestrator/ansible/roles/nova-cell/templates/usr.bin.nova-compute.j2 to allow the configuration of trust mode for passthrough devices.
+Add /usr/bin/ip rix between /usr/sbin/cryptsetup rPx -> /usr/bin/nova-compute//cryptsetup and /usr/bin/mount rmUx.
+
+The following is an example:
+/usr/sbin/cryptsetup rPx -> /usr/bin/nova-compute//cryptsetup
+/usr/sbin/ip rix,
+/usr/bin/mount rmUx,

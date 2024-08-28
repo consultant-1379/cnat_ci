@@ -1,0 +1,48 @@
+#
+# Configuration file with CEE cluster information
+#
+---
+clusters:
+  - name: openstack
+    softwareAllocation:
+      - container-v1
+    sharedServices:
+      - cluster: lcm
+        serviceComponentGroups:
+          - cee_lcm_shared_services
+          - idam_shared_services
+      - cluster: serviceassurance
+        serviceComponentGroups:
+          - serviceassurance_shared_services
+          - vmalert_shared_service
+    configurationData:
+      - default
+      - openstack
+      - vxsds
+    backupDomains:
+      - openstack
+  - name: serviceassurance
+    softwareAllocation:
+      - container-v1
+      - serviceassurance-v1
+    sharedServices:
+      - cluster: openstack
+        services:
+          - openstack_shared_services
+    configurationData:
+      - default
+    backupDomains:
+      - serviceassurance
+  - name: lcm
+    softwareAllocation:
+      - lcm-v1
+      - container-v1
+      - portal_v1
+    sharedServices:
+      - cluster: serviceassurance
+        services:
+          - serviceassurance_shared_services
+    configurationData:
+      - default
+    backupDomains:
+      - lcm

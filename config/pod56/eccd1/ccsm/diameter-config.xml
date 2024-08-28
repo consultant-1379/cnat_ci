@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <edit-config>
+    <target><running/></target>
+    <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+        <!--Configuration for the EPS s6a adp diameter Function.-->
+        <diameter xmlns="urn:rdns:com:ericsson:oammodel:ericsson-diameter-adp">
+            <service>
+                 <!--Configuration for the EPC service name.-->
+                <id>eric-hssepc-s6adiameter</id>
+                <local-endpoint-reference>
+                    <id>EpcS6aReference</id>
+                    <application>eric-hssepc-s6a-diameter</application>
+                    <local-endpoint>CCSMEndpoint_sctp</local-endpoint>
+                </local-endpoint-reference>
+            </service>
+            <peer-table>
+                <dynamic-peer-acceptor>
+                    <id>EpcS6aDynamicPeerAcceptor</id>
+                    <peer-origin-host>.*</peer-origin-host>
+                </dynamic-peer-acceptor>
+            </peer-table>
+            <transport>
+                <node>
+                    <id>CCSMHost</id>
+                    <origin-realm>ericsson.se</origin-realm>
+                    <origin-host>esm.ericsson.se</origin-host>
+                    <product-name>CCSM</product-name>
+                </node>
+                <host-address-resolver>
+                    <id>EpcS6aAddress</id>
+                    <linux-env-var>POD_IP</linux-env-var>
+                </host-address-resolver>
+                <local-endpoint>
+                    <id>CCSMEndpoint_sctp</id>
+                    <node>CCSMHost</node>
+                    <terminate-connection-from-accepted-peers>EpcS6aDynamicPeerAcceptor</terminate-connection-from-accepted-peers>
+                    <!--
+                       Can be changed to transport-tcp according to your actual situation, but one {local-endpoint}
+                       cannot have more than 1 transport at the same time.
+                    -->
+                    <transport-sctp>
+                        <port>3868</port>
+                        <address>EpcS6aAddress</address>
+                    </transport-sctp>
+                </local-endpoint>
+            </transport>
+            <routing-table>
+                <id>EpcS6aRoutingTable</id>
+                <service>eric-hssepc-s6adiameter</service>
+                <routing-entry>
+                    <id>20</id>
+                    <expression>msg.egress</expression>
+                    <action>forward-message</action>
+                </routing-entry>
+            </routing-table>
+        </diameter>
+    </config>
+  </edit-config>
+  </rpc>
+  <close-session/>

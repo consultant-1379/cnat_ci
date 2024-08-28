@@ -1,0 +1,28 @@
+{
+    "contentName": "dbr_on_attach_service",
+    "flows": [
+        {
+            "destIpAddr": "any",
+            "destPort": "12333",
+            "direction": "dl",
+            "flowName": "1",
+            "protocol": "ip",
+            "sourceIpAddr": "any",
+            "sourcePort": "55666"
+        },
+        {
+            "destIpAddr": "any",
+            "destPort": "55666",
+            "direction": "ul",
+            "flowName": "2",
+            "protocol": "ip",
+            "sourceIpAddr": "any",
+            "sourcePort": "12333"
+        }
+    ],
+    "pccRuleId": 321,
+    "pccRuleType": 2,
+    "staticQualification": {
+        "contentQosProfileId": "dbr_on_attach_qos_profile"
+    }
+}

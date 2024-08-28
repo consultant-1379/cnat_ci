@@ -1,0 +1,11 @@
+---
+firewallProfile:
+  - name: allowssh
+    enable: True
+    customRules:
+      - name: allowssh
+        destination:
+          - address: cee-om-ipv4
+            type: withvip
+        protocols: tcp
+        ports: 22

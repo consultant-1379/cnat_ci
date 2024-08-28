@@ -1,0 +1,22 @@
+parameters:
+
+  prefix: eccd4
+  phynet_virtio: default
+  target_cloud_system: openstack
+
+  virtio_networks:
+  - name: ccd-oam
+    vlan: 3014
+    cidr: 10.130.34.176/29
+    enable_dhcp: false
+    gateway: 10.130.34.182
+    allocation_pools: { start: 10.130.34.177, end: 10.130.34.181 }
+    routes: []
+
+  - name: ecfe-oam
+    vlan: 3016
+    cidr: 11.1.16.0/24
+    enable_dhcp: false
+    gateway: 11.1.16.254
+    allocation_pools: { start: 11.1.16.1, end: 11.1.16.10 }
+    routes: []

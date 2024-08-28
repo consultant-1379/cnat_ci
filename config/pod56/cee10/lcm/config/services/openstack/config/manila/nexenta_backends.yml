@@ -1,0 +1,50 @@
+#######################################################################################
+##  Configuration file for generic manila backends in CEE                             #
+#######################################################################################
+##
+## Under the top 'backends' key, the used generic backends grouped together, where the
+## name of the manila backends are the keys, and below them there are the backend
+## parameters.
+##
+## This file should be referred from from manila-share service component's plugins section
+## the following way:
+##
+## plugins:
+##   ## the plugin name must be "backends" in case of generic backends!
+##   - name: backends
+##     pluginConfig:
+##       filename: config/manila/nexenta_backends.yml
+##
+## Attributes of the nexenta.clusters[]:
+##
+## - nexenta_nas_host: IP address of Nexenta Storage pool
+## - nexenta_password: This element defines the password for the Nexenta user.
+## - nexenta_pool: name of the pool to be used, taht contains filesystem and nfs share called manila
+## - nexenta_rest_addresses: Endpoint of the Nexenta cluster.
+## - nexenta_user: Name of the user that will be used to connect to the nexenta server.
+## - nexenta_rest_port: the Nexenta port number.
+## - nexenta_rest_connect_timeout: This option specifies the time limit (in seconds),
+##                                 within which the connection to NexentaStor management REST API server must be established.
+## - nexenta_nfs: Defines whether share over NFS is enabled.
+## - nexenta_thin_provisioning: If True shares will not be space guaranteed and overprovisioning will be enabled.
+## - nexenta_folder: Parent folder on NexentaStor.
+## - nexenta_use_https: Use HTTP secure protocol for NexentaStor management REST API connections.
+## - driver_handles_share_servers: Defines the driver mode for share storage lifecycle management.
+## - share_driver: Nexenta driver for manila.
+---
+#backends:
+#  nexenta-1:
+#    nexenta_nas_host: <TO.BE.FILLED>
+#    nexenta_password: <TO.BE.FILLED>
+#    nexenta_pool: <TO.BE.FILLED>
+#    nexenta_rest_addresses: <TO.BE.FILLED>
+#    nexenta_user: <TO.BE.FILLED>
+#    nexenta_rest_port: 8443
+#    nexenta_rest_connect_timeout: 10
+#    nexenta_nfs: true
+#    nexenta_thin_provisioning: true
+#    nexenta_folder: manila
+#    nexenta_use_https: true
+#    driver_handles_share_servers: false
+#    share_driver: manila.share.drivers.nexenta.ns5.nexenta_nas.NexentaNasDriver
+...

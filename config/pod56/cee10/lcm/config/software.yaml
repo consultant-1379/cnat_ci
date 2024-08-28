@@ -1,0 +1,75 @@
+#
+# Configuration file with CEE software definition
+#
+---
+software:
+  - name: hostos_sp3
+    versions:
+      - version: sles15sp3
+        url: '/repos/CXC1742929_8-R3A24-7d3a10068-114/ericsson-host-os'
+    type: rpm-md
+    priority: 99
+    release: 'SLES 15 SP3'
+  - name: cee_host_extras_sp3
+    versions:
+      - version: sles15sp3
+        url: '/repos/CXC1742929_8-R3A24-7d3a10068-114/ericsson-host-extras'
+    type: rpm-md
+    release: 'CEE 10.1'
+  - name: container
+    versions:
+      - version: 10.2.0.24.0.114
+        url: ':5500/cee/'
+    type: docker
+    release: 'CEE 10.1'
+  - name: openstack
+    versions:
+      - version: 1.0
+        url: '/repos/CXC1742930_8-R3A24-7d3a10068-114/ericsson-openstack'
+    type: rpm-md
+    release: 'OpenStack Victoria'
+  - name: cee-infra
+    versions:
+      - version: 1.0
+        url: '/repos/CXC1737883_8-R3A24-7d3a10068-114/cee-infra'
+    type: rpm-md
+    release: 'CEE 10.1'
+  - name: cee_serviceassurance
+    versions:
+      - version: 1.0
+        url: '/repos/CXC1742932_8-R3A24-7d3a10068-114/ericsson-serviceassurance'
+    type: rpm-md
+    release: 'CEE 10.1'
+  - name: portal
+    versions:
+      - version: 1.0
+        url: '/repos/CXC1742933_8-R3A24-7d3a10068-114/ericsson-portal-orchestrator'
+    type: rpm-md
+    release: 'CEE 10.1'
+  - name: cee_alarm_opi
+    versions:
+      - version: 1.0
+        url: '/repos/CXC1743854_8-R3A24-7d3a10068-114/ericsson-cee-alarm-opi/cee-alarm-opi'
+    type: rpm-md
+    release: 'CEE 10.1'
+  - name: css
+    versions:
+      - version: 1.0
+        url: '/repos/CXP9039202_4-R3X-8f282f2/ericsson-css'
+    type: rpm-md
+    priority: 80
+    release: 'CSS6'
+  - name: vxsds_sp3
+    versions:
+      - version: 3.6.0.4-sp3
+        url: '/repos/CXC1740177_8-R3A24-7d3a10068-114/ericsson-vxsds-server'
+    type: rpm-md
+    release: 'PowerFlex 3.6.0.4'
+    priority: 80
+  - name: vxsds_client_sp3
+    versions:
+      - version: 3.6.0.4-sp3
+        url: '/repos/CXC1743286_8-R3A24-7d3a10068-114/ericsson-vxsds-client'
+    type: rpm-md
+    release: 'PowerFlex 3.6.0.4'
+    priority: 80

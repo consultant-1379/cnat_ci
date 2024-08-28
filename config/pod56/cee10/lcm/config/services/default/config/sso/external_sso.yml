@@ -1,0 +1,20 @@
+---
+# keycloak can create client for external system, eg: VIM-OM
+# the default value of external_systems is null
+# if we want to create client for exteranl system in keycloak,
+# we should fill in the parameters under external_systems.
+# enabled: True means create client for external systems in keycloak
+# enabled: False means delete client in keycloak
+# name means the name of client
+# secret means Client Secret
+# redirect_uris means Acceptable redirect URIs for this client
+
+#external_systems:
+#  - name: system1
+#    secret: <Client Secret>
+#    redirect_uris: "http://example.com/*"
+#    enabled: True
+#  - name: system2
+#    secret: <Client Secret>
+#    redirect_uris: "*"
+#    enabled: True

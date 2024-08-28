@@ -1,0 +1,203 @@
+vnflcm:
+  vnfInstanceName: vpod2-ccpc1
+  vnfProductName: CCPC
+  vnfSoftwareVersion: 1.12.1
+  instantiate-file: instantiate.json
+  values-file: values.yaml
+  namespace: ccpc
+  clusterName: n182-eccd2
+access-info:
+  oam: ccpc1-n182-vpod2.seli.gic.ericsson.se
+  ldap-admin:
+    user: sysadmin
+    pass: c3lzQWRtMW5ARGF5MA==
+  users:
+    - user: ccpc-admin
+      pass: RG01R0NAUzBsdXQhb24=
+      pass-init: Q2hhbmdlbWUxc3Qh
+    - user: ccpc-sec
+      pass: RG01R0NAUzBsdXQhb24=
+      pass-init: Q2hhbmdlbWUxc3Qh
+pipeline:
+  - module: create-namespace
+  - module: create-k8s-secret
+    name: eric-sec-ldap-server-creds
+    sources:
+      - type: literal
+        key: adminuser
+        value: sysadmin
+      - type: literal
+        key: passwd
+        value: sysAdm1n@Day0
+      - type: literal
+        key: adminpasswd
+        value: $6$fzLPYlRZCpweJMJC$AiNfP0WYE3npY8Za6GxMFoGj75TOl.TS6tmnnky2Bv5wY0Ek8RIoJlr9pyj0LF3wMMaNsNTUH4jp2lIHviJGS0
+  - module: create-k8s-secret
+    name: eric-data-distributed-coordinator-creds
+    sources:
+      - type: literal
+        key: etcdpasswd
+        value: sysAdm1n@Day0
+  - module: create-k8s-secret
+    name: eric-sec-access-mgmt-creds
+    sources:
+      - type: literal
+        key: kcadminid
+        value: admin
+      - type: literal
+        key: kcpasswd
+        value: sysAdm1n@Day0
+  - module: create-k8s-secret
+    name: eric-data-object-storage-mn-creds
+    sources:
+      - type: literal
+        key: accesskey
+        value: admin
+      - type: literal
+        key: secretkey
+        value: sysAdm1n@Day0
+  - module: create-k8s-secret
+    name: eric-access-mgmt-oam-client-creds
+    sources:
+      - type: literal
+        key: client-id
+        value: ccpc-oam-client
+      - type: literal
+        key: client-secret
+        value: sysAdm1n@Day0
+      - type: literal
+        key: token-lifespan
+        value: '7200'
+  - module: instantiate
+  - module: verify-pod-running
+  - module: run-k8s-command
+    name: Patch Target Profile
+    cmd: 'patch cm targetnfprofiles-pcf -p  ''{  "data":{    "targetnfprofiles-pcf-default.json":
+    "{\n  \"targetNfProfiles\": [\n    {\n      \"requesterNfType\": \"PCF\",\n      \"targetNfType\":
+    \"UDR\",\n      \"targetServiceNames\": [\"nudr-dr\"],\n      \"subscriptionValidityTime\":
+    86400\n    },\n    {\n      \"requesterNfType\": \"PCF\",\n      \"targetNfType\":
+    \"BSF\",\n      \"targetServiceNames\": [\"nbsf-management\"],\n      \"subscriptionValidityTime\":
+    86400\n    }\n  ]\n}"}}'''
+  - module: run-k8s-command
+    name: Create networkpolicy to allow accessing eric-pm-server and eric-data-search-engine
+      for grafana data visualization
+    cmd: |
+      apply -f {file1}
+      apply -f {file2}
+    inline-files:
+      file1: network-policy/eric-pm-server-allow.yaml
+      file2: network-policy/eric-data-search-engine-allow.yaml
+  - module: run-k8s-command
+    name: pm-server ingress
+    cmd: create ingress eric-pm-server --rule="eric-pm-server-ccpc1.ingress.node182-cluster2.seli.gic.ericsson.se/*=eric-pm-server:9090"
+  - module: load-cmyp-user-config
+    file: user-config.xml
+    proto: netconf
+  - module: sleep
+    duration: 30
+  - module: change-initial-password
+  - module: load-cmyp-app-config
+    file: external-certificates.xml
+    user-id: 1
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: load-cmyp-app-config
+    file: nrf-agent-config.xml
+    user-id: 0
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: load-cmyp-app-config
+    file: nf-profile-config.xml
+    user-id: 0
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: load-cmyp-app-config
+    file: diameter-config.xml
+    user-id: 0
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: load-cmyp-app-config
+    file: sm-policy-control.xml
+    user-id: 0
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: load-cmyp-app-config
+    file: switch-admin-state.xml
+    user-id: 0
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: load-cmyp-app-config
+    file: ddc-config.xml
+    user-id: 0
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: load-cmyp-app-config
+    file: remote-nf-type-discovery-mode.xml
+    user-id: 0
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: load-cmyp-app-config
+    file: snmp-config.xml
+    user-id: 0
+    proto: netconf
+  - module: sleep
+    duration: 10
+  - module: provision-policy
+    host: prov-ccpc1-n182-vpod2.seli.gic.ericsson.se
+    trustca: ../../../certs/RootCA/ca.crt
+    client-cert: ../certificates/ccpc1/ccpc1-sbi-client.crt
+    client-key: ../certificates/ccpc1/ccpc1-sbi-client.key
+    access-token:
+      host: prov-ccpc1-n182-vpod2.seli.gic.ericsson.se
+      user-id: 0
+      client-id: ccpc-oam-client
+      client-secret: sysAdm1n@Day0
+    prov-info:
+      - api-path: ccpc-provisioning/v1/profiles/ip-can-session-qos/defaultIpCanSessionQos
+        data-file: policy-provisioning/defaultIpCanSessionQos.json
+        method: PUT
+        headers:
+          Content-Type: application/json
+      - api-path: ccpc-provisioning/v1/dataplans/Bronze
+        data-file: policy-provisioning/Bronze.json
+        method: PUT
+        headers:
+          Content-Type: application/json
+      - api-path: ccpc-provisioning/v1/dataplans/global
+        data-file: policy-provisioning/global.json
+        method: PUT
+        headers:
+          Content-Type: application/json
+      - api-path: ccpc-provisioning/v1/locators/resources/application/contexts/service-classification
+        data-file: policy-provisioning/service-classification.json
+        method: PUT
+        headers:
+          Content-Type: application/json
+      - api-path: ccpc-provisioning/v1/policies/dbr_on_attach_select_policy
+        data-file: policy-provisioning/dbr_on_attach_select_policy.json
+        method: PUT
+        headers:
+          Content-Type: application/json
+      - api-path: ccpc-provisioning/v1/rules/dbr_on_attach_select_rule
+        data-file: policy-provisioning/dbr_on_attach_select_rule.json
+        method: PUT
+        headers:
+          Content-Type: application/json
+      - api-path: ccpc-provisioning/v1/contents/dbr_on_attach_service
+        data-file: policy-provisioning/dbr_on_attach_service.json
+        method: PUT
+        headers:
+          Content-Type: application/json
+      - api-path: ccpc-provisioning/v1/profiles/content-qos/dbr_on_attach_qos_profile
+        data-file: policy-provisioning/dbr_on_attach_qos_profile.json
+        method: PUT
+        headers:
+          Content-Type: application/json

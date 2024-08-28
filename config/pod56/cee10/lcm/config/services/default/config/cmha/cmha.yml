@@ -1,0 +1,20 @@
+---
+cmha_additional_networks:
+  - lcm-ipv4
+cmha_fence_compute_before_evacuation: true
+cmha_try_to_recover_compute_after_evacuation: true
+cmha_hosts_to_exclude_from_fencing: []
+cmha_allow_evacuation_without_fencing: false
+cmha_enabled_plugins: []
+# conditions to disable host
+# if collectd_plugin is configured, this parameter should be configured
+# default monitor all aggregators, userDefinedConditions is no usable
+# if you want to set userDefinedConditions, please set allConditions to false,
+# userDefinedConditions should be the same as aggregator in portProfile definitions
+collectd_host_failure_conditions:
+  aggregators:
+    allConditions: true
+    userDefinedConditions: []
+cmha_openstack_rest_api_timeout: 60
+cmha_evacuation_timeout: 1800
+cmha_redefine_timeout: 60

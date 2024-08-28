@@ -1,0 +1,16 @@
+{
+  "agentEngineId": "800000c1046363646d3163347331",
+  "heartbeatInterval": 600,
+  "kafkaAddress": "eric-udr-message-bus-kf",
+  "trapTargets": [
+    {
+      "address": "11.100.3.51",
+      "user": "snmpuser",
+      "securityLevel": "authPriv",
+      "authPassphrase": "myAuthPassword",
+      "authProtocol": "SHA1",
+      "privPassphrase": "myPrivPassword",
+      "privProtocol": "AES128"
+    }
+  ]
+}

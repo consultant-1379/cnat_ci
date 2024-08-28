@@ -1,0 +1,40 @@
+autowizard false
+config
+diagnostic-data-collection data-collector profile defaultProfileForPeriodicalLogExport
+diagnostic-data-collection data-collector collection-interval 10
+diagnostic-data-collection data-collector administrative-state unlocked
+diagnostic-data-collection collector-profile defaultProfileForCollectionActionWhenTrOrCsr
+ profile-type      action-profile
+ data-to-collect   [ logs metrics ]
+ export-ddb-to     [ sftp ]
+ log-plane         [ adp-app-asi-logs* adp-app-audit-logs* adp-app-debug-logs* adp-app-logs* ]
+ sftp              sftpServerForDDC
+ collection-window 4320
+exit
+diagnostic-data-collection collector-profile defaultProfileForPeriodicTriggerDDC
+ profile-type      action-profile
+ data-to-collect   [ logs metrics ]
+ export-ddb-to     [ sftp ]
+ log-plane         [ adp-app-asi-logs* adp-app-audit-logs* adp-app-debug-logs* adp-app-logs* ]
+ sftp              sftpServerForDDC
+ collection-window 15
+exit
+diagnostic-data-collection collector-profile defaultProfileForPeriodicalLogExport
+ profile-type      action-profile
+ data-to-collect   [ logs metrics ]
+ export-ddb-to     [ sftp ]
+ log-plane         [ adp-app-logs* ]
+ sftp              sftpServerForDDC
+ collection-window 15
+exit
+diagnostic-data-collection sftp-server sftpServerForDDC
+ endpoints endpoint sftpServerForDDC
+  remote-address 11.100.3.51
+  remote-port    22
+  remote-path    /mnt/ddc/node182-cluster2-sc1
+  client-identity username root
+  client-identity password bG1jX3hkZw==
+  server-authentication ssh-host-keys local-definition host-key [ "AAAAB3NzaC1yc2EAAAADAQABAAABAQCu+vgpZjwHdzh8MPYaBW1LPtXa3zwzt9ySLSyv4wtOx5ijJOdcY97aITsgTu/TWvBjstXVd2H8NXx+/X8xUDYbfzxMN1rbIKh0/UTT9f/J6Noetj9cnP+NT39gCc3ei/9H3YWkekfp/i1wE95R/khF7fe3+T6kFaatEzPeEXMvinqy7CHSksKNrd4kO+YvFDxtmGGDSdy8nKYppBdrAQlmmzip7s3q1dKhOKkTRLTI/NZd2ALRNpoFp0mVFEDD3QHZwyne8kSvjxl0YZqk/6egv71Lstqu7gmgjxxyFSJtFyUhjszjusfKBEnVff8OOrJr6G+sAV36oCywA/vShCoR" ]
+ exit
+exit
+commit

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>urn:ietf:params:netconf:base:1.0</capability>
+    </capabilities>
+</hello>]]>]]><rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="101">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <!--xmlns="urn:rdns:com:ericsson:oammodel:ericsson-nssf" NSSF configuration.-->
+            <nssf xmlns="urn:rdns:com:ericsson:oammodel:ericsson-nssf">
+                <!--http-header: Configuration of http-header. -->
+                <http-header>
+                    <!--nf-peer-info-enabled: The status of 3gpp-Sbi-NF-Peer-Info header support. Default value is false. -->
+                    <nf-peer-info-enabled>false</nf-peer-info-enabled>
+                    <!--user-agent-enabled: The status of user-agent header support. Default value is true. -->
+                    <user-agent-enabled>true</user-agent-enabled>
+                </http-header>
+                <!--nf-profile: NSSF own NFProfile info.-->
+                <nf-profile>
+                    <!--required items of nf-profile: instance-id, service.-->
+                    <!--At least one set of addresses exists between NF profile level addresses and Service level addresses.-->
+                    <!--If the fqdn and ipEndpoint of service are not present, the FQDN or IP address from nf-profile shall be used to construct the API URIs of this service.-->
+                    <!--The perfered order of addresses to be used is Service level IP Address, Service level FQDN, NF profile level IP Address, NF profile level FQDN.-->
+                    <!--For allowedPlmns, allowedNfTypes, allowedNfDomains, allowedNssais, If this item is present in the NFService and in the NF profile, the item from the NFService shall prevail. The absence of this item in the NFService and in the NFProfile indicates that there is no corresponding restriction to access the service instance.-->
+                    <!--instance-id: Unique identity of the NSSF Instance.-->
+                    <instance-id>13a1de33-ec45-4cd6-a842-56eccd1ba3d8</instance-id>
+                    <!--requested-status: Administrative status requested to be set in registration/update process at NRF, that shall be the value of the NFStatus parameter.-->
+                    <requested-status>registered</requested-status>
+                    <!--requested-heartbeat-timer: Time in seconds expected between 2 consecutive heart-beat messages from an NSSF Instance to the another NSSF, to be included in the registration request.-->
+                    <requested-heartbeat-timer>60</requested-heartbeat-timer>
+                    <!--plmn-id(mandatory): PLMNs of the Network Function.-->
+                    <plmn-id>
+                        <!--mcc: mobile country code of the PLMN ID.-->
+                        <mcc>240</mcc>
+                        <!--mnc: mobile network code of the PLMN ID.-->
+                        <mnc>81</mnc>
+                    </plmn-id>
+                    <!--snssai: S-NSSAIs of the Network Function.-->
+                    <snssai>
+                        <!--id: Unique ID that represents the S-NSSAI.-->
+                        <id>1</id>
+                        <!--sst: Slice/service type of the S-NSSAI, the value range is 0-255-->
+                        <sst>1</sst>
+                        <!--sd: Slice Differentiator of the S-NSSAI.-->
+                        <sd>000002</sd>
+                    </snssai>
+                    <!--snssai: NSI identities of the Network Function.-->
+                    <nsi>testNSI</nsi>
+                    <!--fqdn: FQDN of the Network Function.-->
+                    <fqdn>nssf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                    <!--inter-plmn-fqdn: If the NF needs to be discoverable by other NFs in a different PLMN, then an FQDN that is used for inter PLMN routing as specified in 3GPP TS 23.003 needs to be registered with the NSSF.-->
+                    <!--<inter-plmn-fqdn>{{NSSF-INTER-PLMN-FQDN}}</inter-plmn-fqdn>-->
+                    <!--ipv4-address: IPv4 addresses of the Network Function.-->
+                    <!--<ipv4-address>{{NSSF-IPV4-ADDRESS}}</ipv4-address>-->
+                    <!--ipv6-address: IPv6 addresses of the Network Function.-->
+                    <!--<ipv6-address>{{NSSF-SERVICE-IPV4-ADDRESS}}</ipv6-address>-->
+                    <!--allowed-plmn: PLMNs allowed to access the NF instance.-->
+                    <allowed-plmn>
+                        <!--required items of allowed-plmn: mcc, mnc.-->
+                        <!--mcc: mobile country code of the PLMN ID.-->
+                        <mcc>240</mcc>
+                        <!--mnc: mobile network code of the PLMN ID.-->
+                        <mnc>81</mnc>
+                    </allowed-plmn>
+                    <!--allowed-nf-type: Type of the NFs allowed to access the NF instance.-->
+                    <allowed-nf-type>amf</allowed-nf-type>
+                    <!--allowed-nf-domain: Pattern (regular expression according to the ECMA-262 dialect) representing the NF domain names allowed to access the NF instance.-->
+                    <!--<allowed-nf-domain>{{NSSF-ALLOWED-NF-DOMAIN}}</allowed-nf-domain>-->
+                    <!--allowed-nssai: S-NSSAI of the allowed slices to access the NF instance.-->
+                    <allowed-nssai>
+                        <!--required items of allowed-nssai: id, sst.-->
+                        <!--id: Unique ID that represents the S-NSSAI.-->
+                        <id>1</id>
+                        <!--sst: Slice/service type of the S-NSSAI, the value range is 0-255-->
+                        <sst>1</sst>
+                        <!--sd: Slice Differentiator of the S-NSSAI.-->
+                        <sd>000002</sd>
+                    </allowed-nssai>
+                    <!--priority: Priority (relative to other NFs of the same type) in the range of 0-65535, to be used for NF selection; lower values indicate a higher priority. If priority is also present in the nfServiceList parameters, those will have precedence over this value.-->
+                    <priority>1</priority>
+                    <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other NF instances of the same type; if capacity is also present in the nfServiceList parameters, those will have precedence over this value.-->
+                    <capacity>100</capacity>
+                    <!--locality: Operator defined information about the location of the NF instance.-->
+                    <locality>LN1</locality>
+                    <!--recovery-time: Timestamp when the NF was (re)started.-->
+                    <!--<recovery-time>{{NSSF-RECOVERY-TIME}}</recovery-time>-->
+                    <!--service: List of NF Service Instances. It shall include the services produced by the NF that can be discovered by other NFs.-->
+                    <service>
+                        <!--required items of service: instance-id, name, scheme, status.-->
+                        <!--instance-id: Unique ID of the service instance within the NF Instance.-->
+                        <instance-id>nnssf-nsselection-0001</instance-id>
+                        <!--name: Name of the service instance.-->
+                        <name>nnssf-nsselection</name>
+                        <!--scheme(mandatory): Protocol schema of URI (e.g. "http", "https").-->
+                        <scheme>https</scheme>
+                        <!--status: Status of the NF Service Instance.-->
+                        <requested-status>registered</requested-status>
+                        <!--fqdn: FQDN of the NF Service Instance.-->
+                        <fqdn>nssf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                        <!--inter-plmn-fqdn: If the NF service needs to be discoverable by other NFs in a different PLMN, then an FQDN that is used for inter PLMN routing as specified in 3GPP TS 23.003 may be registered with the NSSF.-->
+                        <!--<inter-plmn-fqdn>{{NSSF-SERVICE-INTER-PLMN-FQDN}}</inter-plmn-fqdn>-->
+                        <!--: IP addresses and port information of the Network Function (including IPv4 and/or IPv6 address) where the service is listening for incoming service requests.-->
+                        <ip-endpoint>
+                            <!--required items of ip-endpoint: id.-->
+                            <!--At most one occurrence of either ipv4-address or ipv6-address.-->
+                            <!--id: Unique ID that represents the NSSF service instance.-->
+                            <id>1</id>
+                            <!--ipv4-address: IPv4 address of NSSF service which is listening for incoming service requests.-->
+                            <!--<ipv4-address>{{NSSF-SERVICE-IPV4-ADDRESS}}</ipv4-address>-->
+                            <!--ipv6-address: IPv6 address of NSSF service which is listening for incoming service requests.-->
+                            <!--<ipv6-address>{{NSSF-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                            <!--transport: Transport protocol. -->
+                            <transport>tcp</transport>
+                            <!--port: Port number that the NSSF service is listening on.-->
+                            <port>443</port>
+                        </ip-endpoint>
+                        <!--default-notification-subscription: Notification endpoints for different notification types.-->
+                        <!--<default-notification-subscription>-->
+                        <!--required items of default-notification-subscription: callback-uri, notification-type.-->
+                        <!--notification-type: Type of notification for which the corresponding callback URI is provided.-->
+                        <!--<notification-type>{{NSSF-DEFAULT-SUBSCRIPTION-NOTIFICATION-TYPE}}</notification-type>-->
+                        <!--callback-uri: The callback URI.-->
+                        <!--<callback-uri>{{NSSF-DEFAULT-SUBSCRIPTION-NOTIFICATION-CALLBACK-URI}}</callback-uri>-->
+                        <!--n1-message-class: If the notification type is N1_MESSAGES, this item shall be present and shall identify the class of N1 messages to be notified. -->
+                        <!--<n1-message-class>{{NSSF-DEFAULT-SUBSCRIPTION-NOTIFICATION-N1-MSG-CLASS}}</n1-message-class>-->
+                        <!--n2-information-class: If the notification type is N2_INFORMATION, this item shall be present and shall identify the class of N2 information to be notified.  -->
+                        <!--<n2-information-class>{{NSSF-DEFAULT-SUBSCRIPTION-NOTIFICATION-N2-INFO-CLASS}}</n2-information-class>-->
+                        <!--</default-notification-subscription>-->
+                        <!--allowed-plmn: PLMNs allowed to access the service instance. The absence of service's allowedPlmns indicates that any PLMN is allowed to access the service instance. When included, the allowedPlmns needs not include the PLMN IDs registered in the plmnList of the NF Profile, i.e. the PLMN IDs registered in the NF Profile shall be considered to be allowed to access the service instance.-->
+                        <allowed-plmn>
+                            <!--required items of allowed-plmn: mcc, mnc.-->
+                            <!--mcc: mobile country code of the PLMN ID.-->
+                            <mcc>240</mcc>
+                            <!--mnc: mobile network code of the PLMN ID.-->
+                            <mnc>81</mnc>
+                        </allowed-plmn>
+                        <!--allowed-nf-type: Type of the NFs allowed to access the service instance. The absence of this item indicates that any NF type is allowed to access the service instance.-->
+                        <allowed-nf-type>amf</allowed-nf-type>
+                        <!--allowed-nf-domain: Pattern (regular expression according to the ECMA-262 dialect) representing the NF domain names allowed to access the service instance. The absence of this item indicates that any NF domain is allowed to access the service instance.-->
+                        <!--<allowed-nf-domain>{{NSSF-SERVICE-ALLOWED-NF-DOMAIN}}</allowed-nf-domain>-->
+                        <!--allowed-nssai: S-NSSAI of the allowed slices to access the service instance. The absence of this item indicates that any slice is allowed to access the service instance.-->
+                        <allowed-nssai>
+                            <!--required items of allowed-nssai: id, sst.-->
+                            <!--id: Unique ID that represents the S-NSSAI.-->
+                            <id>1</id>
+                            <!--sst: Slice/service type of the S-NSSAI, the value range is 0-255-->
+                            <sst>1</sst>
+                            <!--sd: Slice Differentiator of the S-NSSAI.-->
+                            <sd>000002</sd>
+                        </allowed-nssai>
+                        <!--priority: Priority (relative to other services of the same type) in the range of 0-65535 to be used for NF Service selection; lower values indicate a higher priority.-->
+                        <priority>1</priority>
+                        <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other services of the same type.-->
+                        <capacity>100</capacity>
+                        <!--recovery-time: Timestamp when the NF service was (re)started.-->
+                        <!--<recovery-time>{{NSSF-SERVICE-RECOVERY-TIME}}</recovery-time>-->
+                    </service>
+                    <service>
+                        <instance-id>nnssf-nssaiavailability-0001</instance-id>
+                        <name>nnssf-nssaiavailability</name>
+                        <scheme>https</scheme>
+                        <requested-status>registered</requested-status>
+                        <fqdn>nssf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                        <ip-endpoint>
+                            <id>1</id>
+                            <transport>tcp</transport>
+                            <port>443</port>
+                        </ip-endpoint>
+                        <allowed-plmn>
+                            <mcc>240</mcc>
+                            <mnc>81</mnc>
+                        </allowed-plmn>
+                        <allowed-nf-type>amf</allowed-nf-type>
+                        <allowed-nssai>
+                            <id>1</id>
+                            <sst>1</sst>
+                            <sd>000002</sd>
+                        </allowed-nssai>
+                        <priority>1</priority>
+                        <capacity>100</capacity>
+                    </service>
+                </nf-profile>
+                <common>
+
+                    <!--<roaming>-->
+                        <!--sepp information.-->
+                        <!--<sepp>-->
+                            <!--Unique ID representing the SEPP.-->
+                            <!--<id>{{SEPP-ID}}</id>-->
+                            <!--Protocol schema.-->
+                            <!--<scheme>{{http/https}}</scheme>-->
+                            <!--FQDN or IP Address of the SEPP-->
+                            <!--<fqdn>{{SEPP-FQDN}}</fqdn>-->
+                            <!--Port of the SEPP-->
+                            <!--<port>{{SEPP-PORT}}</port>-->
+                            <!--Lower values indicate a higher priority. -->
+                            <!--<priority>{{SEPP-PRIORITY}}</priority>-->
+                            <!--Optional path segment(s) used to construct the {apiRoot} variable of the different API URIs.-->
+                            <!--<api-prefix>{{prefix}}</api-prefix>-->
+                        <!--</sepp>-->
+                        <!--<fplmn-nssf>-->
+                            <!--<plmn-name>{{FPLMN-NAME}}</plmn-name>-->
+                            <!--<nssf-uri>{{NSSF_URI}}</nssf-uri>-->
+                            <!--<plmn-id>-->
+                                <!--<mcc>{{FPLMN-ID-MCC}}</mcc>-->
+                                <!--<mnc>{{FPLMN-ID-MNC}}</mnc>-->
+                            <!--</plmn-id>-->
+                        <!--</fplmn-nssf>-->
+                        <!--<default-scheme>{{http/https}}</default-scheme>-->
+                    <!--</roaming>-->
+                </common>
+                <nsselection-service>
+                    <preferred-amf-response>static-amf-list</preferred-amf-response>
+                </nsselection-service>
+                <!--<optional-feature>-->
+                    <!-- whether enable vp license -->
+                    <!--<nssf-automation-analytics>deactivated</nssf-automation-analytics>-->
+                    <!--<nssf-automation-analytics-miot>deactivated</nssf-automation-analytics-miot>-->
+                    <!-- <nssf-dynamic-policy-framework>deactivated</nssf-dynamic-policy-framework> -->
+                    <!-- <nssf-dynamic-policy-framework-miot>deactivated</nssf-dynamic-policy-framework-miot> -->
+                <!--</optional-feature>-->
+                <!--administrative-state: When set to unlocked NSSF can handle traffic normally. When Set to shutting-down/locked NSSF reject all traffic and deregisters its profile at NRF.-->
+                <administrative-state>unlocked</administrative-state>
+                <!--dscp: DSCP configuration.-->
+                <!-- <dscp> -->
+                    <!--ingress: DSCP configuration for ingress traffic.-->
+                    <!-- <ingress> -->
+                        <!--interface: Traffic interface to which the DSCP value is applied to-->
+                        <!-- <interface>{{TRAFFIC-INTERFACE-1}}</interface> -->
+                        <!--value: DSCP value -->
+                        <!-- <value>{{DSCP-VALUE}}</value> -->
+                    <!-- </ingress> -->
+                    <!-- <ingress> -->
+                        <!--interface: Traffic interface to which the DSCP value is applied to-->
+                        <!-- <interface>{{TRAFFIC-INTERFACE-2}}</interface> -->
+                        <!--value: DSCP value -->
+                        <!-- <value>{{DSCP-VALUE}}</value> -->
+                    <!-- </ingress> -->
+                    <!--egress: DSCP configuration for egress traffic.-->
+                    <!-- <egress> -->
+                        <!--interface: Traffic interface to which the DSCP value is applied to-->
+                        <!-- <interface>{{TRAFFIC-INTERFACE-1}}</interface> -->
+                        <!--value: DSCP value -->
+                        <!-- <value>{{DSCP-VALUE}}</value> -->
+                    <!-- </egress> -->
+                    <!-- <egress> -->
+                        <!--interface: Traffic interface to which the DSCP value is applied to-->
+                        <!-- <interface>{{TRAFFIC-INTERFACE-2}}</interface> -->
+                        <!--value: DSCP value -->
+                        <!-- <value>{{DSCP-VALUE}}</value> -->
+                    <!-- </egress> -->
+                <!-- </dscp> -->
+            </nssf>
+        </config>
+    </edit-config>
+</rpc>

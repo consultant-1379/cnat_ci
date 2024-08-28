@@ -1,0 +1,203 @@
+parameters:
+
+  prefix: test
+
+  ############ N99 ############
+  # phynet_virtio: N99_physnet1
+  # phynet_sriov_left: N99_CEE1_PHY0
+  # phynet_sriov_right: N99_CEE1_PHY1
+  # l2gw_dcgw_id: 3ed41e66-65c5-45b4-8eec-91f525c244a1
+  # l2gw_sriov_left_id: 58486fe1-4e5f-47d4-84e6-0448bea5b7fe
+  # l2gw_sriov_right_id: eb338dc8-f10d-4fa1-a637-935f738a400f
+  ############ N99 ############
+
+  ############ N28 ############
+  phynet_virtio: DC322_physnet1
+  phynet_sriov_left: DC322-CEE1-PHY0
+  phynet_sriov_right: DC322-CEE1-PHY1
+  l2gw_dcgw_id: e2cc959b-4c4f-4281-995e-4f8287207352
+  l2gw_sriov_left_id: 0bcbec8a-7ecf-424c-b871-bd48b56447a5
+  l2gw_sriov_right_id: 72678b7e-24cb-4fe7-b1d9-147fec1aa841
+  ############ N28 ############
+
+  create_sriov_flat_left: false
+  sriov_flat_name_left: sriov-flat-left
+  dummy_subnet_left: 172.31.111.0/24
+  create_sriov_flat_right: false
+  sriov_flat_name_right: sriov-flat-right
+  dummy_subnet_right: 172.31.112.0/24
+
+  macvlan_parent_networks:
+  - name: macvlan-parent-1
+    cidr: 172.32.3.0/24
+
+  virtio_networks:
+  - name: ccd-oam
+    vlan: 2000
+    vxlan: 6000
+    cidr: 21.117.61.32/29
+    enable_dhcp: false
+    gateway: 21.117.61.33
+    allocation_pools: { start: 21.117.61.36, end: 21.117.61.38 }
+    routes: []
+
+  - name: ecfe-signaling
+    vlan: 2927
+    vxlan: 6927
+    cidr: 21.22.27.0/24
+    enable_dhcp: false
+    gateway: 21.22.27.254
+    allocation_pools: { start: 21.22.27.1, end: 21.22.27.16 }
+    routes: []
+
+  - name: ecfe-oam
+    vlan: 2870
+    vxlan: 6870
+    cidr: 21.21.70.0/24
+    enable_dhcp: false
+    gateway: 21.21.70.254
+    allocation_pools: { start: 21.21.70.1, end: 21.21.70.32 }
+    routes:
+    - { destination: 10.63.0.0/16, nexthop: 21.21.70.254 } # SERO server
+    - { destination: 10.86.0.0/16, nexthop: 21.21.70.254 } # SERO server
+
+  - name: ecfe-intersite
+    vlan: 2868
+    vxlan: 6868
+    cidr: 21.21.68.0/24
+    enable_dhcp: false
+    gateway: 21.21.68.254
+    allocation_pools: { start: 21.21.68.1, end: 21.21.68.16 }
+    routes:
+    - { destination: 5.8.6.161/32, nexthop: 21.21.68.254 }
+    - { destination: 21.21.93.0/24, nexthop: 21.21.68.254 }
+
+  - name: pc-mm-oam
+    vlan: 2123
+    vxlan: 6123
+    cidr: 10.37.241.0/24
+    enable_dhcp: false
+    gateway: 10.37.241.254
+    allocation_pools: { start: 10.37.241.1, end: 10.37.241.16 }
+    routes: []
+
+  - name: pc-mm-ran-1
+    vlan: 2904
+    vxlan: 6904
+    cidr: 21.22.4.0/24
+    enable_dhcp: false
+    gateway: 21.22.4.254
+    allocation_pools: { start: 21.22.4.1, end: 21.22.4.16 }
+    routes: []
+
+  - name: pc-mm-ran-2
+    is_internal: false
+    vlan: 2929
+    vxlan: 6929
+    cidr: 21.22.29.0/24
+    enable_dhcp: false
+    gateway: 21.22.29.254
+    allocation_pools: { start: 21.22.29.1, end: 21.22.29.16 }
+    routes: []
+
+  - name: pc-mm-signaling-1
+    vlan: 2902
+    vxlan: 6902
+    cidr: 21.22.2.0/24
+    enable_dhcp: false
+    gateway: 21.22.2.254
+    allocation_pools: { start: 21.22.2.1, end: 21.22.2.16 }
+    routes: []
+
+  - name: pc-mm-signaling-2
+    vlan: 2822
+    vxlan: 6822
+    cidr: 21.22.3.0/24
+    enable_dhcp: false
+    gateway: 21.22.3.254
+    allocation_pools: { start: 21.22.3.1, end: 21.22.3.16 }
+    routes: []
+
+  - name: pc-mm-media
+    is_internal: false
+    vlan: 2901
+    vxlan: 6901
+    cidr: 21.22.1.0/24
+    enable_dhcp: false
+    gateway: 21.1.26.254
+    allocation_pools: { start: 21.22.1.1, end: 21.22.1.16 }
+    routes: []
+
+  - name: pc-sm-media
+    vlan: 2851
+    vxlan: 6851
+    cidr: 21.21.51.0/24
+    enable_dhcp: false
+    gateway: 21.21.51.254
+    allocation_pools: { start: 21.21.51.1, end: 21.21.51.16 }
+    routes: []
+
+  - name: pc-sm-signaling
+    vlan: 2952
+    vxlan: 6952
+    cidr: 21.22.52.0/24
+    enable_dhcp: false
+    gateway: 21.22.52.254
+    allocation_pools: { start: 21.22.52.1, end: 21.22.52.16 }
+    routes: []
+
+  - name: pc-sm-intra
+    vlan: 2401
+    vxlan: 6401
+    cidr: 172.31.1.0/24
+    enable_dhcp: false
+    gateway: null
+    allocation_pools: { start: 172.31.1.1, end: 172.31.1.254 }
+    routes: []
+
+  sriov_networks:
+  - name: pc-up-ran
+    vlan: 2854
+    vxlan: 6854
+    cidr: 21.21.54.0/24
+    enable_dhcp: false
+    gateway: 21.21.54.254
+    allocation_pools: { start: 21.21.54.1, end: 21.21.54.16 }
+    routes: []
+
+  - name: pc-up-media
+    vlan: 2926
+    vxlan: 6926
+    cidr: 21.22.26.0/24
+    enable_dhcp: false
+    gateway: 21.22.26.254
+    allocation_pools: { start: 21.22.26.1, end: 21.22.26.16 }
+    routes: []
+
+  - name: pc-up-signaling
+    vlan: 2977
+    vxlan: 6977
+    cidr: 21.22.77.0/24
+    enable_dhcp: false
+    gateway: 21.22.77.254
+    allocation_pools: { start: 21.22.77.1, end: 21.22.77.16 }
+    routes: []
+
+  - name: pc-up-dn
+    vlan: 2855
+    vxlan: 6855
+    cidr: 21.21.55.0/24
+    enable_dhcp: false
+    gateway: 21.21.55.254
+    allocation_pools: { start: 21.21.55.1, end: 21.21.55.16 }
+    routes: []
+
+  - name: pc-up-intra
+    vlan: 2600
+    vxlan: 6600
+    cidr: 172.31.101.0/24
+    enable_dhcp: false
+    gateway: 172.31.101.254
+    allocation_pools: { start: 172.31.101.1, end: 172.31.101.16 }
+    routes: []
+

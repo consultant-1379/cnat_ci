@@ -1,0 +1,5 @@
+
+SC-1:~ # lde-config dns add --target payload --ip-address 10.130.34.4
+SC-1:~ #cmw-utility immcfg -c EvipCommand evipCommandId=ipv4_route_def_dns,evipCommandDefinitionId=1,evipDeclarationsId=1,evipId=1 -a command="ip route add 10.130.34.4 dev alb_oam"
+SC-1:~ #cmw-utility immcfg -a commandsForAllUndesignated+="2:ipv4_route_def_dns" evipClusterId=1,evipDeclarationsId=1,evipId=1
+

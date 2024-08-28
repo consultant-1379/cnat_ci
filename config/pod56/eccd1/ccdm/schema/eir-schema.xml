@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<rpc message-id="4" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+            <udr xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udr">
+                <ldap-access>
+                    <ldap-schema>
+                        <name>eir.schema</name>
+                        <content><![CDATA[
+attributetype (1.3.6.1.4.1.193.195.1.1 NAME 'imsiPr'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{15}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.2.1 NAME 'imeiSvn'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{16}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.3.1 NAME 'seqno'
+   EQUALITY generalizedTimeMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.24
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.2 NAME 'l1Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.3 NAME 'rsp1'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.4 NAME 'l2Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.5 NAME 'rsp2'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.6 NAME 'l3Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.7 NAME 'rsp3'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.8 NAME 'l4Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.9 NAME 'rsp4'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.10 NAME 'l5Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.11 NAME 'rsp5'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.12 NAME 'unknownRsp'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.13 NAME 'IMSIListChkd'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.14 NAME 'l6Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.15 NAME 'rsp6'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.16 NAME 'l7Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.17 NAME 'rsp7'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.18 NAME 'l8Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.19 NAME 'rsp8'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.20 NAME 'l9Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.21 NAME 'rsp9'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.22 NAME 'l10Num'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.5.23 NAME 'rsp10'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.3 NAME 'date'
+   EQUALITY numericStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{8}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.4 NAME 'time'
+   EQUALITY numericStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{6}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.5 NAME 'comment'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{255}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.6 NAME 'lockedImsi'
+   EQUALITY numericStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{15}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.7 NAME 'l0'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.8 NAME 'l1'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.9 NAME 'l2'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.10 NAME 'l3'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.11 NAME 'l4'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.12 NAME 'l5'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.13 NAME 'l6'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.14 NAME 'l7'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.15 NAME 'l8'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.16 NAME 'l9'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.7.2 NAME 'imeiFrom'
+   EQUALITY numericStringMatch
+   ORDERING numericStringOrderingMatch
+   SUBSTR numericStringSubstringsMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{14}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.7.3 NAME 'imeiTo'
+   EQUALITY numericStringMatch
+   ORDERING numericStringOrderingMatch
+   SUBSTR numericStringSubstringsMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{14}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.7.6 NAME 'reason'
+   EQUALITY numericStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{4}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.6.2 NAME 'svn'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{2}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.7.7 NAME 'clarifyReason'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{20}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.7.8 NAME 'sourceOfRequest'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{25}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.7.9 NAME 'action'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{1}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.8.2 NAME 'lockedImeiSvn'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{16}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.8.4 NAME 'clonedImeiSvn'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{16}
+   )
+
+attributetype (1.3.6.1.4.1.193.195.8.5 NAME 'SuperSIM'
+   EQUALITY octetStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.40{1}
+   SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.195.8.6 NAME 'CoDMask'
+   EQUALITY bitStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.8.7 NAME 'faultyClonedImeiSvn'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{16}
+   )
+
+attributetype (1.3.6.1.4.1.193.195.11.1 NAME 'TACCode'
+   EQUALITY numericStringMatch
+   ORDERING numericStringOrderingMatch
+   SUBSTR numericStringSubstringsMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{8}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.12.2 NAME 'Manufacturer'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{128}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.12.3 NAME 'Model'
+   EQUALITY caseExactIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{128}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.12.4 NAME 'CoD'
+   EQUALITY numericStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{2}
+   SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.193.195.12.5 NAME 'CapMask'
+   EQUALITY bitStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.6{16}
+   SINGLE-VALUE)
+
+attributetype (1.3.6.1.4.1.193.195.13.2 NAME 'ReasonBlack'
+   EQUALITY numericStringMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36{1}
+   SINGLE-VALUE)
+
+objectclass ( 1.3.6.1.4.1.193.195.1 NAME 'EI1'
+   SUP top
+   STRUCTURAL
+   MUST ( imsiPr ))
+
+objectclass ( 1.3.6.1.4.1.193.195.2 NAME 'EI2'
+   SUP top
+   STRUCTURAL
+   MUST ( imeiSvn )
+   MAY ( ZoneId $ DSUnitGroup ))
+
+objectclass ( 1.3.6.1.4.1.193.195.3 NAME 'EI3'
+   SUP top
+   STRUCTURAL
+   MUST ( seqno )
+   MAY ( ZoneId $ DSUnitGroup ))
+
+objectclass ( 1.3.6.1.4.1.193.195.4 NAME 'EI4'
+   SUP top
+   STRUCTURAL
+   MUST ( IMSI )
+   MAY ( ZoneId $ DSUnitGroup ))
+
+objectclass ( 1.3.6.1.4.1.193.195.5 NAME 'EI5'
+   SUP top
+   STRUCTURAL
+   MUST ( imsiPr $ unknownRsp )
+   MAY ( l1Num $ rsp1 $ l2Num $ rsp2 $ l3Num $ rsp3 $ l4Num $ rsp4 $ l5Num $ rsp5 $ IMSIListChkd $ l6Num $ rsp6 $ l7Num $ rsp7 $ l8Num $ rsp8 $ l9Num $ rsp9 $ l10Num $ rsp10 ))
+
+objectclass ( 1.3.6.1.4.1.193.195.6 NAME 'EI6'
+   SUP top
+   STRUCTURAL
+   MUST ( imeiSvn $ l0 $ l1 $ l2 $ l3 $ l4 $ l5 $ l6 $ l7 $ l8 $ l9 )
+   MAY ( date $ time $ comment $ lockedImsi $ reason $ clarifyReason $ sourceOfRequest ))
+
+objectclass ( 1.3.6.1.4.1.193.195.7 NAME 'EI7'
+   SUP top
+   STRUCTURAL
+   MUST ( seqno $ imeiFrom $ imeiTo $ svn $ reason $ action )
+   MAY ( comment $ clarifyReason $ sourceOfRequest ))
+
+objectclass ( 1.3.6.1.4.1.193.195.8 NAME 'EI8'
+   SUP top
+   STRUCTURAL
+   MUST ( IMSI )
+   MAY ( lockedImeiSvn $ clonedImeiSvn $ SuperSIM $ CoDMask $ faultyClonedImeiSvn ))
+
+objectclass ( 1.3.6.1.4.1.193.195.11 NAME 'EI11'
+   SUP top
+   STRUCTURAL
+   MUST ( TACCode )
+   MAY ( ZoneId $ DSUnitGroup ))
+
+objectclass ( 1.3.6.1.4.1.193.195.12 NAME 'EI12'
+   SUP top
+   STRUCTURAL
+   MUST ( TACCode )
+   MAY ( Manufacturer $ Model $ CoD $ CapMask ))
+
+objectclass ( 1.3.6.1.4.1.193.195.13 NAME 'EI13'
+   SUP top
+   STRUCTURAL
+   MUST ( TACCode $ ReasonBlack ))
+                     ]]></content>
+                    </ldap-schema>
+                </ldap-access>
+            </udr>
+        </config>
+    </edit-config>
+</rpc>

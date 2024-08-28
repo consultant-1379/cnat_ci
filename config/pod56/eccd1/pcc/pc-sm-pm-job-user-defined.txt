@@ -1,0 +1,22 @@
+autowizard false
+config
+pm job user-defined-sm-job
+pm job user-defined-sm-job type measurement-job
+pm job user-defined-sm-job reporting-period one-min
+pm job user-defined-sm-job granularity-period one-min
+pm job user-defined-sm-job measurement-reader sm-reader1 group-ref nsmf-pdu-session
+pm job user-defined-sm-job measurement-reader sm-reader2 group-ref smf-nnrf-disc
+pm job user-defined-sm-job measurement-reader sm-reader3 group-ref smf-access-token
+pm job user-defined-sm-job measurement-reader sm-reader4 group-ref smf-nudm-sdm
+pm job user-defined-sm-job measurement-reader sm-reader5 group-ref smf-converged-charging-snssai-apn
+pm job user-defined-sm-job measurement-reader sm-reader6 group-ref smf-npcf-sm-plcy-ctrl-snssai-apn
+pm job user-defined-sm-job measurement-reader sm-reader7 group-ref vsmf-converged-charging-snssai
+pm job user-defined-sm-job measurement-reader sm-reader8 group-ref ismf-pfcp-session-information-iupf
+pm job user-defined-sm-job measurement-reader sm-reader9 group-ref smf-namf-comm-snssai-apn
+pm job user-defined-sm-job measurement-reader sm-reader10 group-ref smf-nsmf-pdu-session-snssai-apn
+pm job user-defined-sm-job measurement-reader sm-reader11 group-ref pgw-session-mgmt-pfcp-sxb
+pm job user-defined-sm-job measurement-reader sm-reader12 group-ref smf-nudm-uecm
+pm job user-defined-sm-job measurement-reader sm-reader13 group-ref AMF_SMF
+pm job user-defined-sm-job measurement-reader sm-reader14 group-ref sxb-session-information
+pm job user-defined-sm-job requested-job-state active
+commit

@@ -1,0 +1,18 @@
+{
+   "amfSetName":"AmfSetId-002",
+   "amfSetAdminState":"UNLOCKED",
+   "amfSetId":"240-81-ff-002",
+   "servedPlmnIds":[
+      {
+         "mcc":"240",
+         "mnc":"81"
+      }
+   ],
+   "amfNfInstances":[
+      {
+         "amfNfInstanceId":"8b85f3f9-2f66-4698-b07e-06a07010632e",
+         "amfNfInstanceState":"UNLOCKED"
+      }
+   ],
+   "nrfProfileName":"nrf-slice-common-region-001"
+}

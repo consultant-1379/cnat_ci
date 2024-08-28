@@ -1,0 +1,6 @@
+{
+"dataplanName": "global",
+"globalScope" : true,
+"defaultPriority": 0
+}
+

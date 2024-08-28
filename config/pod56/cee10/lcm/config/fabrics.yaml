@@ -1,0 +1,31 @@
+#######################################################################################
+## Fabric related information for the Datacenter                                      #
+#######################################################################################
+---
+## TODO: For later use when managed switch fabrics are supported
+#fabrics:
+#  - fabricId: 234881101
+#    fabricAttributes:
+#      fabricUse: data_leafa
+#      username: network-admin
+#      #TODO: Password to be a hashed value and to use Ansible vault for encryption/decryption#
+#      password: ericsson
+#      type: L2
+#    reservation:
+#      vlan:
+#        - <Integer: VLAN_ID>
+#      vxlan:
+#        - <Integer: VNI>
+#  - fabricId: 234881073
+#    fabricAttributes:
+#      fabricUse: data_leafb
+#      username: network-admin
+#      #TODO: Password to be a hashed value and to use Ansible vault for encryption/decryption#
+#      password: ericsson
+#      type: L2
+#    reservation:
+#      vlan:
+#        - <Integer: VLAN_ID>
+#      vxlan:
+#        - <Integer: VNI>
+...

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <edit-config>
+    <target><running/></target>
+    <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <eir xmlns="urn:rdns:com:ericsson:oammodel:ericsson-eir">
+        <features>
+          <eir-4g>
+            <oam-activated>true</oam-activated>
+            <oam-exposed>true</oam-exposed>
+          </eir-4g>
+        </features>
+        <eic>
+          <soc-timer-interval>100000</soc-timer-interval>
+          <query-tac-ranges>false</query-tac-ranges>
+          <query-imei-svn>true</query-imei-svn>
+          <query-imsi-list>false</query-imsi-list>
+          <query-msisdn>false</query-msisdn>
+          <!-- <faulty-clone-enabled>false</faulty-clone-enabled> -->
+          <!-- <faulty-clone-prioritized>false</faulty-clone-prioritized> -->
+        </eic>
+        <diameter>
+          <server>
+            <realm>ericsson.se</realm>
+            <host>ccsm.ericsson.se</host>
+          </server>
+          <timeout-incoming-request>2500</timeout-incoming-request>
+          <timeout-outgoing-request>1000</timeout-outgoing-request>
+          <enable-trace>false</enable-trace>
+          <request-reattempts>5</request-reattempts>
+          <reattempt-delay-time>1000</reattempt-delay-time>
+        </diameter>
+        <nf-profile>
+          <instance-id>77fba27d-6a44-4074-8d9a-454952a1c4d2</instance-id>
+          <requested-status>registered</requested-status>
+          <fqdn>ccsm1-eir-5g-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+          <priority>1</priority>
+          <locality>LN1</locality>
+          <service>
+            <instance-id>n5g-eir-eic</instance-id>
+            <name>n5g-eir-eic</name>
+            <scheme>https</scheme>
+            <requested-status>registered</requested-status>
+            <fqdn>ccsm1-eir-5g-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+            <capacity>100</capacity>
+            <allowed-nf-type>udr</allowed-nf-type>
+            <allowed-nf-type>amf</allowed-nf-type>
+            <ip-endpoint>
+              <id>1</id>
+              <!--<ipv4-address>{EIR_IPv4}</ipv4-address>-->
+              <transport>tcp</transport>
+              <port>443</port>
+            </ip-endpoint>
+          </service>
+        </nf-profile>
+      </eir>
+    </config>
+  </edit-config>
+  </rpc>
+  <close-session/>

@@ -1,0 +1,32 @@
+nodeName: pod56-eda1
+nodeType: EDA
+instance: ""
+
+vnflcm:
+  clusterName: pod56-eccd1
+  namespace: eda
+
+license:
+  customerId: '946060'
+  swltId: STA-EDA-1
+
+eda:
+  domainName: seln.ete.ericsson.se
+  clusterName: eda.pod56-eccd1
+  hssValidatorTag: 1.29.102
+
+snmp:
+  agentEngineId: 800000c104454441a1c1d1
+  sourceIdentifier: 10.130.34.249
+
+pvcSize:
+  eric-data-wide-column-database-cd: 103
+  eric-data-message-bus-kf: 2
+replicaCount:
+  eric-act-aaa: 1
+  eric-tm-ingress-controller-cr-envoy: 2
+  eric-act-inbound-async: 1
+  eric-act-inbound-interfaces: 1
+  eric-act-inbound-mml: 1
+  eric-act-rest-provisioning: 1
+  eric-act-web-server: 1

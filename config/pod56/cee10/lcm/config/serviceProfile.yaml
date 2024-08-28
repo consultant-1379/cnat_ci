@@ -1,0 +1,132 @@
+#######################################################################################
+##  Configuration file with CEE services profile                                      #
+#######################################################################################
+---
+##
+## Under the servicesProfiles key, there can be a list of service profiles.
+## Service profiles supposed to be used for services that need different
+## configuration for different set of hosts.
+##
+## Mandatory keys in list items:
+## - servicesProfiles[].name: the name of the service profile
+## - servicesProfiles[].service: the name of the service the service profile belongs to
+## The other keys in the list items are optional and depending on the service.
+##
+## Further keys for VxSDS service profiles (service: vxsds):
+## mandatory keys:
+## - servicesProfiles[].protectionDomain: the name of protectionDomain an SDS belongs to
+## optional keys:
+## - servicesProfiles[].faultSet: the name of fault set an SDS belongs to
+##
+## Further keys for rsyslog service profiles (service: rsyslog):
+## mandatory keys:
+## - servicesProfiles[].forwardLogsTo: name of log aggregator forward the logs to
+## - servicesProfiles[].forwardedLogFormat: name of the predefined log format
+##   for forwarded logs, possible values:
+##     - remote_log_format__priority_ts_hostname_tag_message
+##     - remote_log_format__ts_severity_hostname_tag_message
+##     - user_defined
+## - servicesProfiles[].localLogFormat: name of the predefined log format
+##   for locally written logs, possible values:
+##     - local_log_format__priority_ts_hostname_tag_message
+##     - local_log_format__ts_severity_hostname_tag_message
+##     - user_defined
+## - servicesProfiles[].maxAvailableMemoryInMB: maximal memory size granted for
+##   rsyslog, used mainly for internal buffering
+## - servicesProfiles[].writeLocalLogs: flag whether write logs locally
+## - servicesProfiles[].writeReceivedLogs: flag whether write received logs
+## optional keys:
+## - servicesProfiles[].forwardedLogFormatDefinition: if forwardedLogFormat is
+##   set to 'user_defined' then this list attribute needs to be filled
+##   according to the rsyslog documentation
+## - servicesProfiles[].localLogFormatDefinition: if localLogFormat is set to
+##   'user_defined' then this list attribute needs to be filled according to
+##   the rsyslog documentation
+## - servicesProfiles[].remoteServers: external log server connection data
+##
+## Further keys for CEE logrotate service profiles (service: cee_logrotate):
+## mandatory keys:
+## - servicesProfiles[].numberOfLogFiles: number of log files to keep
+## - servicesProfiles[].maxLogFileSizeInMB: size of log file that is rotated
+##   on next logrotate run
+## - servicesProfiles[].minLogFileSizeInMB: size of log file that is rotated
+##   when the next evaluation period is over
+## - servicesProfiles[].logRotationPeriodInSec: time between logrotate runs
+## - servicesProfiles[].logRotationEvaluationPeriod: evaluation period,
+##   possible values: hourly, daily, weekly, montly, yearly
+##
+## Examples:
+#serviceProfiles:
+#
+#  - name: sds_pd1
+#    service: vxsds
+#    faultSet: fs1
+#    protectionDomain: protection_domain1
+serviceProfiles:
+
+  - name: sds_pd1
+    service: vxsds
+    protectionDomain: protection_domain1
+
+  - name: write_only_log_generator
+    service: rsyslog
+    forwardLogsTo: nowhere
+    forwardedLogFormat: remote_log_format__priority_ts_hostname_tag_message
+    localLogFormat: local_log_format__priority_ts_hostname_tag_message
+    maxAvailableMemoryInMB: 1024
+    writeLocalLogs: true
+    writeReceivedLogs: false
+
+  - name: forward_only_log_generator
+    service: rsyslog
+    forwardLogsTo: internalAggregator
+    forwardedLogFormat: remote_log_format__priority_ts_hostname_tag_message
+    localLogFormat: local_log_format__priority_ts_hostname_tag_message
+    maxAvailableMemoryInMB: 1024
+    writeLocalLogs: false
+    writeReceivedLogs: false
+
+  - name: write_and_forward_log_generator
+    service: rsyslog
+    forwardLogsTo: internalAggregator
+    forwardedLogFormat: remote_log_format__priority_ts_hostname_tag_message
+    localLogFormat: local_log_format__priority_ts_hostname_tag_message
+    maxAvailableMemoryInMB: 1024
+    writeLocalLogs: true
+    writeReceivedLogs: false
+
+  - name: write_only_log_aggregator
+    service: rsyslog
+    forwardLogsTo: nowhere
+    forwardedLogFormat: remote_log_format__priority_ts_hostname_tag_message
+    localLogFormat: local_log_format__priority_ts_hostname_tag_message
+    maxAvailableMemoryInMB: 1024
+    writeLocalLogs: true
+    writeReceivedLogs: true
+
+  - name: write_and_forward_log_aggregator
+    service: rsyslog
+    forwardLogsTo: remoteAggregators
+    forwardedLogFormat: remote_log_format__priority_ts_hostname_tag_message
+    localLogFormat: local_log_format__priority_ts_hostname_tag_message
+    maxAvailableMemoryInMB: 1024
+    remoteServers:
+      - host: <TO.BE.FILLED>
+        ports:
+          audit_log: <TO.BE.FILLED>
+          common_log: <TO.BE.FILLED>
+      - host: <TO.BE.FILLED>
+        ports:
+          audit_log: <TO.BE.FILLED>
+          common_log: <TO.BE.FILLED>
+    writeLocalLogs: true
+    writeReceivedLogs: true
+
+  - name: cee_logrotate
+    service: cee_logrotate
+    numberOfLogFiles: 4
+    maxLogFileSizeInMB: 100
+    minLogFileSizeInMB: 10
+    logRotationPeriodInSec: 600
+    logRotationEvaluationPeriod: weekly
+...

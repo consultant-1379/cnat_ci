@@ -1,0 +1,10 @@
+config
+diagnostic-data-collection sftp-server Default
+ endpoints endpoint Default
+  remote-address 10.130.34.217
+  remote-port    22
+  remote-path    ddc/eccd1/pod56-pcc1
+  client-identity username tsuser
+  client-identity password dHNwYXNz
+commit
+end

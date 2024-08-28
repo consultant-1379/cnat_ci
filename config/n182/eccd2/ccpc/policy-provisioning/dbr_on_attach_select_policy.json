@@ -1,0 +1,5 @@
+{
+    "policyName": "dbr_on_attach_select_policy",
+    "ruleCombiningAlgorithm": "single-match",
+    "rules": [ "dbr_on_attach_select_rule" ]
+}

@@ -1,0 +1,134 @@
+# NOTES:
+# 10.130.34.236: sapc OAM VIP
+
+##################################################################################################
+# 1. upload certificates package to SC board to /cluster/storage/ww(create new directory ww) from 
+#    /5gc_sa_pkg/lab/pod56/pcf/certs/, and convert the SAPC application and client *.pem
+#    certificates to *.p12 format (use export password=ericsson when asked):
+##################################################################################################
+mkdir -p /cluster/storage/ww
+cp 5gc_sa_pkg/lab/pod56/pcf/certs/* 5gc_sa_pkg/lab/certs/TeamBluesRootCA.crt /cluster/storage/ww/
+
+openssl pkcs12 -export -out certificate-sbi-server.p12 -inkey pcf-sbi-server.key -in pcf-sbi-server.crt
+openssl pkcs12 -export -out certificate-sbi-client.p12 -inkey pcf-sbi-client.key -in pcf-sbi-client.crt
+
+##################################################################################################
+# 2. Stop the following processes:
+##################################################################################################
+sapcH2FwProxy2N -a stop
+sapcH2FwProxyNWay -a stop
+sapcH2RevProxy -a stop
+
+or
+
+amfHelper -f h2 -a stop
+
+##################################################################################################
+# 3. Get the fingerprints of the certificates (acquiring certificate fingerprint procedure is
+#    present in CPI). The fingrerprints can be used later for re-installation.
+##################################################################################################
+
+seroiuts00395[16:25][5gc_sa_pkg/lab/certs]$ openssl dgst -c -hex -sha224 TeamBluesRootCA.crt
+SHA224(TeamBluesRootCA.crt)= fd:bc:13:a1:37:d8:73:bf:0f:0d:90:34:79:80:1d:d2:20:e9:32:d6:23:69:8b:5f:e1:3a:7f:27
+
+seroiuts00395[16:27][lab/certs/pod56]$ openssl dgst -c -hex -sha224 certificate-sbi-client.p12
+SHA224(certificate-sbi-client.p12)= 9d:96:60:88:66:3c:75:4a:0f:bb:fb:08:9d:13:d8:e7:c8:46:fc:31:35:0e:80:49:60:ee:0d:87
+
+seroiuts00395[16:27][lab/certs/pod56]$ openssl dgst -c -hex -sha224 certificate-sbi-server.p12
+SHA224(certificate-sbi-server.p12)= 3b:c0:74:0d:4c:0d:62:d0:a8:dc:d7:c1:be:ad:c3:e8:8d:ad:96:13:1d:5b:5f:14:5c:f2:5e:ec
+
+##################################################################################################
+# 4. Certificate installations:
+##################################################################################################
+##client certificate
+cliss
+configure
+ManagedElement=1,SystemFunctions=1,SecM=1,CertM=1,NodeCredential=sapc-client
+commit
+installCredentialFromUri --uri sftp://root@10.130.34.236/cluster/storage/ww/certificate-sbi-client.p12 --uriPassword RoleRo@483 --credentialPassword ericsson --fingerprint 9d:96:60:88:66:3c:75:4a:0f:bb:fb:08:9d:13:d8:e7:c8:46:fc:31:35:0e:80:49:60:ee:0d:87
+show
+top
+##server certificate
+configure
+ManagedElement=1,SystemFunctions=1,SecM=1,CertM=1,NodeCredential=rest-traffic
+commit
+installCredentialFromUri --uri sftp://root@10.130.34.236/cluster/storage/ww/certificate-sbi-server.p12 --uriPassword RoleRo@483 --credentialPassword ericsson --fingerprint 3b:c0:74:0d:4c:0d:62:d0:a8:dc:d7:c1:be:ad:c3:e8:8d:ad:96:13:1d:5b:5f:14:5c:f2:5e:ec
+show
+top
+
+##intermediate
+configure
+ManagedElement=1,SystemFunctions=1,SecM=1,CertM=1
+installTrustedCertFromUri --uri sftp://root@10.130.34.236/cluster/storage/ww/TeamBluesRootCA.crt --uriPassword RoleRo@483 --fingerprint fd:bc:13:a1:37:d8:73:bf:0f:0d:90:34:79:80:1d:d2:20:e9:32:d6:23:69:8b:5f:e1:3a:7f:27
+show
+exit
+
+##intermediate (if there is a intermediate CA)
+cliss
+dn ManagedElement=1,SystemFunctions=1,SecM=1,CertM=1
+installTrustedCertFromUri --uri sftp://root@10.130.34.236/cluster/storage/ww/mtls-go-example/2_intermediate/certs/intermediate.cert.pem --uriPassword ericsson --fingerprint e1:1f:03:ea:56:98:dd:66:0f:16:56:c8:ee:6e:7a:b3:70:93:67:24:a0:5e:b5:c3:54:a4:a4:1d
+show
+exit
+
+##################################################################################################
+# 5. Create trust category for root & intermediate certificates:
+##################################################################################################
+cliss
+configure
+ManagedElement=1,SystemFunctions=1,SecM=1,CertM=1,TrustCategory=sapc-ca
+trustedCertificates="ManagedElement=1,SystemFunctions=1,SecM=1,CertM=1,TrustedCertificate=1"
+trustedCertificates="ManagedElement=1,SystemFunctions=1,SecM=1,CertM=1,TrustedCertificate=2"
+commit
+show -r
+exit
+
+######################################
+config pcfsecurity
+######################################
+cliss
+ManagedElement=1,PolicyControlFunction=1,PcfConfig=1,PcfNetwork=1,PcfSecurity=1
+configure
+enableTLS=true
+enableTLSClientAuthenticationAMF=true
+enableTLSClientAuthenticationNRF=true
+enableTLSClientAuthenticationSMF=true
+enableTLSClientAuthenticationUDR=true
+commit
+up
+up
+show-config
+exit
+
+##################################################################################################
+# 7. Start the following processes:
+##################################################################################################
+sapcH2FwProxy2N -a start
+sapcH2FwProxyNWay -a start
+sapcH2RevProxy -a start
+
+or
+
+amfHelper -f h2 -a start
+
+
+# 11. For cert update, you need stop h2 proxy firstly (optional)
+##################################################################################################
+amfHelper -f h2 -a stop
+then,
+(config-CertM=1)>no NodeCredential=sapc-client
+(config-CertM=1)>commit
+
+after that, repeat step 4 with new cert.
+start the h2 proxy in the end.
+
+##################################################################################################
+# 12. create backup and cluster reboot
+##################################################################################################
+
+>ManagedElement=1,SystemFunctions=1,BrM=1,BrmBackupManager=SYSTEM_DATA
+(BrmBackupManager=SYSTEM_DATA)>createBackup sysdataBackup
+# wait system data backup complete
+>ManagedElement=1,SystemFunctions=1,BrM=1,BrmBackupManager=USER_DATA
+(BrmBackupManager=USER_DATA)>createBackup userdataBackup
+
+cluster reboot -a

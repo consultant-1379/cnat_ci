@@ -1,0 +1,193 @@
+nodeName: pod56-pcc1
+nodeType: PCC
+instance: ""
+
+vnflcm:
+  clusterName: pod56-eccd1
+  namespace: pcc
+  # InstantiateVnfRequest:
+  #   applicationTimeOut: 3600
+  #   skipVerification: "true"
+
+users:
+  day1:
+  - username: tsadm
+    password: tsadm
+    groups: [ system-admin system-security-admin mm-config-admin mm-itc-admin mm-security-admin mm-admin mm-expert-admin sm-admin sm-cdr-admin sm-charging-admin sm-itc-admin sm-operator sm-tracing-admin sm-uetrace-admin system-troubleshooter admin ]
+
+
+license:
+  customerId: '946060'
+  swltId: STA-PCC-9
+snmp:
+  agentEngineId: 8000137001C0A8CC42A60FC00E
+  heartbeatInterval: 600
+  sourceIdentifier: 10.130.34.233
+ddc:
+  remotePath: ddc/eccd1/pod56-pcc1
+replicaCount:
+  eric-pc-mm-forwarder: 2  # mandatory, as PC-MM networking configurations reply on this number.
+  eric-pc-mm-mobility: 2
+  eric-pc-mm-sctp: 2
+  eric-pc-sm-smf-pgw-session: 2
+  eric-pc-sm-http-client: 2
+  eric-pc-sm-nsmf-forwarder: 2
+  eric-pc-sm-sgw-session: 2
+  eric-pc-sm-udp-forwarder: 2
+  eric-pc-vpn-gateway-forwarder: 2
+  eric-pc-kvdb-rd-server: 3
+
+pcc:
+  ipRule:
+    defaultGws: [-2]
+    bfdPeers: [-2]
+    fwdIpFrom: 1
+    bgpNeighbors: [-2]
+    creIpFrom: 100
+    vpngwIpFrom: 1
+  pcmm:
+    nodeId: pod56-amf1
+    mmeGroupId: 32768
+    mmeCode: 13
+    amfRegionId: 255
+    amfSetId: 2
+    amfPointer: 13
+    amfCapacity: 50
+    amfInstanceId: 8b85f3f9-2f66-4698-b07e-06a07010632e
+    namfLbIp: 5.8.6.9
+    hss:
+    - ip: 5.8.6.13
+      host: esm
+
+    ipNetwork: # Only support IPv4
+    - name: OM_EXTERNAL
+      ipInt:
+        vlan: 3023
+        ipv4: 10.36.240.0/24
+      ipSvc:
+      - name: OAM
+        ipv4: 10.130.34.232
+    - name: PRAN_SCTP_1
+      ipInt:
+        vlan: 3829
+        ipv4: 11.1.29.0/24
+      ipSvc:
+      - name: N2-1
+        ipv4: 10.131.128.97
+      - name: S1-MME-1
+        ipv4: 10.131.128.136
+    - name: PRAN_SCTP_2
+      ipInt:
+        vlan: 3879
+        ipv4: 11.1.79.0/24
+      ipSvc:
+      - name: N2-2
+        ipv4: 10.131.144.97
+      - name: S1-MME-2
+        ipv4: 10.131.144.136
+    - name: SIG_SCTP_1
+      ipInt:
+        vlan: 3877
+        ipv4: 11.1.77.0/24
+      ipSvc:
+      - name: S6a-1
+        ipv4: 106.2.0.65
+      - name: SBI-Server
+        ipv4: 5.8.6.9
+      - name: SBI-Client
+        ipv4: 29.0.64.121
+    - name: SIG_SCTP_2
+      ipInt:
+        vlan: 3906
+        ipv4: 11.2.6.0/24
+      ipSvc:
+      - name: S6a-2
+        ipv4: 106.2.0.97
+    - name: MEDIA
+      ipInt:
+        vlan: 3826
+        ipv4: 11.1.26.0/24
+      ipSvc:
+      - name: Gn-GTP-C
+        ipv4: 106.1.0.1
+      - name: S10-GTP-C
+        ipv4: 106.1.0.33
+      - name: S11-GTP-C
+        ipv4: 106.1.0.65
+  pcsm:
+    smfInstanceId: d67766fc-210f-4ecf-858f-cc42a60fc00e
+    nsmfLbIp: 5.8.6.1
+    nsmfNotifLbIp: 5.8.6.2
+    smfSbiNotifyHost: smf1-notif.pod56
+    smfSbiNsmfHost: smf1.pod56
+    pcrfDiameterAddress: 25.51.0.251
+    sgwu:
+    - pfcpAddress: 5.8.1.10
+      networkInstances:
+        s1s4s12-u: ran
+        s11-u: media
+        s5s8-u: media
+    upfPgwu:
+    - pfcpAddress: 5.8.1.10
+      networkInstances:
+        s5s8-u: media
+        n3: ran
+        sx-u: signaling
+    apn:
+      internet:
+        networkInstance: internet
+        ipPool:
+          ipv4: [17.0.0.0/10]
+          ipv6: [2a02:17::/44]
+      ims:
+        networkInstance: internet
+        ipPool:
+          ipv4: [17.192.0.0/10]
+          ipv6: [2a02:17:10::/44]
+    smLogicalInt:
+      pgwS5s8c:
+        ipv4: 5.0.0.1
+        networkInstance: media
+      gomc:
+        ipv4: 5.116.0.1
+        networkInstance: signaling
+      sxb:
+        ipv4: 5.8.1.2
+        networkInstance: signaling
+      s4s11c:
+        ipv4: 5.2.0.1
+        networkInstance: media
+      sgwS5s8c:
+        ipv4: 5.4.0.1
+        networkInstance: media
+      sxa:
+        ipv4: 5.8.1.1
+        networkInstance: signaling
+      gx:
+        ipv4: 5.8.1.3
+        networkInstance: signaling
+  vpngw:
+    maxNum: 8
+    loopback:
+      ipv4: 109.1.0.50
+      networkInstance: signaling
+    intraForward:
+      vlan: 3400
+      ipv4: 172.31.1.0/24
+    networkInstances:
+    - name: signaling
+      localAs: 7002
+      remoteAs: 8002
+      ipForward:
+        vlan: 3852
+        ipv4: 11.1.52.0/24
+      vnfLoop:
+        ipv4: 5.129.0.1
+    - name: media
+      localAs: 7001
+      remoteAs: 8001
+      ipForward:
+        vlan: 3801
+        ipv4: 11.1.1.0/24
+      vnfLoop:
+        ipv4: 5.128.0.1

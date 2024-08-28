@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <!--xmlns="urn:rdns:com:ericsson:oammodel:ericsson-nrf-agent" refers to NRF Agent namespace.-->
+            <nrf-agent xmlns="urn:rdns:com:ericsson:oammodel:ericsson-nrf-agent">
+                <!--http-header: Configuration of http-header. -->
+                <http-header>
+                    <!--nf-peer-info-enabled: The status of 3gpp-Sbi-NF-Peer-Info header support. Default value is false. -->
+                    <nf-peer-info-enabled>false</nf-peer-info-enabled>
+                    <!--user-agent-enabled: The status of user-agent header support. Default value is true. -->
+                    <user-agent-enabled>true</user-agent-enabled>
+                </http-header>
+                <!--Mix use of the ipv4-address and ipv6-address in nrf-agent configuration is not supported currently.-->
+                <!--nrf: Local configuration of NRFs that could be selected to connect-->
+                <!--Only FQDN must be configured when scheme is https.-->
+                <nrf>
+                    <!--mode: Configure policy for selection NRFs. Only active-standby is supported by default currently. load-balance mode is reserved for future release.-->
+                    <mode>active-standby</mode>
+                    <!--failover-threshold: The percentage threshold value of failed response to trigger failover within NRF pool, range is 0-100, default value is 10.-->
+                    <failover-threshold>10</failover-threshold>
+                    <!--profile: Each item of the list represents one NRF, which may include multiple services.-->
+                    <profile>
+                        <!--id: Unique ID represents the NRF.-->
+                        <id>nrf-server-0</id>
+                        <!--instance-id: NRF instance-id.-->
+                        <instance-id>0c765084-9cc5-49c6-9876-4e5246a1c4d2</instance-id>
+                        <!--At least one of the addressing parameters fqdn, ipv4-address, ipv6-address must be included in the NF level.-->
+                        <!--NF level addresses include profile.fqdn, profile.ipv4-address and profile.ipv6-address.-->
+                        <!--Service level addresses include profile.service.fqdn, profile.service.ip-endpoint.ipv4-address and profile.service.ip-endpoint.ipv6-address.-->
+                        <!--The order of addresses to be used is Service level FQDN, Service level IP Address, NF level FQDN, NF level IP Address.-->
+                        <!--Scheme and port number are defined in service level: profile.service.scheme, profile.service.ip-endpoint.port.-->
+                        <!--You have a CHOICE of the ipv4-address and ipv6-address at this level.Please remove the other one when choose one ip address.-->
+                        <!--fqdn: FQDN of the NRF.-->
+                        <fqdn>ccrc1-nrf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                        <!--ipv4-address: IPv4 addresses of NRF which is listening for incoming service requests.-->
+                        <!--<ipv4-address>{{NRF-IPV4-ADDRESS}}</ipv4-address>-->
+                        <!--ipv6-address: IPv6 addresses of NRF which is listening for incoming service requests.-->
+                        <!--<ipv6-address>{{NRF-IPV6-ADDRESS}}</ipv6-address>-->
+                        <!--priority: Priority of this NRF compared to the set of NRF servers in redundancy mode. lower values indicate a higher priority If priority is also present in the service parameters,those will have precedence over this value.-->
+                        <priority>0</priority>
+                        <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other NRF, If capacity is also present in the service parameters, those will have precedence over this value. It is reserved for future release.-->
+                        <!--<capacity>0</capacity>-->
+                        <!--locality: Information about the location of the NRF. It is reserved for future release.-->
+                        <locality/>
+                        <!--service: The service instance of NRF.-->
+                        <service>
+                            <!--id: Unique ID that represents the NRF service.-->
+                            <id>0</id>
+                            <!--name: Name of the NRF service following 29.510 specification.-->
+                            <name>nnrf-nfm</name>
+                            <!--version: API versions supported by the NRF service.-->
+                            <version>
+                                <!--api-version-in-uri: Version of the service instance to be used in the URI for accessing the API. In current version, it should be "v1".-->
+                                <api-version-in-uri>v1</api-version-in-uri>
+                                <!--api-full-version: Full version number of the API. It is reserved for future release.-->
+                                <api-full-version/>
+                                <!--expiry: Expiry date and time of the NRF service. This represents the planned retirement date. It is reserved for future release.-->
+                                <expiry>2029-01-01T00:00:00+00:00</expiry>
+                            </version>
+                            <!--scheme: Protocol schema (e.g. "http", "https").-->
+                            <scheme>https</scheme>
+                            <!--fqdn: FQDN of the service instance.-->
+                            <fqdn>ccrc1-nrf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                            <!--ip-endpoint: IP address(es) and port information where the service is listening for incoming service requests.-->
+                            <ip-endpoint>
+                                <!--id: Unique ID that represents the NRF service.-->
+                                <id>0</id>
+                                <!--You have a CHOICE of the ipv4-address and ipv6-address at this level. Please remove the other one when choose one ip address.-->
+                                <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                                <!--<ipv4-address>{{NNRF-NFM-SERVICE-IPV4-ADDRESS}}</ipv4-address>-->
+                                <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                                <!--<ipv6-address>{{NNRF-NFM-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                                <!--transport: Transport protocol. -->
+                                <transport>tcp</transport>
+                                <!--port: Port number that the NRF service is listening on.-->
+                                <port>443</port>
+                            </ip-endpoint>
+                            <!--priority: Priority to be used for NRF Service selection.-->
+                            <priority>0</priority>
+                            <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other services of the same type. It is reserved for future release.-->
+                            <!--<capacity>0</capacity>-->
+                            <!--api-prefix: Optional path segment(s) used to construct the {apiRoot} variable of the NRF API URIs. -->
+                            <!--<api-prefix/>-->
+                            <!--supported-features: Supported Features of the NRF Service instance. It is reserved for future release.-->
+                            <!--<supported-features/>-->
+                        </service>
+                        <!--service: The service instance of NRF.-->
+                        <service>
+                            <!--id: Unique ID that represents the NRF service.-->
+                            <id>1</id>
+                            <!--name: Name of the NRF service following 29.510 specification.-->
+                            <name>nnrf-disc</name>
+                            <!--version: API versions supported by the NRF service.-->
+                            <version>
+                                <!--api-version-in-uri: Version of the service instance to be used in the URI for accessing the API.-->
+                                <api-version-in-uri>v1</api-version-in-uri>
+                                <!--api-full-version: Full version number of the API. It is reserved for future release.-->
+                                <!--<api-full-version/>-->
+                                <!--expiry: Expiry date and time of the NRF service. This represents the planned retirement date. It is reserved for future release.-->
+                                <expiry>2029-01-01T00:00:00+00:00</expiry>
+                            </version>
+                            <!--scheme: Protocol schema (e.g. "http", "https"). -->
+                            <scheme>https</scheme>
+                            <!--fqdn: FQDN of the service instance.-->
+                            <fqdn>ccrc1-nrf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                            <!--ip-endpoint: IP address(es) and port information where the service is listening for incoming service requests.-->
+                            <ip-endpoint>
+                                <!--id: Unique ID that represents the NRF service.-->
+                                <id>1</id>
+                                <!--You have a CHOICE of the ipv4-address and ipv6-address at this level. Please remove the other one when choose one ip address.-->
+                                <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                                <!-- <ipv4-address>{{NNRF-DISC-SERVICE-IPV4-ADDRESS}}</ipv4-address> -->
+                                <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                                <!--<ipv6-address>{{NNRF-DISC-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                                <!--transport: Transport protocol. -->
+                                <transport>tcp</transport>
+                                <!--port: Port number that the NRF service is listening on.-->
+                                <port>443</port>
+                            </ip-endpoint>
+                            <!--priority: Priority to be used for NRF Service selection.-->
+                            <priority>0</priority>
+                            <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other services of the same type. It is reserved for future release.-->
+                            <!--<capacity>0</capacity>-->
+                            <!--api-prefix: Optional path segment(s) used to construct the {apiRoot} variable of the NRF API URIs. -->
+                            <!--<api-prefix/>-->
+                            <!--supported-features: Supported Features of the NRF Service instance. It is reserved for future release.-->
+                            <!--<supported-features/>-->
+                        </service>
+                        <!--service: The service instance of NRF.-->
+                        <!--<service>-->
+                            <!--id: Unique ID that represents the NRF service.-->
+                            <!--<id>{{NNRF-OAUTH2-SERVICE-ID}}</id>-->
+                            <!--name: Name of the NRF service following 29.510 specification.-->
+                            <!--<name>nnrf-oauth2</name>-->
+                            <!--version: API versions supported by the NRF service.-->
+                            <!--<version>-->
+                                <!--api-version-in-uri: Version of the service instance to be used in the URI for accessing the API.-->
+                                <!--<api-version-in-uri>v1</api-version-in-uri>-->
+                                <!--api-full-version: Full version number of the API. It is reserved for future release.-->
+                                <!--<api-full-version/>-->
+                                <!--expiry: Expiry date and time of the NRF service. This represents the planned retirement date. It is reserved for future release.-->
+                                <!--<expiry>2020-01-01T00:00:00+00:00</expiry>-->
+                            <!--</version> -->
+                            <!--scheme: Protocol schema (e.g. "http", "https"). -->
+                            <!--<scheme>{{NNRF-OAUTH2-SERVICE-SCHEME}}</scheme>-->
+                            <!--fqdn: FQDN of the service instance.-->
+                            <!--<fqdn>{{NNRF-OAUTH2-SERVICE-FQDN}}</fqdn>-->
+                            <!--ip-endpoint: IP address(es) and port information where the service is listening for incoming service requests.-->
+                            <!--<ip-endpoint>-->
+                                <!--id: Unique ID that represents the NRF service.-->
+                                <!--<id>{{NNRF-OAUTH2-SERVICE-IP-ENDPOINT-ID}}</id>-->
+                                <!--You have a CHOICE of the ipv4-address and ipv6-address at this level. Please remove the other one when choose one ip address.-->
+                                <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                                <!--<ipv4-address>{{NNRF-OAUTH2-SERVICE-IPV4-ADDRESS}}</ipv4-address>-->
+                                <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                                <!--<ipv6-address>{{NNRF-OAUTH2-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                                <!--transport: Transport protocol. -->
+                                <!--<transport>tcp</transport>-->
+                                <!--port: Port number that the NRF service is listening on.-->
+                                <!--<port>{{NNRF-OAUTH2-SERVICE-PORT}}</port>-->
+                            <!--</ip-endpoint>-->
+                            <!--priority: Priority to be used for NRF Service selection.-->
+                            <!--<priority>{{NNRF-OAUTH2-PRIORITY}}</priority>-->
+                            <!--capacity: Static capacity information in the range of 0-65535, expressed as a weight relative to other services of the same type. It is reserved for future release.-->
+                            <!--<capacity>0</capacity>-->
+                            <!--api-prefix: Optional path segment(s) used to construct the {apiRoot} variable of the NRF API URIs. -->
+                            <!--<api-prefix/>-->
+                            <!--supported-features: Supported Features of the NRF Service instance. It is reserved for future release.-->
+                            <!--<supported-features/>-->
+                        <!--</service>-->
+                    </profile>
+                </nrf>
+                <!--nrfagent-notify-service: Configurations array for NRF Agent notify service.-->
+                <nrfagent-notify-service>
+                    <!--Prefer each NF which use NRF Discovery Agent configure one set notification address. At least one set of the value needs to be configured.-->
+                    <!--Only FQDN must be configured when scheme is https, and at least one of the addressing parameters (fqdn, ipv4address, ipv6adress) must be configured when scheme is http.-->
+                    <!--notification-address: IP address or FQDN and port used to construct notification Uri for incoming notifications from NRF.-->
+                    <notification-address>
+                        <!--id: Unique ID that represents the NF service which use NRF Agent.-->
+                        <id>0</id>
+                        <!--nf-type: NF type. if nf-type is empty, NRF Agent will treat it as common notification-address for all NF servie.-->
+                        <!-- <nf-type>{{NF-SERVICE-TYPE}}</nf-type> -->
+                        <!--fqdn: FQDN of NF, NRF Agent uses it to construct nfStatusNotificationUri to receive notification requests from NRF in same PLMN.-->
+                        <fqdn>ccrc1-nssf-sig-n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                        <!--You have a CHOICE of the ipv4-address and ipv6-address at this level. Please remove the other one when choose one ip address.-->
+                        <!--ipv4-address: IPv4 address of NF ingress gateway service which is listening for incoming service requests, NRF Agent uses it to construct nfStatusNotificationUri to receive notification requests from NRF in same PLMN.-->
+                        <!-- <ipv4-address>{{NF-INGRESS-GW-SERVICE-IPV4-ADDRESS}}</ipv4-address> -->
+                        <!--ipv6-address: IPv6 address of NF ingress gateway service which is listening for incoming service requests, NRF Agent uses it to construct nfStatusNotificationUri to receive notification requests from NRF in same PLMN.-->
+                        <!-- <ipv6-address>{{NF-INGRESS-GW-SERVICE-IPV6-ADDRESS}}</ipv6-address> -->
+                        <!--inter-plmn-fqdn: interPLmnFQDN of the NF ingress gateway service, the inter PLMN FQDN is used for inter PLMN routing as specified in 3GPP TS 23.003.-->
+                        <!--NRF Agent uses it to construct nfStatusNotificationUri to receive notification requests from NRF in different PLMN.-->
+                        <!-- <inter-plmn-fqdn>{{NF-INGRESS-GW-INTER-PLMN-FQDN}}</inter-plmn-fqdn> -->
+                        <!--scheme: Protocol schema (e.g. "http", "https"). Default value is "https".-->
+                        <scheme>https</scheme>
+                        <!--port: Port number that the NF ingress gateway service is listening on. NRF Agent uses it to construct nfStatusNotificationUri to receive notification requests.-->
+                        <port>443</port>
+                    </notification-address>
+                </nrfagent-notify-service>
+                <!--nrfagent-register-service: Configuration for NRF Agent register service.-->
+                <nrfagent-register-service>
+                    <!--nf-load-report-threshold: Value for NF load report threshold.Default value is 10. The value range from 0 to 100.-->
+                    <!--When NF load change percentage exceed the value, NRF Agent will send the load update message to NRF.-->
+                    <nf-load-report-threshold>10</nf-load-report-threshold>
+                </nrfagent-register-service>
+            </nrf-agent>
+        </config>
+    </edit-config>
+</rpc>

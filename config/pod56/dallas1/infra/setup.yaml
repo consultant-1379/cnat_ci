@@ -1,0 +1,9 @@
+log_server: tool-01-001
+system_file_dir: '/autott/dallas/dualmode'
+config_file_dir: '/autott/dallas/dualmode'
+replay_file_dir: /lab/epg_st_utils/captures/latest
+otp_dir: /lab/epg_st_utils/testtools/dallas/rhel7.x86_64/erlang_otp/OTP19_2/lib/erlang/
+erlport_dir: /lab/epg_st_utils/testtools/dallas/rhel6.x86_64/erlport/
+max_otp_proc: 5000000
+auth_key: /lab/epg_st_utils/lao/etc/testlab_dsakey
+tls_files_path: /autott/dallas/tls/

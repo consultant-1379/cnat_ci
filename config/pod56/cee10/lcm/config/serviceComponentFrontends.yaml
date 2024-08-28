@@ -1,0 +1,73 @@
+#######################################################################################
+##  Configuration file with CEE service component frontends information               #
+#######################################################################################
+---
+serviceComponentFrontends:
+  - name: cee_internal_frontend
+    provider: haproxy
+    protocol: https
+    transportLayerSecurity: openstack_internal_tls
+    virtualIP: openstack_int_vip
+    region: OpenStackRegion
+    endpointTypes:
+      - internal
+      - admin
+  - name: cee_external_frontend
+    provider: haproxy
+    protocol: https
+    transportLayerSecurity: openstack_external_tls
+    virtualIP: openstack_ext_vip
+    region: OpenStackRegion
+    endpointTypes:
+      - public
+  - name: glance_internal_frontend
+    provider: haproxy
+    protocol: https
+    transportLayerSecurity: glance_internal_tls
+    virtualIP: glance_int_vip
+    region: OpenStackRegion
+    endpointTypes:
+      - internal
+      - admin
+  - name: infra_internal_frontend
+    provider: haproxy
+    protocol: https
+    transportLayerSecurity: infra_internal_tls
+    virtualIP: lcm_int_vip
+    region: InfraRegion
+    endpointTypes:
+      - internal
+      - admin
+  - name: infra_external_frontend
+    provider: haproxy
+    protocol: https
+    transportLayerSecurity: infra_external_tls
+    virtualIP: lcm_ext_vip
+    region: InfraRegion
+    endpointTypes:
+      - public
+  - name: serviceassurance_internal_frontend
+    provider: haproxy
+    protocol: https
+    transportLayerSecurity: serviceassurance_internal_tls
+    virtualIP: serviceassurance_int_vip
+    region: InfraRegion
+    endpointTypes:
+      - internal
+      - admin
+  - name: serviceassurance_external_frontend
+    provider: haproxy
+    protocol: https
+    transportLayerSecurity: serviceassurance_external_tls
+    virtualIP: serviceassurance_ext_vip
+    region: InfraRegion
+    endpointTypes:
+      - public
+  - name: vxsds_internal_frontend
+    provider: haproxy
+    protocol: http
+#    transportLayerSecurity: vxsds_internal_tls
+#    virtualIP: vxsds_int_vip
+    endpointTypes:
+      - internal
+...

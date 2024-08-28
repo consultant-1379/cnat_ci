@@ -1,0 +1,10 @@
+[
+       {
+            "ServiceName": "eric-bsf-worker",
+            "TAP_ENABLED": false,
+            "TracingMode": "sftp",
+            "TAP_INT": "eth0",
+            "NF_TYPE": "bsf",
+            "TAP_FILTER": "port 443"
+       }
+]

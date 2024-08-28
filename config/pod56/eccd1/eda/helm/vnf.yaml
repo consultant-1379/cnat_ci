@@ -1,0 +1,52 @@
+vnflcm:
+  vnfInstanceName: pod56-eda1
+  vnfProductName: EDA
+  values-file: values.yaml
+  orchestrator: helm
+  namespace: eda
+  csar-file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/eric-act-cna-1.49.95.csar
+  clusterName: pod56-eccd1
+
+pipeline:
+# As this module will take too much time. Therefore, comment it out. But this config is available.
+#- module: push-images-to-registry
+#  cleanup: true
+#  remote-server:
+#    host: pod56-eccd1.seln.ete.ericsson.se
+#    user: eccd
+#    ssh-key: /lab/pccc_utils/scripts/ssh_key/pod56_key
+#  tool:
+#    cli: docker
+#  registry:
+#     url: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+#     user: admin
+#     pass: YWRtaW4xMjM=
+- module: install-crd
+  namespace: eric-crd-ns
+  registry:
+    host: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+    username: admin
+    password: YWRtaW4xMjM=
+  pullSecret: regcred
+  additional-values:
+    eric-tm-ingress-controller-cr-crd:
+      rbac.create: true
+- module: create-namespace
+- module: run-k8s-command
+  name: Create docker registry secret
+  cmd: create secret docker-registry regcred --docker-server=container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se --docker-username=admin --docker-password=admin123
+- module: instantiate
+- module: verify-pod-running
+- module: run-k8s-command
+  name: Create networkpolicy to allow accessing eric-pm-server and eric-data-search-engine
+  cmd: |
+    apply -f {file1}
+    apply -f {file2}
+  inline-files:
+    file1: ../network-policy/eric-pm-server-allow.yaml
+    file2: ../network-policy/eric-data-search-engine-allow.yaml
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: |-
+    create ingress eric-pm-server --rule="eric-pm-server-eda.ingress.pod56-eccd1.seln.ete.ericsson.se/*=eric-pm-server:9090"
+    patch svc eric-pm-server --type=json -p='[{"op": "add", "path": "/spec/ports/1", "value": { "name": "http", "port": 9090, "protocol": "TCP", "targetPort": 9090 }}]'

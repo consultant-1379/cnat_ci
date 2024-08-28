@@ -1,0 +1,114 @@
+vnflcm:
+  vnfInstanceName: vpod2-eda1
+  vnfProductName: EDA
+  vnfSoftwareVersion: 1.42.124-4
+  values-file: values.yaml
+  instantiate-file: instantiate.json
+  clusterName: n182-eccd2
+  namespace: eda
+
+access-info:
+  oam: eda1-n182-vpod2.seli.gic.ericsson.se
+  # Service account. Used for provision-eda-account-management. Mandatory.
+  ldap-admin:
+    user: eda-service@ericsson.com
+    # The password must be base64 encoded.
+    pass: RG01R0NAUzBsdXQhb24=
+  # Service account. Used for provision-eda-config. Mandatory.
+  users:
+  - user: cai3guser@ericsson.com
+    pass: Q2FpM2d1c2VyQA==
+  oauth2-client:
+    # OAuth2 client name. It will be created. Mandatory.
+    name: oauth
+    # The client id in UUIDv4 format. Mandatory.
+    id: 35661fd0-8e05-11ee-9870-454441a1c1d1
+    # The client secret in UUIDv4 format. Mandatory.
+    secret: 0e1c7763-7947-4f5f-94a9-78ed5fef1edb
+    # The necessary scopes for authorization when requesting resources from the REST APIs.
+    auth-scopes:
+    - scopes.ericsson.com/activation/account_management.roles.write
+    - scopes.ericsson.com/activation/account_management.users.write
+    - scopes.ericsson.com/activation/account_management.service_accounts.write
+    - scopes.ericsson.com/activation/network_element_management.write
+    - scopes.ericsson.com/activation/activation_logic_properties.write
+pipeline:
+- module: create-namespace
+- module: instantiate
+- module: verify-pod-running
+# remove next step for now since the certificates are not available yet
+#- module: run-k8s-command
+#  name: Patch CCDM certification files
+#  cmd: |
+#    patch secret eric-act-client-certificate --patch '{{"data":{{"server-certificate-n182-vpod2.pem": "'$(base64 -w 0 < "{file1}")'"}}}}'
+#    patch secret eric-act-client-certificate --patch '{{"data":{{"ccdmkeystore-n182-vpod2.p12": "'$(base64 -w 0 < "{file3}")'"}}}}'
+#  inline-files:
+#    file1: ../ccdm/certs/server-certificate-n182-vpod2.pem
+#    file2: ../ccdm/certs/ccdmkeystore-n182-vpod2.p12
+- module: run-k8s-command
+  name: Patch alarm-provider
+  cmd: |
+    patch secret eric-fh-snmp-alarm-provider --patch '{"data":{"config.json":"'$(base64 -w 0 < "snmp-config.json")'"}}'
+    rollout restart deployment/eric-fh-snmp-alarm-provider
+- module: sleep
+  duration: 60
+- module: provision-eda-onboarding
+  # A first admin user which is an onboarding GUI user but not used for CNAT automation.
+  first-admin-user:
+    user: sysadmin@ericsson.com
+    pass: c3lzQWRtMW5ARGF5MA==
+# Module 'provision-eda-account-management' is to provision account management.
+- module: provision-eda-account-management
+  prov-info:
+  - api-path: am-rest/v1/roles
+    data-file: provisioning/account-management/role.json
+    method: POST
+    headers:
+      Content-Type: application/json
+  - api-path: am-rest/v1/service-accounts
+    data-file: provisioning/account-management/day1-service-account.json
+    method: POST
+    headers:
+      Content-Type: application/json
+  - api-path: am-rest/v1/users
+    data-file: provisioning/account-management/day1-user.json
+    method: POST
+    headers:
+      Content-Type: application/json
+# Module 'provision-eda-config' is to provision EDA. Including network element management and activation logic properties management, etc.
+- module: provision-eda-config
+  prov-info:
+  - api-path: cm-rest/v1/network-elements
+    data-files:
+    - provisioning/network-elements/ccdm-pf-mapi-1.json
+    - provisioning/network-elements/ccdm-pf-mapi-2.json
+    - provisioning/network-elements/ccdm-udr-ldap-1.json
+    - provisioning/network-elements/ccdm-udr-ldap-2.json
+    method: POST
+    headers:
+      Content-Type: application/json
+  - api-path: cm-rest/v1/network-element-groups
+    data-files:
+    - provisioning/network-element-groups/ccdm-pf-mapi.json
+    - provisioning/network-element-groups/ccdm-udr-ldap.json
+    method: POST
+    headers:
+      Content-Type: application/json
+  - api-path: cm-rest/v1/routings
+    data-files:
+    - provisioning/routings/arpf.json
+    - provisioning/routings/cudb-eir.json
+    - provisioning/routings/pcf.json
+    - provisioning/routings/udm.json
+    - provisioning/routings/udr.json
+    - provisioning/routings/udr-auc.json
+    - provisioning/routings/udr-sapc.json
+    method: POST
+    headers:
+      Content-Type: application/json
+  - api-path: cm-rest/v1/activation-logic/global-actions/routing-preference
+    data-value:
+      value: UDR
+    method: POST
+    headers:
+      Content-Type: application/json

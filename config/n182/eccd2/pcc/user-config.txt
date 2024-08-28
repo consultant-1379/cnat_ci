@@ -1,0 +1,7 @@
+config
+system authentication user pcc-admin
+ password             pcc-admin
+ groups               [ system-admin system-security-admin mm-config-admin mm-lawful-intercept-admin mm-gsh-lawful-intercept-admin mm-itc-admin mm-security-admin mm-admin mm-read-only-operator mm-expert-admin sm-admin sm-cdr-admin sm-charging-admin sm-itc-admin sm-lawful-intercept-admin sm-operator sm-tracing-admin sm-uetrace-admin system-troubleshooter system-read-only admin ]
+!
+commit
+end

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <!--xmlns="urn:rdns:com:ericsson:oammodel:ericsson-diameter-adp" refers to Diameter namespace.-->
+            <diameter xmlns="urn:rdns:com:ericsson:oammodel:ericsson-diameter-adp">
+                <!-- <service> -->
+                    <!--The key of the service instance. The value must be "eric-nef-eventexposure", string.-->
+                    <!-- <id>eric-nef-eventexposure</id> -->
+                    <!--Used to enable/disable the service. boolean -->
+                    <!-- <enabled>{{MONTE-SERVICE-ENABLED}}</enabled> -->
+                    <!-- <local-endpoint-reference> -->
+                        <!--The key of the local-endpoint-reference instance, string-->
+                        <!-- <id>monteTransportReference</id> -->
+                        <!-- Express precedence for referred transport local endpoint selection during diameter egress request message routing, uint32. -->
+                        <!-- <rank>1</rank> -->
+                        <!-- Enable or disable the use of the referred transport local endpoint for the related AAA Service, boolean, default: true. -->
+                        <!-- <enabled>{{MONTE-LOCAL-ENDPOINT-ENABLED}}</enabled> -->
+                        <!-- Restrict the use of referred transport local endpoint to a limited set of Diameter Applications implemented by the AAA Service. string.-->
+                        <!-- <application>S6t</application> -->
+                        <!-- <application>T6a</application> -->
+                        <!-- The reference towards the transport local endpoint the AAA Service should use. The local endpoint path is /diameter/transport/local-endpoint/id, string. -->
+                        <!-- <local-endpoint>MyTransportEndpoint</local-endpoint> -->
+                    <!-- </local-endpoint-reference> -->
+                <!-- </service> -->
+                <!-- <service> -->
+                    <!--The key of the service instance. string.-->
+                    <!-- <id>eric-nef-nidd</id> -->
+                    <!--Used to enable/disable the service. -->
+                    <!-- <enabled>{{NIDD-SERVICE-ENABLED}}</enabled> -->
+                    <!-- <local-endpoint-reference> -->
+                        <!--The key of the local-endpoint-reference instance, string-->
+                        <!-- <id>niddTransportReference</id> -->
+                        <!-- Express precedence for referred transport local endpoint selection during diameter egress request message routing, uint32. -->
+                        <!-- <rank>1</rank> -->
+                        <!-- Enable or disable the use of the referred transport local endpoint for the related AAA Service, boolean, default: true. -->
+                        <!-- <enabled>{{NIDD-LOCAL-ENDPOINT-ENABLED}}</enabled> -->
+                        <!-- Restrict the use of referred transport local endpoint to a limited set of Diameter Applications implemented by the AAA Service. string.-->
+                        <!-- <application>S6t</application> -->
+                        <!-- <application>T6a</application> -->
+                        <!-- The reference towards the transport local endpoint the AAA Service should use. The local endpoint path is /diameter/transport/local-endpoint/id, string. -->
+                        <!-- <local-endpoint>MyTransportEndpoint</local-endpoint> -->
+                    <!-- </local-endpoint-reference> -->
+                <!-- </service> -->
+                <!-- <service> -->
+                    <!--The key of the service instance. string.-->
+                    <!-- <id>eric-nef-devicetriggering</id> -->
+                    <!--Used to enable/disable the service. -->
+                    <!-- <enabled>{{DEVICETRIGGERING-SERVICE-ENABLED}}</enabled> -->
+                    <!-- <local-endpoint-reference> -->
+                        <!--The key of the local-endpoint-reference instance, string-->
+                        <!-- <id>devicetriggeringTransportReference</id> -->
+                        <!-- Express precedence for referred transport local endpoint selection during diameter egress request message routing, uint32. -->
+                        <!-- <rank>1</rank> -->
+                        <!-- Enable or disable the use of the referred transport local endpoint for the related AAA Service, boolean, default: true. -->
+                        <!-- <enabled>{{DEVICETRIGGERING-LOCAL-ENDPOINT-ENABLED}}</enabled> -->
+                        <!-- Restrict the use of referred transport local endpoint to a limited set of Diameter Applications implemented by the AAA Service. string.-->
+                        <!-- <application>S6m</application> -->
+                        <!-- <application>T4</application> -->
+                        <!-- The reference towards the transport local endpoint the AAA Service should use. The local endpoint path is /diameter/transport/local-endpoint/id, string. -->
+                        <!-- <local-endpoint>MyTransportEndpoint</local-endpoint> -->
+                    <!-- </local-endpoint-reference> -->
+                <!-- </service> -->
+                <service>
+                    <!--The key of the service instance. The value must be "eric-nef-afsessionwithqos", string.-->
+                    <id>eric-nef-afsessionwithqos</id>
+                    <!--Used to enable/disable the service. boolean -->
+                    <enabled>true</enabled>
+                    <local-endpoint-reference>
+                        <!--The key of the local-endpoint-reference instance, string-->
+                        <id>qosTransportReference</id>
+                        <!-- Express precedence for referred transport local endpoint selection during diameter egress request message routing, uint32. -->
+                        <rank>1</rank>
+                        <!-- Enable or disable the use of the referred transport local endpoint for the related AAA Service, boolean, default: true. -->
+                        <enabled>true</enabled>
+                        <!-- Restrict the use of referred transport local endpoint to a limited set of Diameter Applications implemented by the AAA Service. string.-->
+                        <application>Rx</application>
+                        <!-- The reference towards the transport local endpoint the AAA Service should use. The local endpoint path is /diameter/transport/local-endpoint/id, string. -->
+                        <local-endpoint>MyTransportEndpoint</local-endpoint>
+                    </local-endpoint-reference>
+                </service>
+                <transport>
+                    <node>
+                        <!-- The key of the node instance, string -->
+                        <id>MyHost</id>
+                        <!-- The origin host of the Diameter Node represented by the node instance, inet:domain-name. -->
+                        <origin-host>nef1.epc.mnc081.mcc240.3gppnetwork.org</origin-host>
+                        <!-- The origin realm of the Diameter Node represented by the node instance, inet:domain-name. -->
+                        <origin-realm>epc.mnc081.mcc240.3gppnetwork.org</origin-realm>
+                        <!-- the name of the product behind the Diameter Node implementing different AAA Services by using the diameter stack. string. -->
+                        <product-name>NEF</product-name>
+                        <!-- TLS profile to be associated with local-endpoints of the node. -->
+                        <!-- <tls-profile> -->
+                            <!-- Specify the key of the tls-profile instance. -->
+                            <!-- <id>tlsProfile</id>  -->
+                            <!-- Reference to a Diameter specific certificate and its associated private key in the keystore. -->
+                            <!-- <keystore-reference>  -->
+                                <!-- Reference to a Diameter specific private key in the keystore. -->
+                                <!-- <asymmetric-key>diameter-key-cert</asymmetric-key>  -->
+                                <!-- Reference to a Diameter specific certificate in the keystore. -->
+                                <!-- <certificate>diameter-key-cert</certificate>  -->
+                            <!-- </keystore-reference> -->
+                            <!-- Reference to a set of Diameter trust anchors that exists in the truststore. -->
+                            <!-- <truststore-reference>diameter-trusted-certs</truststore-reference> -->
+                        <!-- </tls-profile> -->
+                    </node>
+                    <local-endpoint>
+                        <!-- The key of the local-endpoint instance, string -->
+                        <id>MyTransportEndpoint</id>
+                        <!-- Assign a Local Endpoint with an Own Diameter Node represented by related node instance, reference path: /diameter/transport/node/id -->
+                        <node>MyHost</node>
+                        <!-- Enable or disable the use Local Endpoint, boolean, default: true -->
+                        <enabled>true</enabled>
+                        <!-- Specify the number of instances a Local Endpoint configured with connection initiation (client) role shall have.  -->
+                        <instance-count>0</instance-count>
+                        <transport-tcp>
+                            <!-- The port to be used by the TCP transport capability of a Local Endpoint, default: 0 -->
+                            <port>0</port>
+                            <!-- Offers the possibility to assign an IP address to a transport capability, reference path: /diameter/transport/host-address-resolver/id -->
+                            <address>MyAddress</address>
+                            <!-- If defined, endpoint uses TLS to secure the communication with properties of the referred tls-profile. -->
+                            <!-- <tls-profile>tlsProfile</tls-profile> -->
+                            <!-- Used to turn on/off hostname validation on TLS secured static connections. boolean --> 
+                            <!-- <tls-host-name-validation>{{TLS-HOST-NAME-VALIDATION}}</tls-host-name-validation> -->
+ 
+                        </transport-tcp>
+                        <!-- Set a Local Endpoint to play a connection initiator (client) role, reference path:/diameter/peer-table/static-peer/id. -->
+                        <initiate-connection-to-peer>MyStaticPeer</initiate-connection-to-peer>
+                    </local-endpoint>
+                    <host-address-resolver>
+                        <!-- The key of the host-address-resolver instance, string -->
+                        <id>MyAddress</id>
+                        <!-- A Linux environment variable name the Diameter Service instances must use to resolve the related local IP address they should bind to, string -->
+                        <linux-env-var>POD_IP</linux-env-var>
+                    </host-address-resolver>
+                </transport>
+                <peer-table>
+                    <static-peer>
+                        <!-- The key of the static-peer instance, string -->
+                        <id>MyStaticPeer</id>
+                        <!-- Enable or disable establishment of peer connections with the Diameter Peer Node(s) the static-peer instance is meant to represent, boolean, default: true -->
+                        <enabled>true</enabled>
+                        <remote-endpoint>
+                            <!-- The key of the remote-endpoint instance, string -->
+                            <id>MyRemoteEndpoint</id>
+                            <!-- The port number of the remote endpoint, inet:port-numbe, default: 3868 -->
+                            <port>3868</port>
+                            <!-- The list of IP addresses (IPv4 or IPv6 addresses) of the remote endpoint, inet:ip-address -->
+                            <address>25.51.0.251</address>
+                            <!-- Enable or disable the remote endpint of the Peer Diameter Node represented by the parent static-peer, boolean, default:true -->
+                            <enabled>true</enabled>
+                            <!-- The transport protocol of the remote endpoint, one of: tcp,sctp. default: tcp -->
+                            <transport-protocol>tcp</transport-protocol>
+                        </remote-endpoint>
+                        <!-- The origin host of the diameter Peer Node the static-peer instance is meant to represent, string, inet:domain-name -->
+                        <peer-origin-host>pcrf1.epc.mnc081.mcc240.3gppnetwork.org</peer-origin-host>
+                        <!-- Limits the number of connections built from this Peer Diameter Node. `0 represents Any number, default:4294967295 -->
+                        <max-connection-nr>0</max-connection-nr>
+                        <!-- disallow more than one diameter peer connection between Own Diameter Node and the Peer Diameter Node represented by current static-peer MO, default: true  -->
+                        <restrict-connections>false</restrict-connections>
+                    </static-peer>
+                </peer-table>
+                <routing-table>
+                    <!-- The key of the routing-table instance, string -->
+                    <id>MyRoutingTable</id>
+                    <!-- Refer to a set of AAA Services, string -->
+                    <service>eric-nef-afsessionwithqos</service>
+                    <!-- <service>eric-nef-eventexposure</service> -->
+                    <!-- <service>eric-nef-nidd</service> -->
+                    <!-- <service>eric-nef-devicetriggering</service> -->
+                    <routing-entry>
+                        <!-- The key of the routing-entry instance, uint32 -->
+                        <id>1</id>
+                        <!-- The action part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide.  If need load balance and failover/failback support, action "route-to-peer-group" should be used, for example:
+                        <action>route-to-peer-group realm="ericsson.se"</action>, where realm's value should be peer diameter node's realm
+                        -->
+                        <action>route-to-peer key="MyStaticPeer"</action>
+                        <!--  Enable or disable a routing rule/entry, boolean, default: true -->
+                        <enabled>true</enabled>
+                        <!-- The expression part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide. -->
+                        <expression>msg.egress</expression>
+                    </routing-entry>
+                    <!-- <routing-entry> -->
+                        <!-- The key of the routing-entry instance, uint32 -->
+                        <!-- <id>2</id> -->
+                        <!-- The action part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide.  -->
+                        <!-- <action>route-to-service service="eric-nef-eventexposure"</action> -->
+                        <!-- Enable or disable a routing rule/entry, boolean, default: true -->
+                        <!-- <enabled>true</enabled> -->
+                        <!-- The expression part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide. MONTE-ORIGIN-HOST should match eventexposure day-1 CM (origin-host) -->
+                        <!-- <expression>msg.ingress AND avp.destination-host=="{{MONTE-ORIGIN-HOST}}"</expression> -->
+                    <!-- </routing-entry> -->
+                    <!-- <routing-entry> -->
+                        <!-- The key of the routing-entry instance, uint32 -->
+                        <!-- <id>3</id> -->
+                        <!-- The action part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide.  -->
+                        <!-- <action>route-to-service service="eric-nef-nidd"</action> -->
+                        <!-- Enable or disable a routing rule/entry, boolean, default: true -->
+                        <!-- <enabled>true</enabled> -->
+                        <!-- The expression part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide. -->
+                        <!-- <expression>msg.ingress AND avp.destination-host=="{{NIDD-ORIGIN-HOST}}"</expression> -->
+                    <!-- </routing-entry> -->
+                    <!-- <routing-entry> -->
+                        <!-- The key of the routing-entry instance, uint32 -->
+                        <!-- <id>4</id> -->
+                        <!-- The action part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide.  -->
+                        <!-- <action>route-to-service service="eric-nef-devicetriggering"</action> -->
+                        <!-- Enable or disable a routing rule/entry, boolean, default: true -->
+                        <!-- <enabled>true</enabled> -->
+                        <!-- The expression part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide. -->
+                        <!-- <expression>msg.ingress AND avp.destination-host=="{{DEVICETRIGGERING-ORIGIN-HOST}}"</expression> -->
+                    <!-- </routing-entry> -->
+                    <!--  -->
+                    <routing-entry>
+                        <!-- The key of the routing-entry instance, uint32 -->
+                        <id>3</id>
+                        <!-- The action part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide.  -->
+                        <action>route-to-service service="eric-nef-afsessionwithqos"</action>
+                        <!-- Enable or disable a routing rule/entry, boolean, default: true -->
+                        <enabled>true</enabled>
+                        <!-- The expression part of a routing rule, the routing language elements are described by Diameter Managed Object Model User Guide. QOS-ORIGIN-HOST should match afsessionwithqos day-1 CM (origin-host)-->
+                        <expression>msg.ingress AND avp.destination-host=="nef1.epc.mnc081.mcc240.3gppnetwork.org"</expression>
+                    </routing-entry>
+                </routing-table>
+            </diameter>
+        </config>
+    </edit-config>
+</rpc>

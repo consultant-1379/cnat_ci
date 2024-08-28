@@ -1,0 +1,19 @@
+batch-size: 2
+vnf-info-files:
+- ccdm/vnf.yaml
+- eda/vnf.yaml
+- ccrc/vnf.yaml
+- pcc/vnf.yaml
+- pcg/vnf.yaml
+- ccsm/vnf.yaml
+- sc/vnf.yaml
+- cces/vnf.yaml
+cfggen-info-files:
+- ccdm/cfggen.yaml
+- eda/cfggen.yaml
+- ccrc/cfggen.yaml
+- pcc/cfggen.yaml
+- pcg/cfggen.yaml
+- ccsm/cfggen.yaml
+- sc/cfggen.yaml
+- cces/cfggen.yaml

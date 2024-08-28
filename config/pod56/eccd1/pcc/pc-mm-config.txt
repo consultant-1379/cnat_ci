@@ -1,0 +1,710 @@
+autowizard false
+config
+
+
+
+
+
+mm piu 1.1
+ eth-port 1
+  eth-vlan 3023
+  !
+  eth-vlan 3829
+  !
+  eth-vlan 3879
+  !
+  eth-vlan 3877
+  !
+  eth-vlan 3906
+  !
+  eth-vlan 3826
+  !
+ !
+!
+mm piu 1.2
+ eth-port 1
+  eth-vlan 3023
+  !
+  eth-vlan 3829
+  !
+  eth-vlan 3879
+  !
+  eth-vlan 3877
+  !
+  eth-vlan 3906
+  !
+  eth-vlan 3826
+  !
+ !
+!
+
+
+mm ip-interface ETH_1_1_1_3023_OM_EXTERNAL
+ interface-ip-address  10.36.240.1
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name OM_EXTERNAL
+ eth-vlan equipment-position 1.1
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3023
+ !
+mm router-instance 1.1 OM_EXTERNAL
+ router-identifier 10.36.240.1
+!
+
+mm static-route 1.1 OM_EXTERNAL  0.0.0.0 0.0.0.0  10.36.240.254
+!
+
+
+mm ip-interface ETH_1_2_1_3023_OM_EXTERNAL
+ interface-ip-address  10.36.240.2
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name OM_EXTERNAL
+ eth-vlan equipment-position 1.2
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3023
+ !
+mm router-instance 1.2 OM_EXTERNAL
+ router-identifier 10.36.240.2
+!
+
+mm static-route 1.2 OM_EXTERNAL  0.0.0.0 0.0.0.0  10.36.240.254
+!
+
+
+
+mm bfd OM_EXTERNAL
+ desired-tx-interval 300
+ min-rx-interval     300
+ multiplier          3
+ bfd-neighbor 10.36.240.254
+ !
+!
+
+mm ip-network OM_EXTERNAL
+!
+mm ip-service OAM
+ ip-network ip-network-name OM_EXTERNAL
+ ip-service-address 10.130.34.232
+ !
+!
+
+
+mm ip-interface ETH_1_1_1_3829_PRAN_SCTP_1
+ interface-ip-address  11.1.29.1
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name PRAN_SCTP_1
+ eth-vlan equipment-position 1.1
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3829
+ !
+mm router-instance 1.1 PRAN_SCTP_1
+ router-identifier 11.1.29.1
+!
+
+mm static-route 1.1 PRAN_SCTP_1  0.0.0.0 0.0.0.0  11.1.29.254
+!
+
+
+mm ip-interface ETH_1_2_1_3829_PRAN_SCTP_1
+ interface-ip-address  11.1.29.2
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name PRAN_SCTP_1
+ eth-vlan equipment-position 1.2
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3829
+ !
+mm router-instance 1.2 PRAN_SCTP_1
+ router-identifier 11.1.29.2
+!
+
+mm static-route 1.2 PRAN_SCTP_1  0.0.0.0 0.0.0.0  11.1.29.254
+!
+
+
+
+mm bfd PRAN_SCTP_1
+ desired-tx-interval 300
+ min-rx-interval     300
+ multiplier          3
+ bfd-neighbor 11.1.29.254
+ !
+!
+
+mm ip-network PRAN_SCTP_1
+!
+mm ip-service N2-1
+ ip-network ip-network-name PRAN_SCTP_1
+ ip-service-address 10.131.128.97
+ !
+!
+mm ip-service S1-MME-1
+ ip-network ip-network-name PRAN_SCTP_1
+ ip-service-address 10.131.128.136
+ !
+!
+
+
+mm ip-interface ETH_1_1_1_3879_PRAN_SCTP_2
+ interface-ip-address  11.1.79.1
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name PRAN_SCTP_2
+ eth-vlan equipment-position 1.1
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3879
+ !
+mm router-instance 1.1 PRAN_SCTP_2
+ router-identifier 11.1.79.1
+!
+
+mm static-route 1.1 PRAN_SCTP_2  0.0.0.0 0.0.0.0  11.1.79.254
+!
+
+
+mm ip-interface ETH_1_2_1_3879_PRAN_SCTP_2
+ interface-ip-address  11.1.79.2
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name PRAN_SCTP_2
+ eth-vlan equipment-position 1.2
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3879
+ !
+mm router-instance 1.2 PRAN_SCTP_2
+ router-identifier 11.1.79.2
+!
+
+mm static-route 1.2 PRAN_SCTP_2  0.0.0.0 0.0.0.0  11.1.79.254
+!
+
+
+
+mm bfd PRAN_SCTP_2
+ desired-tx-interval 300
+ min-rx-interval     300
+ multiplier          3
+ bfd-neighbor 11.1.79.254
+ !
+!
+
+mm ip-network PRAN_SCTP_2
+!
+mm ip-service N2-2
+ ip-network ip-network-name PRAN_SCTP_2
+ ip-service-address 10.131.144.97
+ !
+!
+mm ip-service S1-MME-2
+ ip-network ip-network-name PRAN_SCTP_2
+ ip-service-address 10.131.144.136
+ !
+!
+
+
+mm ip-interface ETH_1_1_1_3877_SIG_SCTP_1
+ interface-ip-address  11.1.77.1
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name SIG_SCTP_1
+ eth-vlan equipment-position 1.1
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3877
+ !
+mm router-instance 1.1 SIG_SCTP_1
+ router-identifier 11.1.77.1
+!
+
+mm static-route 1.1 SIG_SCTP_1  0.0.0.0 0.0.0.0  11.1.77.254
+!
+
+
+mm ip-interface ETH_1_2_1_3877_SIG_SCTP_1
+ interface-ip-address  11.1.77.2
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name SIG_SCTP_1
+ eth-vlan equipment-position 1.2
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3877
+ !
+mm router-instance 1.2 SIG_SCTP_1
+ router-identifier 11.1.77.2
+!
+
+mm static-route 1.2 SIG_SCTP_1  0.0.0.0 0.0.0.0  11.1.77.254
+!
+
+
+
+mm bfd SIG_SCTP_1
+ desired-tx-interval 300
+ min-rx-interval     300
+ multiplier          3
+ bfd-neighbor 11.1.77.254
+ !
+!
+
+mm ip-network SIG_SCTP_1
+!
+mm ip-service S6a-1
+ ip-network ip-network-name SIG_SCTP_1
+ ip-service-address 106.2.0.65
+ !
+!
+mm ip-service SBI-Server
+ ip-network ip-network-name SIG_SCTP_1
+ ip-service-address 5.8.6.9
+ !
+!
+mm ip-service SBI-Client
+ ip-network ip-network-name SIG_SCTP_1
+ ip-service-address 29.0.64.121
+ !
+!
+
+
+mm ip-interface ETH_1_1_1_3906_SIG_SCTP_2
+ interface-ip-address  11.2.6.1
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name SIG_SCTP_2
+ eth-vlan equipment-position 1.1
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3906
+ !
+mm router-instance 1.1 SIG_SCTP_2
+ router-identifier 11.2.6.1
+!
+
+mm static-route 1.1 SIG_SCTP_2  0.0.0.0 0.0.0.0  11.2.6.254
+!
+
+
+mm ip-interface ETH_1_2_1_3906_SIG_SCTP_2
+ interface-ip-address  11.2.6.2
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name SIG_SCTP_2
+ eth-vlan equipment-position 1.2
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3906
+ !
+mm router-instance 1.2 SIG_SCTP_2
+ router-identifier 11.2.6.2
+!
+
+mm static-route 1.2 SIG_SCTP_2  0.0.0.0 0.0.0.0  11.2.6.254
+!
+
+
+
+mm bfd SIG_SCTP_2
+ desired-tx-interval 300
+ min-rx-interval     300
+ multiplier          3
+ bfd-neighbor 11.2.6.254
+ !
+!
+
+mm ip-network SIG_SCTP_2
+!
+mm ip-service S6a-2
+ ip-network ip-network-name SIG_SCTP_2
+ ip-service-address 106.2.0.97
+ !
+!
+
+
+mm ip-interface ETH_1_1_1_3826_MEDIA
+ interface-ip-address  11.1.26.1
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name MEDIA
+ eth-vlan equipment-position 1.1
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3826
+ !
+mm router-instance 1.1 MEDIA
+ router-identifier 11.1.26.1
+!
+
+mm static-route 1.1 MEDIA  0.0.0.0 0.0.0.0  11.1.26.254
+!
+
+
+mm ip-interface ETH_1_2_1_3826_MEDIA
+ interface-ip-address  11.1.26.2
+ interface-ip-mask    255.255.255.0
+ ip-network ip-network-name MEDIA
+ eth-vlan equipment-position 1.2
+ eth-vlan ethernet-port 1
+ eth-vlan ethernet-vlan-id 3826
+ !
+mm router-instance 1.2 MEDIA
+ router-identifier 11.1.26.2
+!
+
+mm static-route 1.2 MEDIA  0.0.0.0 0.0.0.0  11.1.26.254
+!
+
+
+
+mm bfd MEDIA
+ desired-tx-interval 300
+ min-rx-interval     300
+ multiplier          3
+ bfd-neighbor 11.1.26.254
+ !
+!
+
+mm ip-network MEDIA
+!
+mm ip-service Gn-GTP-C
+ ip-network ip-network-name MEDIA
+ ip-service-address 106.1.0.1
+ !
+!
+mm ip-service S10-GTP-C
+ ip-network ip-network-name MEDIA
+ ip-service-address 106.1.0.33
+ !
+!
+mm ip-service S11-GTP-C
+ ip-network ip-network-name MEDIA
+ ip-service-address 106.1.0.65
+ !
+!
+
+mm ne node-id                               pod56-amf1
+mm ne mme-group-id                          32768
+mm ne mme-code                              13
+mm ne dual-address-bearer-flag              1
+mm ne amf-region-id                         255
+mm ne amf-set-id                            2
+mm ne amf-pointer                           13
+mm ne amf-instance-id                       8b85f3f9-2f66-4698-b07e-06a07010632e
+mm ne locality                              LN1
+mm plmn 240 81
+ plmn-name                        24081
+ supports-lte                     true
+ supports-nr                      true
+!
+mm eea-algorithm eea0
+ algorithm-priority 3
+!
+mm eea-algorithm eea1
+ algorithm-priority 2
+!
+mm eea-algorithm eea2
+ algorithm-priority 1
+!
+mm eea-algorithm eea3
+ algorithm-priority 0
+!
+mm eia-algorithm eia1
+ algorithm-priority 2
+!
+mm eia-algorithm eia2
+ algorithm-priority 1
+!
+mm eia-algorithm eia3
+ algorithm-priority 0
+!
+
+mm nea-algorithm nea0
+ n1-security-algorithm-priority 1
+!
+mm nea-algorithm nea1
+ n1-security-algorithm-priority 2
+!
+mm nea-algorithm nea2
+ n1-security-algorithm-priority 3
+!
+mm nea-algorithm nea3
+ n1-security-algorithm-priority 0
+!
+mm nia-algorithm nia1
+ n1-security-algorithm-priority 2
+!
+mm nia-algorithm nia2
+ n1-security-algorithm-priority 1
+!
+mm nia-algorithm nia3
+ n1-security-algorithm-priority 0
+!
+mm nrf-option nf-type-list           [ 5G-EIR AMF AUSF SMF UDM ]
+mm nrf-option cache                  on
+mm nrf-option nrf-sup-interval       50
+mm nrf-option amf-nf-profile-addressing-preference fqdn
+mm sbi uri-host-format          fqdn
+mm sbi-client-profile default_sbi_client_profile_list 1
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 100
+ service-name               namf_communication
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 101
+ service-name               nausf_authentication
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 102
+ service-name               nudm_subscriberdatamanagement
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 103
+ service-name               nudm_uecontextmanagement
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 2
+ service-name               nnrf_nfdiscovery
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 3
+ service-name               nnrf_nfmanagement
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 4
+ service-name               nnrf_accesstoken
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 5
+ service-name               nnssf_nssaiavailability
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 6
+ service-name               nnssf_nsselection
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 7
+ service-name               nsmf_pdusession
+ request-time-out           4000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 8
+ service-name               nsmsf_smservice
+ request-time-out           2000
+ max-retry-number           1
+!
+mm sbi-client-profile default_sbi_client_profile_list 9
+ service-name               n5g-eir_equipmentidentitycheck
+ request-time-out           2000
+ max-retry-number           1
+!
+
+mm nf-discovery-profile 2 default_nf_disc_profile_list
+ service-name-list    [ namf_communication ]
+ discovery-parameters [ preferred-locality ]
+!
+mm nf-discovery-profile 3 default_nf_disc_profile_list
+ service-name-list    [ nausf_authentication ]
+ discovery-parameters [ preferred-locality ]
+!
+mm nf-discovery-profile 4 default_nf_disc_profile_list
+ service-name-list    [ nudm_subscriberdatamanagement ]
+ discovery-parameters [ preferred-locality ]
+!
+mm nf-discovery-profile 5 default_nf_disc_profile_list
+ service-name-list    [ nudm_uecontextmanagement ]
+ discovery-parameters [ preferred-locality ]
+!
+mm nf-discovery-profile 6 default_nf_disc_profile_list
+ service-name-list    [ n5g-eir_equipmentidentitycheck ]
+ discovery-parameters [ preferred-locality ]
+!
+mm nf-discovery-profile 7 default_nf_disc_profile_list
+ service-name-list    [ nsmf_pdusession ]
+ discovery-parameters [ preferred-locality ]
+!
+mm diameter local-diameter-host pod56-pcc1-mme ericsson.se
+ sctp-end-point sctp-end-point-no 2
+!
+mm diameter diameter-application s6a
+ diameter-default-load-sharing true
+ local-diameter-host diameter-host-name pod56-pcc1-mme
+ local-diameter-host diameter-realm-name ericsson.se
+ diameter-realm ericsson.se
+  diameter-peer-list              [ 1 ]
+ !
+!
+mm diameter diameter-application s13
+ diameter-default-load-sharing true
+ local-diameter-host diameter-host-name pod56-pcc1-mme
+ local-diameter-host diameter-realm-name ericsson.se
+ diameter-realm ericsson.se
+  diameter-peer-list              [ 1 ]
+ !
+!
+mm diameter diameter-peer 5.8.6.13
+ diameter-peer-number        1
+ diameter-peer-port-number   3868
+ is-geographically-redundant false
+ sctp-profile-s sctp-profile-name sctp_s6a
+ local-diameter-host diameter-host-name pod56-pcc1-mme
+ local-diameter-host diameter-realm-name ericsson.se
+!
+mm eir EIR
+ eir-realm-name ericsson.se
+ eir-host-name  esm
+!
+mm dns epc.mnc081.mcc240.3gppnetwork.org.
+ query-type             recursive
+!
+mm supported-slice 2
+ sst 1
+ sd  2
+!
+mm feature-state amf_multiple_network_slices_support
+ feature-state ACTIVATED
+!
+mm feature-state imei_check
+ feature-state ACTIVATED
+!
+
+mm ga MSTZ
+ ga-ta-range TaLteZone1
+  mobile-country-code      240
+  mobile-network-code      81
+  first-tracking-area-code 1
+  last-tracking-area-code  2304
+ !
+!
+mm ga-time-zone MSTZ
+ time-zone-ga CET
+!
+mm ga-time-zone MSTZ
+ time-zone-ga CET
+!
+mm supi-range 24081
+ supi-range-ims-voice-ps   3gpp
+ supi-range-roaming-status home
+ default-dnn-operator-id   mnc081.mcc240.gprs
+ dnn-operator-id-enabled   false
+!
+mm imsins 24081
+ roaming-status                            home
+ default-apn-operator-id                   mnc081.mcc240.gprs
+ numbering-plan                            e214
+ allow-camel-phase3                        true
+ nature-of-address                         international
+ no-of-digits-to-remove                    5
+ digits-to-add                             86582
+ hss-realm-name                            ericsson.se
+ hss-host-name                             esm
+ earp-level-roamers                        0
+!
+mm n2 n2
+ n2-t3513-paging-timer             3
+ sctp-end-point sctp-end-point-no 3
+!
+mm s11 S11
+ s11-u-support-in-gw             off
+!
+mm s1-mme S1
+ sctp-end-point sctp-end-point-no 1
+!
+mm lm nels-configuration 1
+ host nelsaas-vnf1-thrift.sero.gic.ericsson.se
+ port 9095
+!
+mm nrf-service-instance nnrf_nfd_1
+ nrf-service-name nnrf_nfdiscovery
+ service-role     primary
+ fqdn             nrf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org
+ scheme           https
+ fqdn-port-number 443
+!
+mm nrf-service-instance nnrf_nfm_1
+ nrf-service-name nnrf_nfmanagement
+ service-role     primary
+ fqdn             nrf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org
+ scheme           https
+ fqdn-port-number 443
+!
+mm nssf-service-instance nnssf_ava_1
+ nssf-service-name nnssf_nssaiavailability
+ fqdn              nssf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org
+ scheme            https
+ fqdn-port-number  443
+ priority          1
+!
+mm nssf-service-instance nnssf_sel_1
+ nssf-service-name nnssf_nsselection
+ fqdn              nssf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org
+ scheme            https
+ fqdn-port-number  443
+ priority          1
+!
+mm sctp-sys sctp-end-point 1
+ port-number 36412
+ ip-service-prim ip-service-name S1-MME-1
+ ip-service-sec ip-service-name S1-MME-2
+ sctp-profile sctp-profile-name 4gsctpS1
+!
+mm sctp-sys sctp-end-point 2
+ port-number 3868
+ ip-service-prim ip-service-name S6a-1
+ sctp-profile sctp-profile-name sctp_s6a
+!
+mm sctp-sys sctp-end-point 3
+ port-number 38412
+ ip-service-prim ip-service-name N2-1
+ ip-service-sec ip-service-name N2-2
+ sctp-profile sctp-profile-name 5gsctpN2
+!
+mm sctp-sys sctp-profile 4gsctpS1
+ min-rto                                    100
+ max-rto                                    400
+ init-rto                                   200
+ assoc-max-rtx                              20
+ path-max-rtx                               10
+ max-init-rt                                16
+ pmtu                                       1500
+ bundling-timer                             0
+!
+mm sctp-sys sctp-profile 5gsctpN2
+ min-rto                                    100
+ max-rto                                    400
+ init-rto                                   200
+ assoc-max-rtx                              20
+ path-max-rtx                               10
+ max-init-rt                                16
+ max-shutdown-rt                            5
+ timer-heartbeat                            30000
+ pmtu                                       1500
+ bundling-timer                             0
+!
+mm sctp-sys sctp-profile default
+ pmtu                                       1500
+!
+mm sctp-sys sctp-profile sctp_s6a
+ pmtu                                       1300
+!
+mm ue-trace-log report-period 5
+mm pei-check Pei_Check
+ accept-unknown-pei                   false
+!
+mm imei-check Imei_Check
+ accept-unknown-imei              false
+ check-imei-lte-intra-isc         false
+!
+
+
+
+mm ip-service SBI-Server
+ node-credential node-credential-id SERVER
+ trust-category trust-category-id CA
+!
+
+mm ip-service SBI-Client
+ node-credential node-credential-id CLIENT
+ trust-category trust-category-id CA
+!
+commit no-confirm
+
+mm checkpoint name postconfiguration
+
+end

@@ -1,0 +1,53 @@
+$TTL 600
+@   IN    SOA     apa root.pod56dns-1. ( 14 3H 1H 1D 300 )
+
+    IN    A       10.130.34.4
+
+    IN    NS      epc.mnc081.mcc240.3gppnetwork.org.
+
+;                           Internet    NAPTR   order   pref    flags   service                     regexp  replacement
+*.tac-hb00.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw1.test1.nodes
+*.tac-hb01.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw2.test1.nodes
+*.tac-hb02.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw3.test1.nodes
+*.tac-hb03.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw4.test1.nodes
+*.tac-hb04.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw5.test1.nodes
+*.tac-hb05.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw6.test1.nodes
+*.tac-hb06.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw7.test1.nodes
+*.tac-hb07.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw8.test1.nodes
+*.tac-hb08.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw9.test1.nodes
+*.tac-hb09.tac           IN          NAPTR   10      1       "s"     "x-3gpp-sgw:x-s5-gtp:x-s11"       ""      sgw10.test1.nodes
+
+;temporary used srv records start
+
+;               InternetSer.Rec Prio    Weight  Port
+sgw1.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw2.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw3.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw4.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw5.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw6.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw7.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw8.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw9.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+sgw10.test1.nodes       IN       SRV      8      10      2123        topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net
+
+;temporary used srv records end
+
+;                                              Internet    A       Address
+topon.pod56.NAPTRa.gtp.sgw.eth1.gw1.gbg1.net     IN          A      5.2.0.1
+
+; From APNs to a list of PGW hostnames
+internet.apn                     IN     NAPTR   10      1       "s"     "x-3gpp-pgw:x-s5-gtp:x-gn:x-gp"       ""     pgw1.pod56.nodes
+ims.apn                     IN     NAPTR   10      1       "s"     "x-3gpp-pgw:x-s5-gtp:x-gn:x-gp"       ""     pgw1.pod56.nodes
+5gctest1.apn                     IN     NAPTR   10      1       "s"     "x-3gpp-pgw:x-s5-gtp:x-gn:x-gp"       ""     pgw1.pod56.nodes
+
+;dummy srv records for pgw start
+pgw1.pod56.nodes    IN     SRV    8     10     2123      topon.pod56.NAPTRa.gtp.pgw.eth1.gw1.gbg1.net
+
+;dummy pgw a records start
+;dummy pgw a records end
+
+NAPTRa.gtp.pgw.eth1.gw1.gbg1.net         IN          NAPTR   20      10       "a"      "x-3gpp-pgw:x-s5-gtp:x-gn:x-gp"    ""     topon.pod56.NAPTRa.gtp.pgw.eth1.gw1.gbg1.net
+
+topon.pod56.NAPTRa.gtp.pgw.eth1.gw1.gbg1.net       IN          A       5.0.0.1
+

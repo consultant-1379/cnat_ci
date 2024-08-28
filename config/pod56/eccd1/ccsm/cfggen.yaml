@@ -1,0 +1,57 @@
+nodeInfo: site.yaml
+siteGlobal: ../site-global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: ccsm/1.11/values.yaml.jinja2
+  target: values.yaml
+- template: ccsm/1.11/instantiate.json.jinja2
+  target: instantiate.json
+- template: common/snmp-config.xml.jinja2
+  target: snmp-config.xml
+- template: common/user-config.xml.jinja2
+  target: user-config.xml
+- template: ccsm/1.11/external-certificates.xml.jinja2
+  target: external-certificates.xml
+- template: ccsm/1.11/nrfagent-config.xml.jinja2
+  target: nrfagent-config.xml
+- template: ccsm/1.11/ausf-config.xml.jinja2
+  target: ausf-config.xml
+- template: ccsm/1.11/udm-config.xml.jinja2
+  target: udm-config.xml
+- template: ccsm/1.11/avg-config/1-seed-config.xml.jinja2
+  target: avg-config/1-seed-config.xml
+- template: ccsm/1.11/avg-config/2-customerkey-config.xml.jinja2
+  target: avg-config/2-customerkey-config.xml
+- template: ccsm/1.11/avg-config/3-arpf-config.xml.jinja2
+  target: avg-config/3-arpf-config.xml
+- template: ccsm/1.11/avg-config/4-hnkey-config.xml.jinja2
+  target: avg-config/4-hnkey-config.xml
+- template: ccsm/1.11/avg-config/5-a4key-config.xml.jinja2
+  target: avg-config/5-a4key-config.xml
+- template: ccsm/1.11/avg-config/6-fset-config.xml.jinja2
+  target: avg-config/6-fset-config.xml
+- template: ccsm/1.11/hss-config.xml.jinja2
+  target: hss-config.xml
+- template: ccsm/1.11/ccsm-sctp-config.xml.jinja2
+  target: ccsm-sctp-config.xml
+- template: ccsm/1.11/hssepc-config.xml.jinja2
+  target: hssepc-config.xml
+- template: ccsm/1.11/hss-remote-nf-profile.xml.jinja2
+  target: hss-remote-nf-profile.xml
+- template: ccsm/1.11/udm-remote-nf-profile.xml.jinja2
+  target: udm-remote-nf-profile.xml
+- template: ccsm/1.11/diameter-epc-s6a-config.xml.jinja2
+  target: diameter-epc-s6a-config.xml
+- template: ccsm/1.11/diameter-eir-s13-config.xml.jinja2
+  target: diameter-eir-s13-config.xml
+- template: ccsm/1.11/eir-config.xml.jinja2
+  target: eir-config.xml
+- template: ccsm/1.11/ddc-config.xml.jinja2
+  target: ddc-config.xml
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml

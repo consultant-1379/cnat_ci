@@ -1,0 +1,672 @@
+#
+# configuration file with the host networking information
+#
+---
+interfaceSchemes:
+  - name: lcm
+    networkInterfaceList:
+      - name: lcm
+        assignIp:
+          - lcm-ipv4
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+      - name: control
+        assignIp:
+          - cee-ipv4
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+      - name: oobm
+        assignIp:
+          - oobm-ipv4
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+      - name: data
+        assignIp:
+          - lcm-om-ipv4
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        txChecksumming: off
+      - name: gluster
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        assignIp:
+          - gluster-ipv4
+  - name: serviceassurance
+    networkInterfaceList:
+      - name: lcm
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        assignIp:
+          - lcm-ipv4
+      - name: control
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        assignIp:
+          - cee-ipv4
+      - name: data
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        assignIp:
+          - cee-om-ipv4
+  - name: control
+    networkInterfaceList:
+      - name: control0
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        ringBuffer:
+          size: max
+          count: auto
+      - name: control1
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        ringBuffer:
+          size: max
+          count: auto
+      - name: bond_lcm_ctrl
+        type: bond
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: control1
+          bondSlaves:
+            - name: control0
+            - name: control1
+      - name: br_lcm_ctrl
+        type: bridge
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bridgedInterfaces:
+          - name: bond_lcm_ctrl
+        assignIp:
+          - lcm-ipv4
+      - name: cee0
+        type: vlan
+        sourceInterface: control0
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        network: cee_ctrl_sp
+      - name: cee1
+        type: vlan
+        sourceInterface: control1
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        network: cee_ctrl_sp
+      - name: bond_cee_ctrl
+        type: bond
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: cee1
+          bondSlaves:
+            - name: cee0
+            - name: cee1
+      - name: br_cee_ctrl
+        type: bridge
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bridgedInterfaces:
+          - name: bond_cee_ctrl
+        assignIp:
+          - cee-ipv4
+  - name: oobm
+    networkInterfaceList:
+      - name: oobm0
+        type: vlan
+        sourceInterface: control0
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        network: oobm_ctrl_sp
+      - name: oobm1
+        type: vlan
+        sourceInterface: control1
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        network: oobm_ctrl_sp
+      - name: bond_oobm_ctrl
+        type: bond
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: oobm1
+          bondSlaves:
+            - name: oobm0
+            - name: oobm1
+      - name: br_oobm_ctrl
+        type: bridge
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bridgedInterfaces:
+          - name: bond_oobm_ctrl
+        assignIp:
+          - oobm-ipv4
+  - name: lcm_om_on_control
+    networkInterfaceList:
+      - name: lcm0
+        type: vlan
+        sourceInterface: control0
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        network: lcm_om_sp
+      - name: lcm1
+        type: vlan
+        sourceInterface: control1
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        network: lcm_om_sp
+      - name: bond_lcm_om
+        type: bond
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: lcm0
+          bondSlaves:
+            - name: lcm0
+            - name: lcm1
+      - name: br_lcm_om
+        type: bridge
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bridgedInterfaces:
+          - name: bond_lcm_om
+        assignIp:
+          - lcm-om-ipv4
+  - name: data_ovs
+    networkInterfaceList:
+      - name: data0
+        type: port
+        firewallZone: cee
+        provider: linux
+      - name: data1
+        type: port
+        firewallZone: cee
+        provider: linux
+      - name: bond_prv
+        type: bond
+        firewallZone: cee
+        provider: openvswitch
+        mtu: 1500
+        bridge: br_prv
+        bondProperties:
+          mode: balance-slb
+          miimonInterval: 200
+          lacpMode: active
+          bondSlaves:
+            - name: data0
+            - name: data1
+      - name: br_prv
+        type: bridge
+        firewallZone: cee
+        mtu: 1500
+        provider: openvswitch
+  - name: data_dpdk_common
+    networkInterfaceList:
+      - name: data0
+        type: port
+        provider: ovsdpdk
+        # comment out the below line to NOT isolate physical PMD CPUs
+        #ovs_phys_pmd_profile: port1
+        options:
+          - dpdk-lsc-interrupt: true
+          - n_rxq: 4
+          - n_rxq_desc: 2048
+          - n_txq_desc: 2048
+        other_config:
+          - cross-numa-polling: true
+      - name: data1
+        type: port
+        provider: ovsdpdk
+        # comment out the below line to NOT isolate physical PMD CPUs
+        #ovs_phys_pmd_profile: port1
+        options:
+          - dpdk-lsc-interrupt: true
+          - n_rxq: 4
+          - n_rxq_desc: 2048
+          - n_txq_desc: 2048
+        other_config:
+          - cross-numa-polling: true
+      - name: bond_prv
+        type: bond
+        provider: ovsdpdk
+        mtu: 2140
+        bridge: br_prv
+        bondProperties:
+          mode: balance-slb
+          miimonInterval: 200
+          lacpMode: active
+          bondSlaves:
+            - name: data0
+            - name: data1
+  - name: data_dpdk_br_prv
+    networkInterfaceList:
+      - name: br_prv
+        type: bridge
+        firewallZone: cee
+        mtu: 2140
+        provider: ovsdpdk
+        physicalNetwork: default
+
+  - name: int_bridge
+    networkInterfaceList:
+      - name: br-int
+        type: bridge
+        mtu: 2140
+        provider: ovsdpdk
+        firewallZone: cee
+        failMode: secure
+        options:
+          - "external_ids:flow-restore='true'"
+      - name: br_int_patch
+        type: patch
+        mtu: 2140
+        provider: ovsdpdk
+        firewallZone: cee
+        patchedBridges:
+          - name: br-int
+            tag: 0
+          - name: br_prv
+            tag: 0
+
+  - name: cee_om_on_control
+    networkInterfaceList:
+      - name: om0
+        type: vlan
+        sourceInterface: control0
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        network: cee_om_sp
+      - name: om1
+        type: vlan
+        sourceInterface: control1
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        network: cee_om_sp
+      - name: bond_cee_om
+        type: bond
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: om0
+          bondSlaves:
+            - name: om0
+            - name: om1
+      - name: br_cee_om
+        type: bridge
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bridgedInterfaces:
+          - name: bond_cee_om
+        assignIp:
+          - cee-om-ipv4
+  - name: cee_om
+    networkInterfaceList:
+      - name: br_cee_om
+        type: bridge
+        mtu: 1500
+        provider: ovsdpdk
+        firewallZone: cee
+        assignIp:
+          - cee-om-ipv4
+      - name: cee_om_patch
+        type: patch
+        mtu: 1500
+        patchedBridges:
+          - name: br_cee_om
+            tag: 0
+          - name: br_prv
+            tag: cee_om_sp
+        provider: ovsdpdk
+        firewallZone: cee
+  - name: lcm_om
+    networkInterfaceList:
+      - name: br_lcm_om
+        type: bridge
+        mtu: 1500
+        provider: ovsdpdk
+        firewallZone: cee
+        assignIp:
+          - lcm-om-ipv4
+      - name: lcm_om_patch
+        type: patch
+        mtu: 1500
+        provider: ovsdpdk
+        firewallZone: cee
+        patchedBridges:
+          - name: br_lcm_om
+            tag: 0
+          - name: br_prv
+            tag: lcm_om_sp
+  - name: storage
+    networkInterfaceList:
+      - name: storage0
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        ringBuffer:
+          size: max
+          count: auto
+      - name: storage1
+        type: port
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        ringBuffer:
+          size: max
+          count: auto
+      - name: glance0
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage0
+        network: glance_san_sp
+      - name: glance1
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage1
+        network: glance_san_sp
+      - name: bond_glance
+        assignIp:
+          - glance-ipv4
+        type: bond
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: glance0
+          bondSlaves:
+            - name: glance0
+            - name: glance1
+  - name: control_storage
+    networkInterfaceList:
+      - name: swift0
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage0
+        network: swift_san_sp
+      - name: swift1
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage1
+        network: swift_san_sp
+      - name: bond_swift
+        assignIp:
+          - swift-ipv4
+        type: bond
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: swift0
+          bondSlaves:
+            - name: swift0
+            - name: swift1
+      - name: gluster0
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage0
+        network: gluster_san_sp
+      - name: gluster1
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage1
+        network: gluster_san_sp
+      - name: bond_gluster
+        type: bond
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: gluster0
+          bondSlaves:
+            - name: gluster0
+            - name: gluster1
+      - name: br_gluster
+        type: bridge
+        provider: linux
+        firewallZone: cee
+        mtu: 1500
+        bridgedInterfaces:
+          - name: bond_gluster
+  - name: compute_storage
+    networkInterfaceList:
+      - name: migration0
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage0
+        network: migration_san_sp
+      - name: migration1
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage1
+        network: migration_san_sp
+      - name: bond_migration
+        assignIp:
+          - migration-ipv4
+        type: bond
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        bondProperties:
+          mode: active-backup
+          miimonInterval: 200
+          primaryInterface: migration0
+          bondSlaves:
+            - name: migration0
+            - name: migration1
+  - name: scaleio_frontend
+    networkInterfaceList:
+      - name: sio_fe0
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage0
+        assignIp:
+          - sio-fel-ipv4
+        network: sio_fe_san_pda
+      - name: sio_fe1
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage1
+        assignIp:
+          - sio-fer-ipv4
+        network: sio_fe_san_pdb
+  - name: scaleio_backend
+    networkInterfaceList:
+      - name: sio_be0
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage0
+        assignIp:
+          - sio-bel-ipv4
+        network: sio_be_san_pda
+      - name: sio_be1
+        type: vlan
+        mtu: 1500
+        provider: linux
+        firewallZone: cee
+        sourceInterface: storage1
+        assignIp:
+          - sio-ber-ipv4
+        network: sio_be_san_pdb
+  - name: passthrough_DELL_R740_4X25G
+    networkInterfaceList:
+      - name: pt0
+        type: passthrough
+        physicalNetwork: sriov_left
+        vf_count: 8
+        mtu: 2140
+      - name: pt1
+        type: passthrough
+        physicalNetwork: sriov_right
+        vf_count: 8
+        mtu: 2140
+      - name: pt2
+        type: passthrough
+        physicalNetwork: sriov_left
+        vf_count: 8
+        mtu: 2140
+      - name: pt3
+        type: passthrough
+        physicalNetwork: sriov_right
+        vf_count: 8
+        mtu: 2140
+
+ovsConfigurations:
+  - name: css
+    ovsConfig:
+      other_config:
+        - pmd-auto-lb: true
+        - pmd-auto-lb-rebal-interval: 5
+        - pmd-rxq-isolate: false
+        - pmd-rxq-assign: group
+        - emc-insert-inv-prob: 0
+        - smc-enable: true
+
+#############################################################
+## interface assignments
+#############################################################
+interfaceAssignments:
+  - name: controller_lcm
+    interfaceScheme:
+      - storage
+      - control
+      - oobm
+      - data_dpdk_common
+      - int_bridge
+      - data_dpdk_br_prv
+      - cee_om_on_control
+      - lcm_om_on_control
+      - scaleio_frontend
+      #- scaleio_backend
+      - control_storage
+    routes:
+      - destination: 0.0.0.0
+        nextHop: 10.130.34.30
+      - destination: 10.130.34.96/27
+        nextHop: 10.0.3.126
+
+  - name: serviceassurance
+    interfaceScheme:
+      - serviceassurance
+    routes:
+    - destination: 0.0.0.0
+      nextHop: 10.130.34.30
+
+  - name: compute
+    interfaceScheme:
+      - control
+      - data_dpdk_common
+      - int_bridge
+      - data_dpdk_br_prv
+      - storage
+      - compute_storage
+      - scaleio_frontend
+      #- scaleio_backend
+    ovsConfiguration: css
+  - name: compute_passthrough
+    interfaceScheme:
+      - control
+      - data_dpdk_common
+      - int_bridge
+      - data_dpdk_br_prv
+      - passthrough_DELL_R740_4X25G
+      - storage
+      - compute_storage
+      - scaleio_frontend
+      #- scaleio_backend
+    ovsConfiguration: css
+  - name: compute_embedded_vxsds
+    interfaceScheme:
+      - control
+      - data_dpdk_common
+      - int_bridge
+      - data_dpdk_br_prv
+      - storage
+      - compute_storage
+      - scaleio_frontend
+      - scaleio_backend
+    ovsConfiguration: css
+
+  - name: lcm
+    interfaceScheme:
+      - lcm
+    routes:
+      - destination: 0.0.0.0
+        nextHop: 10.130.34.78
+      - destination: 10.130.34.96/27
+        nextHop: 10.0.3.126
+...

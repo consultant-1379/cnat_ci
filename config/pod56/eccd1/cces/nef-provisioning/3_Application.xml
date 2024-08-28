@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Entity xmlns="http://schemas.ericsson.com/provisioning/generic">
+    <EntityType>Application</EntityType>
+    <TypeSpace>DefaultSpace</TypeSpace>
+    <Category>NEF_QoS</Category>
+    <Id name="ApplicationId" value="af111"/>
+    <Ref name="ServiceProviderId" value="sp1"/>
+    <Property name="Name" value="Application1"/>
+    <Property name="Password" value="password"/>
+    <Property name="Status" value="active"/>
+</Entity>

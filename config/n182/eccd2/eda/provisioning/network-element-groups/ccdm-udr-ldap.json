@@ -1,0 +1,15 @@
+{
+        "name": "CCDM_UDR_LDAP",
+        "groupType": "Failover",
+        "active": true,
+        "networkElements": [
+                {
+                        "name": "CCDM_UDR_LDAP_1",
+                        "order": 1
+                },
+                {
+                        "name": "CCDM_UDR_LDAP_2",
+                        "order": 2
+                }
+        ]
+}

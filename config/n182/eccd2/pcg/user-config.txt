@@ -1,0 +1,7 @@
+config
+system authentication user pcg-admin
+ password             Changeme@1st
+ groups               [ system-admin system-troubleshooter ]
+!
+commit
+end

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Entity xmlns="http://schemas.ericsson.com/provisioning/generic">
+    <EntityType>ApplicationServiceSubscription</EntityType>
+    <TypeSpace>NEF_QoS</TypeSpace>
+    <Category>NEF_QoS</Category>
+    <Id name="SubscriptionId" value="af111@sp1@NEF_QoS"/>
+    <Ref name="PartnerSubscriptionId" value="sp1@NEF_QoS"/>
+    <Ref name="ApplicationId" value="af111"/>
+    <Ref name="ServiceCapabilityId" value="NEF_QoS"/>
+    <Ref name="ServiceProviderId" value="sp1"/>
+</Entity>

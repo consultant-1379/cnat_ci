@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+          <pcf xmlns="urn:rdns:com:ericsson:oammodel:ericsson-pcf">
+            <sm-policy-control>
+              <pcrf-app-config>
+                <nudr-predefined-dnn>internet</nudr-predefined-dnn>
+                <nudr-predefined-snssai>
+                  <sst>1</sst>
+                  <sd>000002</sd>
+                </nudr-predefined-snssai>
+              </pcrf-app-config>
+              <pcf-app-config>
+                <enable-session-terminate-on-bsf-reg-fail>true</enable-session-terminate-on-bsf-reg-fail>
+                <bsf-reg-allowed>
+                  <dnn>*</dnn>
+                </bsf-reg-allowed>
+              </pcf-app-config>
+            </sm-policy-control>
+          </pcf>
+        </config>
+    </edit-config>
+</rpc>

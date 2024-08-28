@@ -1,0 +1,204 @@
+nodeName: vpod2-pcc1
+nodeType: PCC
+
+vnflcm:
+  clusterName: n182-eccd2
+  namespace: pcc
+  InstantiateVnfRequest:
+    applicationTimeOut: 2400
+    skipVerification: "true"
+
+users:
+  #day0:
+  #- username: day0
+  #  password: day0
+  day1:
+  - username: pcc-admin
+    password: pcc-admin
+    groups: [ system-admin system-security-admin mm-config-admin mm-lawful-intercept-admin mm-gsh-lawful-intercept-admin mm-itc-admin mm-security-admin mm-admin mm-read-only-operator mm-expert-admin sm-admin sm-cdr-admin sm-charging-admin sm-itc-admin sm-lawful-intercept-admin sm-operator sm-tracing-admin sm-uetrace-admin system-troubleshooter system-read-only admin ]
+
+license:
+  customerId: '946060'
+  swltId: STA-PCC-9
+snmp:
+  agentEngineId: 800000c1047063633163347331
+  heartbeatInterval: 600
+  sourceIdentifier: 10.221.125.6
+ddc:
+  remotePath: /mnt/ddc/node182-cluster2-pcc1
+replicaCount:
+  eric-pc-mm-forwarder: 8  # mandatory, as PC-MM networking configurations reply on this number.
+  eric-pc-mm-mobility: 2
+  eric-pc-mm-sctp: 2
+  eric-pc-sm-sgw-session: 2
+  eric-pc-sm-smf-pgw-session: 2
+  eric-pc-sm-nsmf-forwarder: 2
+  eric-pc-sm-http-client: 1
+  eric-pc-sm-udp-forwarder: 1
+  eric-pc-kvdb-rd-server: 3
+  eric-pc-vpn-gateway-forwarder: 2
+
+pcc:
+  ipRule:
+    defaultGws: [1]
+    bfdPeers: [2,3]
+    fwdIpFrom: 21
+    bgpNeighbors: [2,3]
+    creIpFrom: 21
+    vpngwIpFrom: 31
+  pcmm:
+    nodeId: site1-cluster2-pcc1
+    mmeGroupId: 32768
+    mmeCode: 13
+    amfRegionId: 255
+    amfSetId: 2
+    amfPointer: 13
+    amfCapacity: 50
+    amfInstanceId: 8b85f3f9-2f66-4698-b07e-414d46a1c4d2
+    namfLbIp: 172.17.142.1
+    # new hss var in pcmm
+    hss:
+      - ip: 172.17.142.14
+        host: ccsm
+
+    ipNetwork: # Only support IPv4
+    - name: OM_CN
+      ipInt:
+        vlan: 2063
+        ipv4: 172.20.174.0/24
+      ipSvc:
+      - name: OAM
+        ipv4: 10.221.125.3
+    - name: RAN_1
+      ipInt:
+        vlan: 2064
+        ipv4: 172.20.78.0/24
+      ipSvc:
+      - name: N2-1
+        ipv4: 172.16.78.3
+      - name: S1-MME-1
+        ipv4: 172.16.78.1
+    - name: RAN_2
+      ipInt:
+        vlan: 2069
+        ipv4: 172.20.142.0/24
+      ipSvc:
+      - name: N2-2
+        ipv4: 172.16.78.4
+      - name: S1-MME-2
+        ipv4: 172.16.78.2
+    - name: SIG_CN_1
+      ipInt:
+        vlan: 2062
+        ipv4: 172.20.46.0/24
+      ipSvc:
+      - name: S6a-1
+        ipv4: 172.16.46.1
+      - name: SBI-Server
+        ipv4: 172.17.142.1
+      - name: SBI-Client
+        ipv4: 172.17.142.20
+    - name: SIG_CN_2
+      ipInt:
+        vlan: 2070
+        ipv4: 172.20.110.0/24
+      ipSvc:
+      - name: S6a-2
+        ipv4: 172.16.46.2
+    - name: MEDIA_CN
+      ipInt:
+        vlan: 2061
+        ipv4: 172.20.14.0/24
+      ipSvc:
+      - name: Gn-GTP-C
+        ipv4: 172.16.14.1
+      - name: S10-GTP-C
+        ipv4: 172.16.14.2
+      - name: S11-GTP-C
+        ipv4: 172.16.14.3
+  pcsm:
+    smfInstanceId: d67766fc-210f-4ecf-858f-534d46a1c4d2
+    nsmfLbIp: 172.17.142.2
+    nsmfNotifLbIp: 172.17.142.3
+    smfSbiNotifyHost: pcc1-smf-notification.n182-vpod2
+    smfSbiNsmfHost: pcc1-smf-nsmf.n182-vpod2
+    pcrfDiameterAddress: 172.17.142.8
+    # comment out when testing irat
+    #pgwFqdn: topon.s5.gw.site2-cluster4.dns.nodes.epc.mnc081.mcc240.3gppnetwork.org
+    sgwu:
+    - pfcpAddress: 172.18.46.1
+      networkInstances:
+        s1s4s12-u: ran
+        s11-u: media_cn
+        s5s8-u: media_cn
+    upfPgwu:
+    - pfcpAddress: 172.18.46.1
+      networkInstances:
+        s5s8-u: media_cn
+        n3: ran
+        sx-u: sig_cn
+    apn:
+      internet:
+        networkInstance: toext_open_1
+        ipPool:
+          ipv4: [26.0.0.0/10]
+          ipv6: [fd26:0001:0000::/44,fd26:0001:0010::/44,fd26:0001:0020::/44,fd26:0001:0030::/44]
+      ims:
+        networkInstance: toext_open_1
+        ipPool:
+          ipv4: [26.64.0.0/10]
+          ipv6: [fd26:0001:0200::/44,fd26:0001:0210::/44,fd26:0001:0220::/44,fd26:0001:0230::/44]
+    smLogicalInt:
+      pgwS5s8c:
+        ipv4: 172.17.14.3
+        networkInstance: media_cn
+      gomc:
+#New_IP_Plan pgwc_gom-c-if
+        ipv4: 172.17.46.3
+        networkInstance: sig_cn
+      sxb:
+#New_IP_Plan SMF N4/PGW-C Sxb
+        ipv4: 172.17.46.4
+        networkInstance: sig_cn
+      s4s11c:
+#New_IP_Plan SGW-C S4S11-C
+        ipv4: 172.17.14.1
+        networkInstance: media_cn
+      sgwS5s8c:
+#New_IP_Plan SGW-C S5S8-C
+        ipv4: 172.17.14.2
+        networkInstance: media_cn
+      sxa:
+#New_IP_Plan SGW-C Sxa
+        ipv4: 172.17.46.2
+        networkInstance: sig_cn
+      gx:
+        ipv4: 172.17.46.6
+        networkInstance: sig_cn
+
+  vpngw:
+    maxNum: 8
+    loopback:
+      ipv4: 172.17.46.1
+      networkInstance: sig_cn
+    intraForward:
+      vlan: 2170
+      ipv4: 172.21.142.0/25
+    networkInstances:
+    - name: sig_cn
+      localAs: 4201241002
+      remoteAs: 4251200002
+      ipForward:
+        vlan: 2162
+        ipv4: 172.21.46.0/24
+      vnfLoop:
+        ipv4: 172.17.46.254
+    - name: media_cn
+      localAs: 4201241001
+      remoteAs: 4251200001
+      ipForward:
+        vlan: 2161
+        ipv4: 172.21.14.0/24
+      vnfLoop:
+        ipv4: 172.17.14.254
+

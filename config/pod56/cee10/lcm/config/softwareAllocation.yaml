@@ -1,0 +1,49 @@
+#
+# Configuration file with CEE software allocation
+#
+---
+softwareAllocations:
+  - name: hostOS_sp3
+    software:
+      - name: hostos_sp3
+        version: sles15sp3
+      - name: cee_host_extras_sp3
+        version: sles15sp3
+  - name: container-v1
+    software:
+      - name: container
+        version: 10.2.0.24.0.114
+  - name: openstack-v1
+    software:
+      - name: openstack
+        version: 1.0
+  - name: lcm-v1
+    software:
+      - name: cee-infra
+        version: 1.0
+  - name: portal_v1
+    software:
+      - name: portal
+        version: 1.0
+      - name: cee_alarm_opi
+        version: 1.0
+  - name: serviceassurance-v1
+    software:
+      - name: cee_serviceassurance
+        version: 1.0
+  - name: vxsds_sp3
+    software:
+      - name: vxsds_sp3
+        version: 3.6.0.4-sp3
+  - name: vxsds_client_sp3
+    software:
+      - name: vxsds_client_sp3
+        version: 3.6.0.4-sp3
+  - name: CSS_v1
+    software:
+      - name: css
+        version: 1.0
+  - name: CSS_v1_scaleio
+    software:
+      - name: css
+        version: 1.0

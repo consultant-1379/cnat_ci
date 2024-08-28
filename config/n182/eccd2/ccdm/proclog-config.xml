@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>urn:ietf:params:netconf:base:1.0</capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="1">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+            <pf xmlns="urn:rdns:com:ericsson:oammodel:ericsson-pf">
+                <proclog-management>
+                    <sftp-server>
+                        <name>sftpServerForProclog</name>
+                        <endpoints>
+                            <endpoint>
+                                <name>sftpServerForProclog</name>
+                                <remote-address>11.100.3.51</remote-address>
+                                <remote-port>22</remote-port>
+                                <remote-path>proclog/node182-cluster2-ccdm1</remote-path>
+                                <client-identity>
+                                    <username>sftpuser</username>
+                                    <public-key>
+                                        <local-definition>
+                                            <algorithm>rsa2048</algorithm>
+                                            <public-key-format>ssh-public-key-format</public-key-format>
+                                            <private-key-format>rsa-private-key-format</private-key-format>
+                                            <public-key>c3NoLXJzYSBBQUFBQjNOemFDMXljMkVBQUFBREFRQUJBQUFDQVFDcVloQm1SWSsxSnhpQ2pGNittdmtab0xnRzVhUnJoMy9odjFzZ0hOcncvN0FkMy85UWFNWVFtbUdZZThTRndqVWFXVFd4K2t5Mmp6VVR1bkVHYUkrdkhoaWZXSGZhb0loelRSUXMyU3c1QUFQb1MyQU5Gd2E3ajE1eDZBOEV5K0pSeGd0TFhaalJyNTNkK2xSR2QxUlJVZXRud0VJKzQwZUNUd293bXlUWHM4NUNPR29FOEFZVXBJV0l1ZWppZXN5MjJ0VG9ha0NnZE5TcWNLdVl1QVVCaGp1YmVGVmZvQ1pYYVhzQkNOdjlMdjNScDRRVTZmWW1VVnNxY1h3Tmlrek1iUktPZ0RMSGRsZFJLNEQyZ2M5QS9aZzBET3JNZ29FSEcyLy94ZEFmdzdXRXFCMDBsaWlzV0Z3Ui9WQXpLMU0vR3dySmZ6c0dKTjY2T0NnekMvaGRJaHRMNWVaTnJiN1djQnFKM1FGZzNjZjhKcWtPSnRYTXBIbkIvSDJSc3lNWnpLM25oTGg1azd4by9VM0Uwa2lQUnphL3h6NXJueWR5S3dPWGUwZlVOQURTMGQvUndYSEZvVW0wcG9laWVYT013Ry9hZVJoNll1cVM3UTUzWUVjckNxeDJ4S1JtMUJYSjF2NitLbEFwR1RuelN3aHVhY1lWeHhHVXlKV2J5V0hRNytBU0dHVnVXMU9lNlZ6UDhlRExLeVpJQ0xHSktzUlZWSnU3UVN4OEZUYUN2SDBpaXBPM0ZMZm9CYlZSTUJiL0U1NVVrcm5LempSSUlRcE9LbkNMOHlBck0xVk82UUt2NG5VUjZRektzUTE0MThpR3lvVnRCK2ZLSHlrLzc3N1U2M2RTTTJHM1ZuZ2taMmgxOExzRnBEbm5oR25rR1U2RlJmS3d3d3RxRHc9PSB0ZXN0bGFiIEZUUCBrZXkK</public-key>
+                                            <private-key>LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlKS0FJQkFBS0NBZ0VBcW1JUVprV1B0U2NZZ294ZXZwcjVHYUM0QnVXa2E0ZC80YjliSUJ6YThQK3dIZC8vClVHakdFSnBobUh2RWhjSTFHbGsxc2ZwTXRvODFFN3B4Qm1pUHJ4NFluMWgzMnFDSWMwMFVMTmtzT1FBRDZFdGcKRFJjR3U0OWVjZWdQQk12aVVjWUxTMTJZMGErZDNmcFVSbmRVVVZIclo4QkNQdU5IZ2s4S01Kc2sxN1BPUWpocQpCUEFHRktTRmlMbm80bnJNdHRyVTZHcEFvSFRVcW5Dcm1MZ0ZBWVk3bTNoVlg2QW1WMmw3QVFqYi9TNzkwYWVFCkZPbjJKbEZiS25GOERZcE16RzBTam9BeXgzWlhVU3VBOW9IUFFQMllOQXpxeklLQkJ4dHYvOFhRSDhPMWhLZ2QKTkpZb3JGaGNFZjFRTXl0VFB4c0t5WDg3QmlUZXVqZ29Nd3Y0WFNJYlMrWG1UYTIrMW5BYWlkMEJZTjNIL0NhcApEaWJWektSNXdmeDlrYk1qR2N5dDU0UzRlWk84YVAxTnhOSklqMGMydjhjK2E1OG5jaXNEbDN0SDFEUUEwdEhmCjBjRnh4YUZKdEthSG9ubHpqTUJ2Mm5rWWVtTHFrdTBPZDJCSEt3cXNkc1NrWnRRVnlkYit2aXBRS1JrNTgwc0kKYm1uR0ZjY1JsTWlWbThsaDBPL2dFaGhsYmx0VG51bGN6L0hneXlzbVNBaXhpU3JFVlZTYnUwRXNmQlUyZ3J4OQpJb3FUdHhTMzZBVzFVVEFXL3hPZVZKSzV5czQwU0NFS1RpcHdpL01nS3pOVlR1a0NyK0oxRWVrTXlyRU5lTmZJCmhzcUZiUWZueWg4cFArKysxT3QzVWpOaHQxWjRKR2RvZGZDN0JhUTU1NFJwNUJsT2hVWHlzTU1MYWc4Q0F3RUEKQVFLQ0FnQUVjTUhVcUlOeVNTNk9XSEl2cllKSWRMUFhHaTBLMEdFNDFPL2ZDbUY2WG0rTWw4WGpwcGRpMzJNagp3allBOW1yRDRRZFJPQ0Mvc1VQRTI5c09PN05pOFBuYlRVYnlYN1N1ckplV0E2THZhVnl3dFNZdnNTWHZ4WERFCnJ6T1ZBR3RKamt2RkR3OW9oNWNwcmRoOGJhZTQ1dFdud283M2JKejBmSExiaVcrUVg1TkVqb3ZVelJ5YmRSNDEKemdLUHhIdUpXSEtzQy9qYk5iQkZNT0tIL0dQRkFtYVRTck9PNW5HWlhacGpFSVFMT1NwTVNIMWN2aXc0RzI2dwowSHhYTGYrS1pGMVRjV3ZoWHVndnFWNlhEaE1Fc3BkQTVBVktoeXd0cnoxZ0FSdkhlQ1pHNnNxNEVDSEhQQlpLCk1idmhXWU8xNVZLR3BkWTM5c1lIUEdkdnpTUVAzbWFaVU9JaWxPSGtBaXRCMVI1T2g5Z3M3SFY2TFg0STdWRDAKalB3UDM1ZFZVeDM5ZXJJRU5wRS96c3k4OTMrMjdES0tYS3VDWFgrS0YyY2tBRldQNXJjUXB0Kytud2pvakcySAp1RzNWMjlUMWxBTDFyNHVRQmhLTmZiNkx1b1N5WkxuZk83S0RmMFYyOTFMYm9aVEpZSy9nUEdpMUZ2MFg4SmdECmlFaVN2a2RVZytnc0FrMkp3NFA0VkRqUDFjVDQxQnp3VkZZSnJXQWtxODRBZ1Y1YzN3bVR0VnpSZ1JVRmxUUHoKaldBM2ZKT3pyQzhHRWt5VENjblJEamxXNk10MS9PbXpRUDg0Ky81bVJPbmd3VkFDc2NHS3FMbVNyTHFUUVprKwpaWjhueC8xTUtwVUF6T1FGTXhyYzkzcGdEcHVlakU1WElOd0w4bzVhdDMrM0hTdXFZUUtDQVFFQTMxRXdMMXgwCkI5c3FXY3VIbTFDMStILzRKNitkY0tFY2dkcnRTVm5qcVh1ZWNpMXZqbjZGZHI1a3doY0lIN2NHNFJXM0dFTHkKMWxla0JnSWpzb28zWUtLb2NQeVpzMEg3OEZKd0hIeFNTY2NwWTJGdWRGRWdXRkJEMlFSYXg1elVva3RwQy9UWQo2UnczZG84TXlxd200MlBhbVl0UWw1VU5WbmxXaG5zc201aVdiUjhvdkxHVWp1NnN3UC9IalN2d2p5QXlweEN3Ck96dUo5WmJGVXYrbWtsc0IvUnMrL2JveEl1Y1hBWGc4N3NOSEJkOTVITk02SGh4T085ZVIvTWZMNFdKaVp1dE0KQWJLNWViVkJUUWlaWUtoaFBacmtieVhIRmxnRCsyVGUwclNBNThiVXMrMWhvV3c0M1I0d1RORE5WeHdkSmtJVgpIUitSUURBd2trVGFwUUtDQVFFQXcxR2xGVmpFejhrb3grRkxWOW9XZlNnZ0ZES1pvbU93TzRURmE3UUowV3JLCnVWU2RCN0E1a2tnQW9IUHNuK0dCMFRuVXBJS0MwMUZkbDFUZ1lNbVJaSndESGtlM1ZzenRkbi93VDZnTU1ITTQKcHJmVndxU2t2T0NFL2RudHJHTGJTbHpjN0pWTHM2eC9FdExGc1IxRkl4QWMyT3FiS3pITENPSDNlQXVYaFFIRAo2dmdVd01xZmZHV1JtclAwMGt5KzNrNlBmcWFLZkNiRGxjYVFHclhLZ24yUWZvM1RFL2Nac2drUEt6NG1IMFo5CjZwR043RFlhT2R1WXc5MXVoTlhseUtVdHR3OHZZdWlCQVFJYzN3eVZ4VVNudituNkpLRC8yT2ZuNGk5OE9IVUYKZm1zSmdTRkpQNGRwc01JL2YyUlo0dDI1czJtaTFFVHg4alhSbUJQM293S0NBUUFjRStrckMwVExlQkxyRjF3RgplekJsL2pFRlRGOVBPZktMb1NzVWZlalI5bWtGa2hEa3FhTytPbElRMVRTQVNGTGxHZ1hiVncrUlE1T3I3Ymp2ClNkR01wT2JvemRuRllCWjlNT0JIdEpua0ROWjNXRmk2NXpoWjRqMmxtNWFPWW5tWnJrR1c3MElXalNXc0VuQloKU3l2WWkwV0E2TE5KVzhSQml5QUY2SmJET1h3d1hDcVREd0RPdDlPZ3NJZzJoNy9IUHhVZlRFbmNLTEEvNEtVTwp1bllIRU1vL09KM0M2UllrZlVtM05aYnpyam5QMHprM0ZwZklFV2NFdnlYcjBuTWY4MjdMNGVtOGpPd2xFVlVVCmluQStadTFUQVphWEl2alZKbHZaeitUME9SMjhCcFBYeTVEcTZ1QjdiTUJGNkRycEtPL0JUNjIzNjdBbmtlZUoKZkg3QkFvSUJBQkEyZHIyTzRNZGVxMFBzTDVUYlJZS2VFZ3ViSjZXVElNM1A5NU01SHBlRGhkQmNkYXh0dEZtdwpJRjB4UWpNRFJRTlpDWTJlUjczQ3cwSU1pWk4vSjlKeUlOQWlvOVZRcldWb3VVbmphUitjY05kbDZ4aDlFaStiCmMyNmU2RnVtMlEwVEtFTjdJUTJKQkFOTCs1ejRFUVVZRVV6d0xIRXBjUEVMMEw3bU4yMlM5L0JKSjIvWlllT3gKaXFTTXk0V3BXUzZhMXM1c2hKSkpwWEtKU096dXFpQ3F5NU8xc2crMk15dlVGSzVDT21mZU1oV0dmNEZiL0ZGUgpLUjBaQkZPQ2JkQjU1WkdNY1NLRXFqQ3JQRHBIa1NjT3k5M2lUaUU4UEFDRlAzcEc5c2k0N2Z2UVpybVJTY004Ck9rbXgxaE45QVBrVDdwWTE3bzR3S3VVd0VuWE5Nb0VDZ2dFQkFLR1JCTHhUMVhLZ09iUEVVVlVNV1NjUmNRM1UKQ0dNK3Q3Q2RPQW8wLzNFVDRtNEtkMEFkQU5MS1hpb2U1OWZJemN0MWZrcFBjMjNXQXAvZmV4OGdRYVhGbGkwVApGdWtuYWM4bzFZM2E3SWQvbm9BOUlJWUhVN1NTTnJxTjg4STJ0UVM3cmRuSHBGUEd1bitEU3l0ak1HTlFhSm5HCk5zcHRpVU4yUHBJZHVBQkVmN2pRSTl1VW5ManB5eHV0Mm00WEVJcGtwa0loNEpJVStQTkUwM2IvdEZCN1dNdEEKMnBFcUxyUmNhdnVBTzNERFBBYWxwd0dyc1NaMk5Lcnh2VWNOc1V5aENEL2ZidFVTU1NEakN3K0w2d2dpWjBtdQp2M1R0NWY3bzVDckg0MG9JRDczdHkzdisrM25EZGh0eldCT1dDSkpibWJ4bkRVNlB3OFQwVDBITThvdz0KLS0tLS1FTkQgUlNBIFBSSVZBVEUgS0VZLS0tLS0K</private-key>
+                                        </local-definition>
+                                    </public-key>
+                                </client-identity>
+                                <server-authentication>
+                                    <ssh-host-keys>
+                                        <local-definition>
+                                            <host-key></host-key>
+                                        </local-definition>
+                                    </ssh-host-keys>
+                                </server-authentication>
+                            </endpoint>
+                        </endpoints>
+                    </sftp-server>
+                </proclog-management>
+            </pf>
+        </config>
+    </edit-config>
+</rpc>

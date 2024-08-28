@@ -1,0 +1,20 @@
+# Edit 'csar-list' to update the required CSAR package
+# Then in the same directory run: cnat --install-crd
+clusterName: pod56-eccd1
+namespace: eric-crd-ns
+registry:
+  host: docker-registry.evnfm.pod56-eccd2.seln.ete.ericsson.se
+  username: vnfm
+  password: Dm5GC@S0lut!on
+pullSecret: regcred
+csar-list:
+- /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/eric-act-cna-1.49.95.csar
+- /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/Ericsson.CCDM.CXP9037622_1_10_25_1.csar
+- /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/Ericsson.CCRC.CXP9037716_1_12_6_1.csar
+- /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/Ericsson.CCSM.CXP9037722_1_11_5_6.csar
+- /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/PCC_CXP9041577_1-R57C117.csar
+- /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/PCG_CXP9041656_1-R54G20.csar
+- /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/eric-sc-1.12.0+43.csar
+additional-values:
+  eric-tm-ingress-controller-cr-crd:
+    rbac.create: true

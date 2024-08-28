@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <!--xmlns="urn:rdns:com:ericsson:oammodel:ericsson-data-collector-adp" refers to Diagnostic Data Collection namespace.-->
+            <diagnostic-data-collection xmlns="urn:rdns:com:ericsson:oammodel:ericsson-data-collector-adp">
+                <collector-profile>
+                    <!--A identifier of the profile, string-->
+                    <profile-id>defaultProfileForPeriodicTriggerDDC</profile-id>
+                    <!--Data types that DDC should collect, at least one of: logs, metrics; min-elements 1.-->
+                    <data-to-collect>logs</data-to-collect>
+                    <data-to-collect>metrics</data-to-collect>
+                    <!--Type of location DDC should export to, only sftp currently supported.-->
+                    <export-ddb-to>sftp</export-ddb-to>
+                    <!--Log Planes from where the Log Records shall be collected; string, min-elements 1; wildcard (*) supported.-->
+                    <!--at least one. for example: adp-app-logs*, adp-app-debug-logs*-->
+                    <log-plane>adp-app-logs*</log-plane>
+                    <log-plane>adp-app-debug-logs*</log-plane>
+                    <log-plane>adp-app-asi-logs*</log-plane>
+                    <!--A name reference to a defined sftp-server.-->
+                    <sftp>sftpServerForDDC</sftp>
+                    <!--DDC will collect data newer than collection-window minutes old. (minutes, integer, > 0, default: 15)-->
+                    <collection-window>15</collection-window>
+                </collector-profile>
+                <!--Defines the SFTP where the DDB will be exported to.-->
+                <sftp-server>
+                    <name>sftpServerForDDC</name>
+                    <endpoints>
+                        <endpoint>
+                            <!--SFTP server endpoint name-->
+                            <name>sftpServerForDDC</name>
+                            <!--SFTP server endpoint remote IP address-->
+                            <remote-address>10.130.34.217</remote-address>
+                            <!--SFTP server endpoint remote port -->
+                            <remote-port>22</remote-port>
+                            <!--SFTP server endpoint upload path, for example: /home/<username>/ddcsftp-->
+                            <remote-path>/sftpuser/ddc/eccd1/pod56-cces1</remote-path>
+                            <!--SFTP client information-->
+                            <client-identity>
+                                <!--A user-name to be used for client authentication.-->
+                                <username>tsuser</username>
+                                <password>dHNwYXNz</password>
+                                <!--<public-key>-->
+                                    <!-- <local-definition> -->
+                                        <!--client algorithm, for example: rsa1024-->
+                                        <!--<algorithm>{{CLIENT-ALGORITHM}}</algorithm>-->
+                                        <!--client public key format, for example: ct:ssh-public-key-format-->
+                                        <!--<public-key-format xmlns:ct="urn:ietf:params:xml:ns:yang:ietf-crypto-types">{{PUBLIC-KEY-FORMAT}}</public-key-format>
+                                        <!--client encrypted public key-->
+                                        <!--<public-key>{{ENCRYPTED-PUBLIC-KEY}}</public-key>-->
+                                        <!--client private key format, for example: ct:rsa-private-key-format-->
+                                        <!--<private-key-format xmlns:ct="urn:ietf:params:xml:ns:yang:ietf-crypto-types">{{PRIVATE-KEY-FORMAT}}</private-key-format>-->
+                                        <!--client encrypted private key-->
+                                        <!--<private-key>{{ENCRYPTED-PRIVATE-KEY}}</private-key>
+                                    <!-- </local-definition> -->
+                                <!-- </public-key> -->
+                            </client-identity>
+                            <!--SFTP server information-->
+                            <server-authentication>
+                                <ssh-host-keys>
+                                    <local-definition>
+                                        <!--SFTP server encrypted public key-->
+                                        <host-key>MTAuMTMzLjUzLjYgZWNkc2Etc2hhMi1uaXN0cDI1NiBBQUFBRTJWalpITmhMWE5vWVRJdGJtbHpkSEF5TlRZQUFBQUlibWx6ZEhBeU5UWUFBQUJCQklmRXBXZDljRmhMWmVRRjVud0kwSXRyWHdoWmQ0L3NtNUY0WDI4WXNjd3ZKODN1YnJUU2xyYWJVR2RjL3k4VGM5RFZzN1RLZUFxODQ5TzdiNmdjY2k4PQo=</host-key>
+                                    </local-definition>
+                                </ssh-host-keys>
+                            </server-authentication>
+                        </endpoint>
+                    </endpoints>
+                </sftp-server>
+                <!--Configuration and state data for a periodic data-collector.-->
+                <data-collector>
+                    <!--A reference to a defined user collector-profile profile, refer path /diagnostic-data-collection/collector-profile/profile-id.-->
+                    <profile>defaultProfileForPeriodicTriggerDDC</profile>
+                    <!--At the end of each collection-interval a DDB is created and exported; units minutes; default 10.-->
+                    <collection-interval>15</collection-interval>
+                    <!--The data collector administrative state, one of: locked, unlocked.-->
+                    <administrative-state>unlocked</administrative-state>
+                </data-collector>
+            </diagnostic-data-collection>
+        </config>
+    </edit-config>
+</rpc>

@@ -1,0 +1,69 @@
+nodeName: pod56-ccrc1
+nodeType: CCRC
+instance: ""
+
+vnflcm:
+  clusterName: pod56-eccd1
+  namespace: ccrc
+  InstantiateVnfRequest:
+    applicationTimeOut: 3600
+    skipVerification: "true"
+
+users:
+  day1:
+  - username: ccrcoam
+    password: Changeme@1st
+    groups:
+    - nrf-admin
+    - nssf-admin
+    - nrfagent-admin
+    - system-admin
+  - username: ccrcsec
+    password: Changeme@1st
+    groups:
+    - nrf-security-admin
+    - nssf-security-admin
+    - nrfagent-security-admin
+    - system-security-admin
+
+cnom:
+  fqdn: cnom.ccrc.pod56-eccd1.seln.ete.ericsson.se
+snmp:
+  agentEngineId: 8000137001C0A856ECCD12A63F
+  sourceIdentifier: 10.130.34.227
+
+license:
+  customerId: "946060"
+  swltId: STA-CCRC-4
+
+ddc:
+  remotePath: /sftpuser/ddc/eccd1/pod56-ccrc1
+
+######################################
+## CNF specific information
+######################################
+ccrc:
+  nrf:
+    instanceId: 0c765084-9cc5-49c6-9876-56eccd12a63f
+    host: nrf1.pod56
+    port: 443
+  nssf:
+    instanceId: 13a1de33-ec45-4cd6-a842-56eccd1ba3d8
+    host: nssf1.pod56
+    port: 443
+    provisioning:
+      fqdn: nssf-prov.ccrc.pod56-eccd1.seln.ete.ericsson.se
+      amf:
+        instanceId:
+        - 8b85f3f9-2f66-4698-b07e-06a07010632e
+
+######################################
+## CNF dimensioning specific
+######################################
+hpaReplica:
+  eric-nrf-discovery: {min: 2, max: 2}
+  eric-nrf-management: {min: 2, max: 2}
+  eric-nrf-management-notification: {min: 2, max: 2}
+  eric-nssf-slice-selection-control: {min: 2, max: 2}
+  eric-nssf-nssai-availability: {min: 2, max: 2}
+  eric-nssf-notification: {min: 2, max: 2}

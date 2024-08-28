@@ -1,0 +1,151 @@
+global:
+  timezone: CET
+  pullSecret: regcred
+  registry:
+    url: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: PACKET_CORE_GATEWAY
+          customerId: 946060
+          swltId: STA-PCG-8
+
+
+eric-pc-kvdb-rd-server:
+  numberOfMaster: 3
+
+eric-pc-routing-engine:
+  interfaces:
+    type: macvlan
+    macvlan:
+      - master: eth4
+
+eric-pc-up-data-plane:
+  replicaCount: 2
+  acceleratedIo:
+    enabled: true
+    driver: uio
+  applications:
+  - name: app100
+  deployment:
+    pinThreads: true
+  nodeSelector:
+    type: high-throughput
+  resources:
+    dataPlane:
+      limits:
+        cpu: 12
+        hugepages-1Gi: 1Gi
+        memory: 18Gi
+        intel.com/intel_sriov_dpdk_left: "1"
+        intel.com/intel_sriov_dpdk_right: "1"
+      requests:
+        cpu: 12
+        hugepages-1Gi: 1Gi
+        memory: 18Gi
+        intel.com/intel_sriov_dpdk_left: "1"
+        intel.com/intel_sriov_dpdk_right: "1"
+  tolerations:
+  - effect: NoSchedule
+    key: high-throughput
+    operator: Equal
+    value: "true"
+
+eric-pc-up-pfcp-endpoint:
+  replicaCount: 2
+
+snmp-alarm-provider-secret-creation:
+  enabled: false
+
+eric-cloud-native-base:
+  eric-si-application-sys-info-handler:
+    asih:
+      applicationId: pod56-pcg1
+
+  eric-fh-snmp-alarm-provider:
+    service:
+      annotations:
+        addressPoolName: pcg-oam
+        sharedVIPLabel: pcg-oam
+        secretName: eric-pc-gateway-snmp-alarm-provider-config
+      oamVIP:
+        enabled: false
+    sourceIdentifierType: 1
+    sourceIdentifier: "10.130.34.235"
+
+  eric-log-transformer:
+    replicaCount: 3
+
+  eric-data-search-engine:
+    autoSetRequiredWorkerNodeSysctl: false
+
+  eric-odca-diagnostic-data-collector:
+    resources:
+      # According to CPI for any number of DP pods
+      diagnostic-data-collector:
+        limits:
+          memory: 1Gi
+          cpu: 1500m
+          ephemeral-storage: 25Gi
+
+  eric-pm-server:
+    rbac:
+      appMonitoring:
+        configFileCreate: false
+        enabled: true
+    server:
+      persistentVolume:
+        enabled: true
+        size: 36Gi
+    resources:
+      # According to CPI for 18 DP pods
+      eric-pm-server:
+        limits:
+          cpu: 3
+          memory: 12Gi
+        requests:
+          cpu: 1500m
+          memory: 8Gi
+
+  eric-lm-combined-server:
+    licenseServerClient:
+      licenseServer:
+        thrift:
+          host: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+          port: 9095
+
+  eric-dst-agent:
+    tolerations:
+      - key: "high-throughput"
+        value: "true"
+        operator: Equal
+        effect: NoSchedule
+
+  eric-log-shipper:
+    tolerations:
+      - key: "high-throughput"
+        value: "true"
+        operator: Equal
+        effect: NoSchedule
+
+eric-cloud-native-nf-additions:
+  eric-cm-yang-provider:
+    service:
+      annotations:
+        addressPoolName: pcg-oam
+        sharedVIPLabel: pcg-oam
+
+  eric-data-sftp-server:
+    service:
+      annotations:
+        sharedVIPLabel: "pcg-oam"
+        addressPoolName: "pcg-oam"
+
+  eric-sec-ldap-server:
+    adminCredentials: null
+
+cnom-loadBalancer-service:
+  enabled: true
+  annotations:
+    metallb.universe.tf/address-pool: "pcg-oam"
+    metallb.universe.tf/allow-shared-ip: "pcg-oam"

@@ -1,0 +1,78 @@
+---
+controlGroupSchemes:
+  - name: controller
+    controlGroups:
+    - name: system
+      dimensions:
+        allowedCpus: '0,24,1,25'
+    - name: css
+      dimensions:
+        allowedCpus: '0-3,24-27'
+    - name: machine
+      dimensions:
+        allowedCpus: '4-23,28-47'
+        allowedMemoryNodes: '0'
+    - name: container
+      dimensions:
+        allowedCpus: '0-1,24-25'
+        allowedMemoryNodes: '0,1'
+  - name: compute_r640
+    controlGroups:
+    - name: system
+      dimensions:
+        allowedCpus: '0,40,1,41'
+    - name: css
+      dimensions:
+        allowedCpus: '0-3,40-43'
+    - name: container
+      dimensions:
+        allowedCpus: '0,40,1,41'
+        allowedMemoryNodes: '0,1'
+    - name: machine
+      dimensions:
+        allowedCpus: '4-39,44-79'
+        allowedMemoryNodes: '0,1'
+  - name: compute_r740
+    controlGroups:
+    - name: system
+      dimensions:
+        allowedCpus: '0,48,1,49'
+    - name: css
+      dimensions:
+        allowedCpus: '0-3,48-51'
+    - name: container
+      dimensions:
+        allowedCpus: '0-1,48-49'
+        allowedMemoryNodes: '0,1'
+    - name: machine
+      dimensions:
+        allowedCpus: '4-47,52-95'
+        allowedMemoryNodes: '0,1'
+
+  - name: compute_r740_vxsds
+    controlGroups:
+    - name: system
+      dimensions:
+        allowedCpus: '0-1,40-41,4-7,44-47'
+    - name: css
+      dimensions:
+        allowedCpus: '0-7,40-47'
+    - name: container
+      dimensions:
+        allowedCpus: '0-1,40-41,4-7,44-47'
+        allowedMemoryNodes: '0,1'
+    - name: machine
+      dimensions:
+        allowedCpus: '8-39,48-79'
+        allowedMemoryNodes: '0,1'
+
+## infra
+  - name: monitoring
+    controlGroups:
+    - name: container
+      dimensions: {}
+  - name: lcm
+    controlGroups:
+    - name: container
+      dimensions: {}
+...

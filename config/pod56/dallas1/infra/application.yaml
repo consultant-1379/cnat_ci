@@ -1,0 +1,80 @@
+Third-Parties:
+  - infra: 'infra://tool-01-201/dp_n/1?type=raw'
+    service:
+      ltt_drv: 'infra://tool-01-201/ltt/1'
+  - infra: 'infra://tool-01-202/dp_n/1?type=raw'
+    service:
+      ltt_drv: 'infra://tool-01-202/ltt/1'
+DPs:
+  - infra: 'infra://tool-01-201/dp_n/1?type=raw'
+    capability:
+      diameter: 'app://dp/local'
+      ess: 'app://dp/local'
+      http: 'app://dp/local'
+      ltt_cp: 'app://third-parties/1'
+      ltt_up: 'app://third-parties/1'
+      pfcp: 'app://dp/local'
+      tcp: 'app://dp/local'
+  - infra: 'infra://tool-01-202/dp_n/1?type=raw'
+    capability:
+      diameter: 'app://dp/local'
+      ess: 'app://dp/local'
+      http: 'app://dp/local'
+      ltt_cp: 'app://third-parties/2'
+      ltt_up: 'app://third-parties/2'
+      pfcp: 'app://dp/local'
+      tcp: 'app://dp/local'
+V-DPs:
+  - infra: {'infra://tool-01-201/dp_n/1?type=otp', 'infra://tool-01-201/dp_n/1?type=raw'}
+  - infra: {'infra://tool-01-202/dp_n/1?type=otp', 'infra://tool-01-202/dp_n/1?type=raw'}
+
+CS:
+  infra: 'infra://tool-01-001/ap_n/1?type=otp'
+
+Subsystems:
+  - infra: 'infra://tool-01-101/ap_n/1?type=otp'
+    vdp: 'app://vdp/1'
+    APs:
+    - infra: {'infra://tool-01-101/ap_n/2?type=otp', 'infra://tool-01-101/ap_n/2?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/3?type=otp', 'infra://tool-01-101/ap_n/3?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/4?type=otp', 'infra://tool-01-101/ap_n/4?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/5?type=otp', 'infra://tool-01-101/ap_n/5?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/6?type=otp', 'infra://tool-01-101/ap_n/6?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/7?type=otp', 'infra://tool-01-101/ap_n/7?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/8?type=otp', 'infra://tool-01-101/ap_n/8?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/9?type=otp', 'infra://tool-01-101/ap_n/9?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/10?type=otp', 'infra://tool-01-101/ap_n/10?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/11?type=otp', 'infra://tool-01-101/ap_n/11?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/12?type=otp', 'infra://tool-01-101/ap_n/12?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/13?type=otp', 'infra://tool-01-101/ap_n/13?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/14?type=otp', 'infra://tool-01-101/ap_n/14?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/15?type=otp', 'infra://tool-01-101/ap_n/15?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/16?type=otp', 'infra://tool-01-101/ap_n/16?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/17?type=otp', 'infra://tool-01-101/ap_n/17?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/18?type=otp', 'infra://tool-01-101/ap_n/18?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/19?type=otp', 'infra://tool-01-101/ap_n/19?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/20?type=otp', 'infra://tool-01-101/ap_n/20?type=raw'}
+    - infra: {'infra://tool-01-101/ap_n/21?type=otp', 'infra://tool-01-101/ap_n/21?type=raw'}
+  - infra: 'infra://tool-01-102/ap_n/1?type=otp'
+    vdp: 'app://vdp/2'
+    APs:
+    - infra: {'infra://tool-01-102/ap_n/2?type=otp', 'infra://tool-01-102/ap_n/2?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/3?type=otp', 'infra://tool-01-102/ap_n/3?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/4?type=otp', 'infra://tool-01-102/ap_n/4?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/5?type=otp', 'infra://tool-01-102/ap_n/5?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/6?type=otp', 'infra://tool-01-102/ap_n/6?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/7?type=otp', 'infra://tool-01-102/ap_n/7?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/8?type=otp', 'infra://tool-01-102/ap_n/8?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/9?type=otp', 'infra://tool-01-102/ap_n/9?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/10?type=otp', 'infra://tool-01-102/ap_n/10?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/11?type=otp', 'infra://tool-01-102/ap_n/11?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/12?type=otp', 'infra://tool-01-102/ap_n/12?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/13?type=otp', 'infra://tool-01-102/ap_n/13?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/14?type=otp', 'infra://tool-01-102/ap_n/14?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/15?type=otp', 'infra://tool-01-102/ap_n/15?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/16?type=otp', 'infra://tool-01-102/ap_n/16?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/17?type=otp', 'infra://tool-01-102/ap_n/17?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/18?type=otp', 'infra://tool-01-102/ap_n/18?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/19?type=otp', 'infra://tool-01-102/ap_n/19?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/20?type=otp', 'infra://tool-01-102/ap_n/20?type=raw'}
+    - infra: {'infra://tool-01-102/ap_n/21?type=otp', 'infra://tool-01-102/ap_n/21?type=raw'}

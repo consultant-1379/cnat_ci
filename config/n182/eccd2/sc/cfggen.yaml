@@ -1,0 +1,35 @@
+nodeInfo: site.yaml
+siteGlobal: ../site_global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: sc/1.13/bsf-db-secret.yaml.jinja2
+  target: day0_secrets/bsf-db-secret.yaml
+- template: sc/1.13/wcdbcd-admin-secret.yaml.jinja2
+  target: day0_secrets/wcdbcd-admin-secret.yaml
+- template: sc/1.13/wcdbcd-day0-secret.yaml.jinja2
+  target: day0_secrets/wcdbcd-day0-secret.yaml
+- template: sc/1.13/values.yaml.jinja2
+  target: values.yaml
+- template: sc/1.13/external-certificates-bsf.txt.jinja2
+  target: external-certificates-bsf.txt
+- template: sc/1.13/bsf-config.txt.jinja2
+  target: bsf-config.txt
+- template: sc/1.13/ddc-config.txt.jinja2
+  target: ddc-config.txt
+- template: sc/1.13/instantiate.json.jinja2
+  target: instantiate.json
+- template: common/snmp-config.json.jinja2
+  target: snmp-config.json
+- template: common/sftp-config.json.jinja2
+  target: day0_secrets/sftpConfig.json
+- template: sc/1.13/tap_config.json.jinja2
+  target: day0_configmaps/tap_config.json
+- template: common/user-config.txt.jinja2
+  target: user-config.txt
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml

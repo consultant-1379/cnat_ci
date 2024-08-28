@@ -1,0 +1,56 @@
+## The configuration is used for non-443 ports outbound traffic(NRF notification) TLS
+
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: eric-nrf-service-mesh-sbi-traffic
+spec:
+  trafficPolicy:
+    portLevelSettings:
+    - connectionPool:
+        tcp: 
+          tcpKeepalive:
+            interval: 2s
+            probes: 3
+            time: 3s
+      port: 
+        number: 80
+    - connectionPool:
+        tcp: 
+          tcpKeepalive:
+            interval: 2s
+            probes: 3
+            time: 3s
+      port: 
+        number: 443
+      tls: 
+        caCertificates: /etc/istio/egress-ca-certs/ca-chain.cert.pem
+        clientCertificate: /etc/istio/egress-certs/tls.crt
+        mode: MUTUAL
+        privateKey: /etc/istio/egress-certs/tls.key
+    - connectionPool:
+        tcp: 
+          tcpKeepalive:
+            interval: 2s
+            probes: 3
+            time: 3s
+      port: 
+        number: 8443
+      tls: 
+        caCertificates: /etc/istio/egress-ca-certs/ca-chain.cert.pem
+        clientCertificate: /etc/istio/egress-certs/tls.crt
+        mode: MUTUAL
+        privateKey: /etc/istio/egress-certs/tls.key
+    - connectionPool:
+        tcp: 
+          tcpKeepalive:
+            interval: 2s
+            probes: 3
+            time: 3s
+      port: 
+        number: 7070
+      tls: 
+        caCertificates: /etc/istio/egress-ca-certs/ca-chain.cert.pem
+        clientCertificate: /etc/istio/egress-certs/tls.crt
+        mode: MUTUAL
+        privateKey: /etc/istio/egress-certs/tls.key

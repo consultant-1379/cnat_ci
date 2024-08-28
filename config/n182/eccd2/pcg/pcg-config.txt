@@ -1,0 +1,488 @@
+autowizard false
+config
+interfaces interface cre:net0
+ description cre:net0
+ type        ethernetCsmacd
+ enabled     true
+ l2-mtu      1968
+ exit
+interfaces interface up:eth0
+ description up:eth0
+ type        ethernetCsmacd
+ enabled     true
+ exit
+interfaces interface up:eth1
+ description up:eth1
+ type        ethernetCsmacd
+ enabled     true
+ exit
+interfaces interface up:group1
+ type      activeBackupBonding
+ enabled   true
+ member-if [ up:eth0 up:eth1 ]
+ exit
+network-instances network-instance intraForward
+ enabled true
+ exit
+interfaces interface up:intra_forward
+ description      intraForward
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2210
+ parent-interface up:group1
+ bind-ni-name     intraForward
+ ipv4 enabled true
+ ipv4 address 172.21.142.129
+  prefix-length 25
+  exit
+ address-type ip-range 8
+ exit
+intra-forwarding interface intraforwarding
+ parent-interface up:intra_forward
+ exit
+
+network-instances network-instance sig_cn
+ enabled                  true
+ description              sig_cn
+ routing bgp 4202241002
+  neighbor 172.22.46.2
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200002
+   address-family ipv4 unicast
+   exit
+  neighbor 172.22.46.3
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200002
+   address-family ipv4 unicast
+   exit
+ routing ingress-next-hop-announcements ingress-next-hop-announcement sig_cn_ingress
+  fallback-route-next-hop    interface       up:sig_cn_vnfloop
+  service                     user-plane
+  exit
+ ip static-route up 0.0.0.0/0 172.22.46.1
+ bfd-enabled true
+ exit
+exit
+interfaces interface cre:sig_cn_link
+ description      cre:sig_cn_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2202
+ parent-interface cre:net0
+ bind-ni-name     sig_cn
+ ipv4 enabled true
+ ipv4 address 172.22.46.21
+  prefix-length 24
+  exit
+ address-type ip-range 2
+ exit
+interfaces interface up:sig_cn_link
+ description      up:sig_cn_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2202
+ parent-interface up:group1
+ bind-ni-name     sig_cn
+ ipv4 enabled true
+ ipv4 address 172.22.46.31
+  prefix-length 24
+  exit
+
+
+
+
+ address-type ip-range 8
+ exit
+interfaces interface up:sig_cn_vnfloop
+ description  up:sig_cn_vnfloop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name sig_cn
+ ipv4 enabled true
+ ipv4 address 172.18.46.254
+  prefix-length 32
+  exit
+ address-type single
+ exit
+
+interfaces interface up:sig_cn_cp
+ type           softwareLoopback
+ enabled        true
+ bind-ni-name   sig_cn
+ ipv4 enabled true
+ ipv4 address 172.18.46.1
+  prefix-length 32
+  exit
+ address-type single
+ exit
+
+user-plane service gtp interfaces interface sig_cn_cp_sxn4u
+ parent-interface up:sig_cn_cp
+ exit
+user-plane service gtp cp-function sig_cn_gtp_cp-function_sxn4u
+ gtp-interface sig_cn_cp_sxn4u
+ exit
+user-plane service pfcp interfaces interface sig_cn_pfcp_sxn4
+ parent-interface up:sig_cn_cp
+ profile          profile1
+ exit
+network-instances network-instance toext_open_1
+ enabled                  true
+ description              toext_open_1
+ routing bgp 4202241005
+  neighbor 172.22.142.2
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200005
+   address-family ipv4 unicast
+   exit
+  neighbor 172.22.142.3
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200005
+   address-family ipv4 unicast
+   exit
+  neighbor fdac:22:142::2
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200005
+   address-family ipv6 unicast
+   exit
+  neighbor fdac:22:142::3
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200005
+   address-family ipv6 unicast
+   exit
+ routing ingress-next-hop-announcements ingress-next-hop-announcement toext_open_1_ingress
+  instance-route-next-hop    interface       up:toext_open_1_dploop
+  fallback-route-next-hop    interface       up:toext_open_1_vnfloop
+  service                     user-plane
+  exit
+ ip static-route up 0.0.0.0/0 172.22.142.1
+ bfd-enabled true
+ exit
+ ipv6 static-route up ::/0 fdac:22:142::1
+ bfd-enabled true
+ exit
+exit
+interfaces interface cre:toext_open_1_link
+ description      cre:toext_open_1_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2205
+ parent-interface cre:net0
+ bind-ni-name     toext_open_1
+ ipv4 enabled true
+ ipv4 address 172.22.142.21
+  prefix-length 24
+  exit
+ ipv6 enabled true
+ ipv6 address fdac:22:142::21
+  prefix-length 121
+  exit
+ address-type ip-range 2
+ exit
+interfaces interface up:toext_open_1_link
+ description      up:toext_open_1_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2205
+ parent-interface up:group1
+ bind-ni-name     toext_open_1
+ ipv4 enabled true
+ ipv4 address 172.22.142.31
+  prefix-length 24
+  exit
+ ipv6 enabled true
+ ipv6 address fdac:22:142::31
+  prefix-length 121
+  exit
+
+
+
+
+ address-type ip-range 8
+ exit
+interfaces interface up:toext_open_1_dploop
+ description  up:toext_open_1_dploop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name toext_open_1
+ ipv4 enabled true
+ ipv4 address 172.18.142.1
+  prefix-length 25
+  exit
+ ipv6 enabled true
+ ipv6 address fdac:18:142::1
+ prefix-length 121
+  exit
+ address-type ip-range 8
+ exit
+interfaces interface up:toext_open_1_vnfloop
+ description  up:toext_open_1_vnfloop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name toext_open_1
+ ipv4 enabled true
+ ipv4 address 172.18.142.254
+  prefix-length 32
+  exit
+ ipv6 enabled true
+ ipv6 address fdac:18:142::254
+  prefix-length 128
+  exit
+ address-type single
+ exit
+
+user-plane service data-network ip ip-pools ip-pool toext_open_1_ip_pool
+ address-range [ 26.0.0.0/10 26.64.0.0/10 fd26:1::/41 fd26:1:200::/41 ]
+ exit
+user-plane service data-network ip ip-services ip-service toext_open_1_ip-service
+ network-instance toext_open_1
+ ip-pool          [ toext_open_1_ip_pool ]
+ exit
+user-plane service data-network ip selectors selector toext_open_1_selector
+ network-instance toext_open_1
+ ip-service       toext_open_1_ip-service
+ exit
+network-instances network-instance ran
+ enabled                  true
+ description              ran
+ routing bgp 4202241004
+  neighbor 172.22.78.2
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200004
+   address-family ipv4 unicast
+   exit
+  neighbor 172.22.78.3
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200004
+   address-family ipv4 unicast
+   exit
+ routing ingress-next-hop-announcements ingress-next-hop-announcement ran_ingress
+  instance-route-next-hop    interface       up:ran_dploop
+  fallback-route-next-hop    interface       up:ran_vnfloop
+  service                     user-plane
+  exit
+ ip static-route up 0.0.0.0/0 172.22.78.1
+ bfd-enabled true
+ exit
+exit
+interfaces interface cre:ran_link
+ description      cre:ran_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2204
+ parent-interface cre:net0
+ bind-ni-name     ran
+ ipv4 enabled true
+ ipv4 address 172.22.78.21
+  prefix-length 24
+  exit
+ address-type ip-range 2
+ exit
+interfaces interface up:ran_link
+ description      up:ran_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2204
+ parent-interface up:group1
+ bind-ni-name     ran
+ ipv4 enabled true
+ ipv4 address 172.22.78.31
+  prefix-length 24
+  exit
+
+
+
+
+ address-type ip-range 8
+ exit
+interfaces interface up:ran_dploop
+ description  up:ran_dploop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name ran
+ ipv4 enabled true
+ ipv4 address 172.18.206.1
+  prefix-length 25
+  exit
+ address-type ip-range 8
+ exit
+interfaces interface up:ran_vnfloop
+ description  up:ran_vnfloop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name ran
+ ipv4 enabled true
+ ipv4 address 172.18.206.254
+  prefix-length 32
+  exit
+ address-type single
+ exit
+
+interfaces interface up:ran_access
+ type           softwareLoopback
+ enabled        true
+ bind-ni-name   ran
+ ipv4 enabled true
+ ipv4 address 172.18.78.1
+  prefix-length 25
+  exit
+ address-type ip-range 8
+ exit
+
+user-plane service gtp interfaces interface ran_access_s1n3
+ parent-interface up:ran_access
+ exit
+user-plane service gtp access ran_gtp_access_s1n3
+ gtp-interface ran_access_s1n3
+ exit
+network-instances network-instance media_cn
+ enabled                  true
+ description              media_cn
+ routing bgp 4202241001
+  neighbor 172.22.14.2
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200001
+   address-family ipv4 unicast
+   exit
+  neighbor 172.22.14.3
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              4251200001
+   address-family ipv4 unicast
+   exit
+ routing ingress-next-hop-announcements ingress-next-hop-announcement media_cn_ingress
+  instance-route-next-hop    interface       up:media_cn_dploop
+  fallback-route-next-hop    interface       up:media_cn_vnfloop
+  service                     user-plane
+  exit
+ ip static-route up 0.0.0.0/0 172.22.14.1
+ bfd-enabled true
+ exit
+exit
+interfaces interface cre:media_cn_link
+ description      cre:media_cn_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2201
+ parent-interface cre:net0
+ bind-ni-name     media_cn
+ ipv4 enabled true
+ ipv4 address 172.22.14.21
+  prefix-length 24
+  exit
+ address-type ip-range 2
+ exit
+interfaces interface up:media_cn_link
+ description      up:media_cn_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 2201
+ parent-interface up:group1
+ bind-ni-name     media_cn
+ ipv4 enabled true
+ ipv4 address 172.22.14.31
+  prefix-length 24
+  exit
+
+
+
+
+ address-type ip-range 8
+ exit
+interfaces interface up:media_cn_dploop
+ description  up:media_cn_dploop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name media_cn
+ ipv4 enabled true
+ ipv4 address 172.18.110.1
+  prefix-length 25
+  exit
+ address-type ip-range 8
+ exit
+interfaces interface up:media_cn_vnfloop
+ description  up:media_cn_vnfloop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name media_cn
+ ipv4 enabled true
+ ipv4 address 172.18.110.254
+  prefix-length 32
+  exit
+ address-type single
+ exit
+
+interfaces interface up:media_cn_pgw
+ type           softwareLoopback
+ enabled        true
+ bind-ni-name   media_cn
+ ipv4 enabled true
+ ipv4 address 172.18.14.1
+  prefix-length 25
+  exit
+ address-type ip-range 8
+ exit
+
+user-plane service gtp interfaces interface media_cn_pgw_s5s8u
+ parent-interface up:media_cn_pgw
+ exit
+user-plane service gtp access media_cn_gtp_access_s5s8u
+ gtp-interface media_cn_pgw_s5s8u
+ network-instance media_cn
+ exit
+interfaces interface up:media_cn_sgw
+ type           softwareLoopback
+ enabled        true
+ bind-ni-name   media_cn
+ ipv4 enabled true
+ ipv4 address 172.18.14.129
+  prefix-length 25
+  exit
+ address-type ip-range 8
+ exit
+
+user-plane service gtp interfaces interface media_cn_sgw_s5s8u
+ parent-interface up:media_cn_sgw
+ exit
+user-plane service gtp core media_cn_gtp_core_s5s8u
+ gtp-interface media_cn_sgw_s5s8u
+ exit
+
+user-plane packet-detection applications application app100
+ enabled true
+ default
+ exit
+
+user-plane service pfcp profiles profile profile1
+ exit
+
+commit
+end

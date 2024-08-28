@@ -1,0 +1,386 @@
+#
+# configuration file with the servers information in a cluster
+#
+---
+physicalHosts:
+  - id: 1
+    oobm:
+      oobmAddress: 10.130.34.97
+      oobmPassword: calvin
+      oobmUser: ipmi_user
+      oobmType: ipmi
+      oobmExtra:
+        control0: '00:0A:F7:DD:2E:94'
+        control1: '00:0A:F7:DD:2E:92'
+        #control0: '00:0A:F7:DD:2E:92'
+        #control1: '00:0A:F7:DD:2E:93'
+    hostname: cic-1
+    portProfile: DELL_R630_type2
+    hostProfile: controller
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 2
+    oobm:
+      oobmAddress: 10.130.34.98
+      oobmPassword: calvin
+      oobmUser: ipmi_user
+      oobmType: ipmi
+      oobmExtra:
+        control0: '24:6E:96:0E:1A:BC'
+        control1: '24:6E:96:0E:1A:BE'
+        #control0: '24:6E:96:0E:1A:BE'
+        #control1: '24:6E:96:0E:1A:BF'
+    hostname: cic-2
+    portProfile: DELL_R630_type1
+    hostProfile: controller
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 3
+    oobm:
+      oobmAddress: 10.130.34.99
+      oobmPassword: calvin
+      oobmUser: ipmi_user
+      oobmType: ipmi
+      oobmExtra:
+        control0: '24:6E:96:0E:2C:94'
+        control1: '24:6E:96:0E:2C:96'
+        #control0: '24:6E:96:0E:2C:96'
+        #control1: '24:6E:96:0E:2C:97'
+    hostname: cic-3
+    portProfile: DELL_R630_type1
+    hostProfile: controller
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+    cluster: openstack
+  - id: 4
+    oobm:
+      oobmAddress: 10.130.34.100
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: ipmi
+      oobmExtra:
+        control0: '24:6E:96:9B:6A:E4'
+        control1: '24:6E:96:9B:6A:E6'
+        #control0: '24:6E:96:9B:6A:E6'
+        #control1: '24:6E:96:9B:6A:E7'
+    hostname: compute-4
+    portProfile: DELL_R740_PASSTHROUGH
+    hostProfile: compute_r740_passthrough
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 5
+    oobm:
+      oobmAddress: 10.130.34.101
+      oobmPassword: calvin123
+      oobmUser: ipmi_user
+      oobmType: ipmi
+      oobmExtra:
+        control0: '24:6E:96:9B:70:2C'
+        control1: '24:6E:96:9B:70:2E'
+        #control0: '24:6E:96:9B:70:2E'
+        #control1: '24:6E:96:9B:70:2F'
+    hostname: compute-5
+    portProfile: DELL_R740_PASSTHROUGH_TYPE2
+    hostProfile: compute_r740_passthrough
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+
+  - id: 6
+    oobm:
+      oobmAddress: 10.130.34.102
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: ipmi
+      oobmExtra:
+        control0: '24:6E:96:9B:71:A4'
+        control1: '24:6E:96:9B:71:A6'
+        #control0: '24:6E:96:9B:71:A6'
+        #control1: '24:6E:96:9B:71:A7'
+    hostname: compute-6
+    portProfile: DELL_R740_PASSTHROUGH
+    hostProfile: compute_r740_passthrough
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 7
+    oobm:
+      oobmAddress: 10.130.34.103
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: ipmi
+      oobmExtra:
+        control0: '24:6E:96:9B:6E:E0'
+        control1: '24:6E:96:9B:6E:E2'
+        #control0: '24:6E:96:9B:6E:E2'
+        #control1: '24:6E:96:9B:6E:E3'
+    hostname: compute-7
+    portProfile: DELL_R740_PASSTHROUGH
+    hostProfile: compute_r740_passthrough
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 8
+    oobm:
+      oobmAddress: 10.130.34.104
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: ipmi
+      oobmExtra:
+        control0: '24:6E:96:9B:6C:7C'
+        control1: '24:6E:96:9B:6C:7E'
+        #control0: '24:6E:96:9B:6C:7E'
+        #control1: '24:6E:96:9B:6C:7F'
+    hostname: compute-8
+    portProfile: DELL_R640
+    hostProfile: compute_r640
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 9
+    oobm:
+      oobmAddress: 10.130.34.105
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: ipmi
+      oobmExtra:
+        control0: '24:6E:96:A1:31:30'
+        control1: '24:6E:96:A1:31:32'
+        #control0: '24:6E:96:A1:31:32'
+        #control1: '24:6E:96:A1:31:33'
+    hostname: compute-9
+    portProfile: DELL_R640
+    hostProfile: compute_r640
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 10
+    oobm:
+      oobmAddress: 10.130.34.106
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:9B:6C:D0'
+        control1: '24:6E:96:9B:6C:D2'
+        #control0: '24:6E:96:9B:6C:D2'
+        #control1: '24:6E:96:9B:6C:D3'
+    hostname: compute-10
+    portProfile: DELL_R640
+    hostProfile: compute_r640
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 11
+    oobm:
+      oobmAddress: 10.130.34.107
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:9B:73:04'
+        control1: '24:6E:96:9B:73:06'
+        #control0: '24:6E:96:9B:73:06'
+        #control1: '24:6E:96:9B:73:07'
+    hostname: compute-11
+    portProfile: DELL_R640
+    hostProfile: compute_r640
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 12
+    oobm:
+      oobmAddress: 10.130.34.108
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:9B:6C:A8'
+        control1: '24:6E:96:9B:6C:AA'
+        #control0: '24:6E:96:9B:6C:AA'
+        #control1: '24:6E:96:9B:6C:AB'
+    hostname: compute-12
+    portProfile: DELL_R640
+    hostProfile: compute_r640
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 13
+    oobm:
+      oobmAddress: 10.130.34.109
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:A1:36:D8'
+        control1: '24:6E:96:A1:36:DA'
+        #control0: '24:6E:96:A1:36:DA'
+        #control1: '24:6E:96:A1:36:DB'
+    hostname: compute-13
+    portProfile: DELL_R640
+    hostProfile: compute_r640
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 14
+    oobm:
+      oobmAddress: 10.130.34.110
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:A1:35:EC'
+        control1: '24:6E:96:A1:35:EE'
+        #control0: '24:6E:96:A1:35:EE'
+        #control1: '24:6E:96:A1:35:EF'
+    hostname: compute-14
+    portProfile: DELL_R640
+    hostProfile: compute_r640
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+  - id: 15
+    oobm:
+      oobmAddress: 10.130.34.111
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:A1:31:24'
+        control1: '24:6E:96:A1:31:26'
+        #control0: '24:6E:96:A1:31:26'
+        #control1: '24:6E:96:A1:31:27'
+    hostname: compute-15
+    portProfile: DELL_R640
+    hostProfile: compute_r640
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+
+  - id: 16
+    oobm:
+      oobmAddress: 10.130.34.112
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:9B:70:BC'
+        control1: '24:6E:96:9B:70:BE'
+        #control0: '24:6E:96:9B:70:BE'
+        #control1: '24:6E:96:9B:70:BF'
+    hostname: compute-16
+    portProfile: DELL_R740_VXSDS
+    hostProfile: compute_mdm_sds_gw
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+      - sds_pd1
+  - id: 17
+    oobm:
+      oobmAddress: 10.130.34.113
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:9B:71:6C'
+        control1: '24:6E:96:9B:71:6E'
+        #control0: '24:6E:96:9B:71:6E'
+        #control1: '24:6E:96:9B:71:6F'
+    hostname: compute-17
+    portProfile: DELL_R740_VXSDS
+    hostProfile: compute_mdm_sds
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+      - sds_pd1
+  - id: 18
+    oobm:
+      oobmAddress: 10.130.34.114
+      oobmPassword: calvin
+      oobmUser: root
+      oobmType: idrac
+      oobmExtra:
+        control0: '24:6E:96:9B:70:8C'
+        control1: '24:6E:96:9B:70:8E'
+        #control0: '24:6E:96:9B:70:8E'
+        #control1: '24:6E:96:9B:70:8F'
+    hostname: compute-18
+    portProfile: DELL_R740_VXSDS
+    hostProfile: compute_tb_sds
+    cluster: openstack
+    serviceProfiles:
+      - write_only_log_generator
+      - cee_logrotate
+      - sds_pd1
+
+
+virtualHosts:
+  - hostname: lcm-1
+    hypervisor: cic-1
+    portProfile: VIRTUAL_LCM
+    hostProfile: lcm
+    serviceProfiles:
+      - write_only_log_aggregator
+      - cee_logrotate
+    cluster: lcm
+  - hostname: lcm-2
+    hypervisor: cic-2
+    portProfile: VIRTUAL_LCM
+    hostProfile: lcm
+    serviceProfiles:
+      - write_only_log_aggregator
+      - cee_logrotate
+    cluster: lcm
+  - hostname: lcm-3
+    hypervisor: cic-3
+    portProfile: VIRTUAL_LCM
+    hostProfile: lcm
+    serviceProfiles:
+      - write_only_log_aggregator
+      - cee_logrotate
+    cluster: lcm
+  - hostname: monitor-1
+    hypervisor: cic-1
+    portProfile: VIRTUAL_SERVICEASSURANCE
+    hostProfile: serviceassurance
+    cluster: serviceassurance
+    serviceProfiles:
+      - write_only_log_aggregator
+      - cee_logrotate
+  - hostname: monitor-2
+    hypervisor: cic-2
+    portProfile: VIRTUAL_SERVICEASSURANCE
+    hostProfile: serviceassurance
+    cluster: serviceassurance
+    serviceProfiles:
+      - write_only_log_aggregator
+      - cee_logrotate
+  - hostname: monitor-3
+    hypervisor: cic-3
+    portProfile: VIRTUAL_SERVICEASSURANCE
+    hostProfile: serviceassurance
+    cluster: serviceassurance
+    serviceProfiles:
+      - write_only_log_aggregator
+      - cee_logrotate
+...

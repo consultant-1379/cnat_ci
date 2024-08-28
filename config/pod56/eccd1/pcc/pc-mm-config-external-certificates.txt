@@ -1,0 +1,17 @@
+autowizard false
+config
+certm node-credential CLIENT
+!
+certm node-credential SERVER
+!
+commit no-confirm
+certm node-credential SERVER install-credential-from-uri credential-password ericsson uri /tmp/amf-sbi-server.p12
+!
+certm node-credential CLIENT  install-credential-from-uri credential-password ericsson uri /tmp/amf-sbi-client.p12
+!
+certm install-trusted-cert-from-uri uri /tmp/ca.crt
+!
+certm trust-category CA trusted-certificates ca.crt
+!
+commit no-confirm
+end

@@ -1,0 +1,34 @@
+[req]
+prompt = no
+default_bits = 2048
+req_extensions = v3_req
+distinguished_name = dn
+
+[dn]
+C = SE
+ST = Stockholm
+L = Stockholm
+O = Ericsson
+OU = PC Solutions
+CN = POD56 Common Clients 
+emailAddress = ken.shi@ericsson.com
+
+[v3_req]
+basicConstraints = CA:FALSE
+extendedKeyUsage=serverAuth,clientAuth
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = *.seln.ete.ericsson.se
+DNS.2 = *.pod56.seln.ete.ericsson.se
+DNS.3 = *.ingress.pod56-eccd1.seln.ete.ericsson.se
+DNS.4 = *.ccdm.pod56-eccd1.seln.ete.ericsson.se
+DNS.5 = *.ccsm.pod56-eccd1.seln.ete.ericsson.se
+DNS.6 = *.ccrc.pod56-eccd1.seln.ete.ericsson.se
+DNS.7 = *.eda2.pod56-eccd1.seln.ete.ericsson.se
+DNS.8 = *.ingress.pod56-eccd2.seln.ete.ericsson.se
+DNS.9 = *.ccdm.pod56-eccd5.seln.ete.ericsson.se
+DNS.10 = *.5gc.mnc081.mcc240.3gppnetwork.org
+DNS.11 = *.amf.5gc.mnc081.mcc240.3gppnetwork.org
+DNS.12 = *.pod56.5gc.mnc081.mcc240.3gppnetwork.org
+

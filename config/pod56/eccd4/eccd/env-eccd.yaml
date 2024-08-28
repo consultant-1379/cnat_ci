@@ -1,0 +1,323 @@
+parameters:
+  ################################### Network variables #######################
+  timezone: CET
+  ntp_server_ips: [10.221.19.12, 10.221.19.13]
+  dns_server_ips: [10.221.19.4, 10.221.19.6]
+  os_endpoint_ips: [10.130.34.23, 10.130.34.26, 10.130.34.243, 10.92.99.210, 10.155.142.68]
+  director_external_network: eccd4-ccd-oam
+  director_external_subnet: eccd4-ccd-oam_subnet
+  security_groups_enabled: False
+  # The list of remote CIDRs allowed to SSH to directors when SG are enabled
+  #director_ssh_allowed_cidrs: [<fill>]
+  # VRRP traffic might need to be specifically enabled when security groups are
+  # enabled on deployments running Openstack older than Pike release
+  #allow_vrrp_address_by_mac: False
+  #receive_packet_steering: false
+
+  ### Ingress/egress via LB ###################################################
+  lb_enabled: False
+  lb_external_network: <fill>
+  lb_external_subnet: <fill>
+  # lb_external_security_groups: [<fill>]
+
+  ##################################### L4LB variables ########################
+  lb_image: node-image
+  lb_flavor: m1.medium
+
+  lb_root_volume_size: 20
+
+  ################################### Master variables ########################
+  master_image: eccd-2.22.0-000974-2107d748-node-image
+  master_flavor: MGMT_4vcpu_6144MBmem_0GBdisk
+  masters_count: 1
+
+  master_root_volume_size: 20
+  master_config_volume_size: 10
+
+  # managed-on-host, ha-offline, unmanaged
+  master_metadata:
+    ha-policy: ha-offline
+
+  ################################### Director variables ######################
+  director_image: eccd-2.22.0-000974-2107d748-director-image
+  director_flavor: MGMT_2vcpu_4096MBmem_0GBdisk
+  directors_count: 1
+
+  director_root_volume_size: 150
+  director_config_volume_size: 16
+
+  director_virtual_router_id: 50
+  director_external_vip: 10.130.34.181
+  director_ssh_allowed_cidrs: [0.0.0.0/0]
+
+  # managed-on-host, ha-offline, unmanaged
+  director_metadata:
+    ha-policy: ha-offline
+
+  ################################## Licensing variables ######################
+  ccd_licensing_domains:
+  - productType: ECCD
+    swltId: STA-CCD-1
+    customerId: 946060
+  ccd_licensing_nels_host: 10.155.142.68
+
+  ################################### Ansible variables ########################
+  ansible_variables:
+    openstack_auth_url: https://pcccpod056-os-ext-vip.seln.ete.ericsson.se:5000
+    kube_manager_kube_api_burst: 100
+    kube_manager_kube_api_qps: 100
+    kube_manager_attach_detach_reconcile_sync_period: 5m0s
+    kube_manager_disable_attach_detach_reconcile_sync: True
+    openstack_username: admin
+    openstack_user_password: PeyOQ0cJjfdsDC84Q6e6c7TPngppatfyl7hAzfCl
+    openstack_project_name: admin
+    openstack_domain_name: Default
+    openstack_region: CEERegion
+    ecfe_enabled: true
+    ingressctrl_service_annotations: 'metallb.universe.tf/address-pool: system-pool'
+    ecfe_config_map_raw:
+      bgp-bfd-peers:
+      - peer-address: 11.1.16.254
+        peer-asn: 8000
+        my-asn: 7020
+        hold-time: 180s
+        min-rx: 300ms
+        min-tx: 300ms
+        multiplier: 3
+      address-pools:
+      - addresses:
+        - 10.130.34.251/32
+        auto-assign: false
+        name: system-pool
+        protocol: bgp
+      - addresses:
+        - 10.130.34.252/32
+        auto-assign: false
+        name: nels-ext
+        protocol: bgp
+      - addresses:
+        - 10.130.34.253/32
+        auto-assign: false
+        name: evnfm-iccr
+        protocol: bgp
+    calico_ipv4pool_ipip_mode: "Off"
+    openstack_node_volume_attach_limit: 24
+    ingressctrl_loadbalancer_ip: 10.130.34.251
+    kube_api_ingress_host: kubeapi.ingress.pod56-eccd4.seln.ete.ericsson.se
+    container_registry_hostname: container-registry.ingress.pod56-eccd4.seln.ete.ericsson.se
+    container_registry_custom_pw: c0ntainerReg!stry
+    container_registry_storage_size: 20Gi
+    prometheus_webhook_snmp_enabled: True
+    snmp_trap_receiver_host: 10.130.34.243
+
+    # Victoria resources parameters
+    pm_vmstorage_retention_time: 30d
+    pm_vmstroage_volume_size: 500Gi
+    pm_vmagent_memory_limit: 700Mi
+    pm_vminsert_memory_limit: 400Mi
+    pm_vmstorage_memory_limit: 7Gi
+
+    # Other monitor component parameters
+    pm_server_nodeExporter_default_collectors_disabled: false
+
+
+  ################################### Worker variables ########################
+  node_pools:
+  - name: pool1
+    image: eccd-2.22.0-000974-2107d748-node-image-scsi
+    flavor: MGMT_8vcpu_20480MBmem_0GBdisk
+    count: 3
+    root_volume_size: 100
+    # managed-on-host, ha-offline, unmanaged
+    metadata:
+      ha-policy: ha-offline
+
+    external_networks:
+
+    - network: eccd4-ecfe-oam
+      subnet: eccd4-ecfe-oam_subnet
+      port_extra_properties:
+        port_security_enabled: false
+
+    labels: ""
+    node_role: "worker"
+    server_group_policies: ['soft-anti-affinity']
+    nova_availability_zone: nova
+    cinder_availability_zone: nova
+    cpu_manager_policy: "none"
+    reserved_cpus: ""
+    isolate_interrupts: false
+    pre_join_user_script: |
+      #!/usr/bin/env bash
+
+      set -ue
+
+      # adjust kernel parameters for DM 5GC CNFs
+      cat << EOF >> /etc/sysctl.conf
+      ## update to kernel parameters required by Search Engine
+      vm.max_map_count = 262144
+      EOF
+      sysctl -p
+
+  - name: pool2
+    image: eccd-2.22.0-000974-2107d748-node-image
+    flavor: MGMT_8vcpu_20480MBmem_0GBdisk
+    count: 1
+    root_volume_size: 100
+    # managed-on-host, ha-offline, unmanaged
+    metadata:
+      ha-policy: ha-offline
+
+    external_networks:
+
+    - network: eccd4-ecfe-oam
+      subnet: eccd4-ecfe-oam_subnet
+      port_extra_properties:
+        port_security_enabled: false
+
+    labels: ""
+    node_role: "worker"
+    server_group_policies: ['soft-anti-affinity']
+    nova_availability_zone: nova
+    cinder_availability_zone: nova
+    cpu_manager_policy: "none"
+    reserved_cpus: ""
+    isolate_interrupts: false
+    pre_join_user_script: |
+      #!/usr/bin/env bash
+
+      set -ue
+
+      # adjust kernel parameters for DM 5GC CNFs
+      cat << EOF >> /etc/sysctl.conf
+      ## update to kernel parameters required by Search Engine
+      vm.max_map_count = 262144
+      EOF
+      sysctl -p
+
+  ################################### Logger variables ########################
+  logger_enabled: False
+
+  ################################### Other variables #########################
+  nova_availability_zone: nova
+  master_server_group_policies: ['soft-anti-affinity']
+  director_server_group_policies: ['anti-affinity']
+  cinder_availability_zone: nova
+  # Modify the default range used by Kubernetes services
+  #service_node_port_min: 30000
+  #service_node_port_max: 32767
+
+  os_cacert: |
+    -----BEGIN CERTIFICATE-----
+    MIIDTDCCAjSgAwIBAgIJAJQPPWnnrhGCMA0GCSqGSIb3DQEBCwUAMDsxOTA3BgNV
+    BAMMMFRlc3QgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgSW50ZXJuYWwgVXNhZ2Ug
+    T25seTAeFw0yMjA3MTgwMzQyMTVaFw00OTEyMDMwMzQyMTVaMDsxOTA3BgNVBAMM
+    MFRlc3QgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgSW50ZXJuYWwgVXNhZ2UgT25s
+    eTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMfe5Hg+M4EaFPl/j3Pp
+    2isKKJwwFAKLE1mTBctNY5u1qkzoo/kP0AZ9nvJ2z1dcEnx7owD7GimH6b5O5kYr
+    3CjblmQywmZYTRRiHJqQWRjjKFtEtNbSgPnUnNHOW/y9oWSTSSj26UUfc2rj+A8G
+    MxuwXIHZvNl+TgLGTEkolF9rILjMnF8xxtDMsh+XuKeH2n4EAoOh4sHigPNwfOkq
+    O4CEyBu7vcgzf9zSNI8CDSPM/5WsqSr8WjM2tg8VUAvM6Xzbjcf+B/Yc4svIyOIQ
+    y9V/hwKAWqidwD9UpFUkVtYMF1gnfXlExPTNBCAilvrrWzqjz0sbjNIAWHf3jz4l
+    bhkCAwEAAaNTMFEwHQYDVR0OBBYEFLWwMjnvXLr9ZuUaetpkdIttbTqyMB8GA1Ud
+    IwQYMBaAFLWwMjnvXLr9ZuUaetpkdIttbTqyMA8GA1UdEwEB/wQFMAMBAf8wDQYJ
+    KoZIhvcNAQELBQADggEBABYO47gLZUUJ0J0uR9MunZRaxE9ReskokOHiyZxeAQ72
+    LVv+nMduCyjGALc8HMJSOH3VIKxCJOkt3MWXR7UT21M/gJZLY5l3jlEXgxO4u+nM
+    PzByqF1T+XI/mUKRb8I56ZvkaH8yEryJ97MJAIFVsFr1qs1di4uIVSBm+0chdcQ2
+    cd8FqCGT+qZeQ3vqMJqUTUE4Hmg+b6Z0tgb/LvY3MUjnQ7IO5lWlMYsguqiaxkyv
+    o7jbzHYvtVGFDT2VK+ILbA5MNmzmdH1UACZ2h5HEQeir/PACuihkVGoLxVXoikgF
+    96UgxbGAlua9I0NRHNGv57Eh7HldyNI8bxHx8sMBPSA=
+    -----END CERTIFICATE-----
+    # evnfm self-singed CA certificate
+    -----BEGIN CERTIFICATE-----
+    MIIGCTCCA/GgAwIBAgIBADANBgkqhkiG9w0BAQsFADCBnjELMAkGA1UEBhMCU0Ux
+    EjAQBgNVBAgMCVN0b2NraG9sbTESMBAGA1UEBwwJU3RvY2tob2xtMREwDwYDVQQK
+    DAhFcmljc3NvbjEVMBMGA1UECwwMUEMgU29sdXRpb25zMRgwFgYDVQQDDA9UZWFt
+    Qmx1ZXNSb290Q0ExIzAhBgkqhkiG9w0BCQEWFGtlbi5zaGlAZXJpY3Nzb24uY29t
+    MB4XDTIwMTEwMjA5MzMxNloXDTQwMTAyODA5MzMxNlowgZ4xCzAJBgNVBAYTAlNF
+    MRIwEAYDVQQIDAlTdG9ja2hvbG0xEjAQBgNVBAcMCVN0b2NraG9sbTERMA8GA1UE
+    CgwIRXJpY3Nzb24xFTATBgNVBAsMDFBDIFNvbHV0aW9uczEYMBYGA1UEAwwPVGVh
+    bUJsdWVzUm9vdENBMSMwIQYJKoZIhvcNAQkBFhRrZW4uc2hpQGVyaWNzc29uLmNv
+    bTCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALpFSt2RPftYwPHaaX0O
+    li/g52VnHmyACmG1egnPA4efRptfFqsm9lHH2byigSech+zfLXCarVErdu1/yvRG
+    zYaLgH/76XtOVXpGYa3aXBksBbkTnIRmgtq11iIdOKXUrVbVt4HZ20EJxrFrMs9n
+    mxy7dvhWM1KrSVSUqN840DSWJxeFWWgEZ7vTgRhnuAD2FUqsZ6CRvt2iL31ZNIco
+    dqOUQF9chZLWgprEDgRmJD4oLjVoWe0kS/zRR2G3GB9J28xs9ZjSp38CtTgqBzyv
+    gWua4Im5KyFIJUeH4a9NRYZWry6I9sxAzIYVt7ki3TAP+K2YsGg9dD1GwKDR+5Zy
+    7EVuri9hqR5YFrvvdNAjWrJvymQXaDdmXUGa7Og8p9IzM+lNL86dDf3BsyeqHJrq
+    m31OMHM3MCVfc0zUu96LnLj2wqTdKa7MaWyfA7KO38wIACBvO/SNCCzCXpADJRED
+    A3n219y6QxmM+DH35XVBTvJkM5UxPHoa8rhZsuLhobIyNU/Kuk6JAm/lueYzOG9k
+    lLmaaSasdlNJ/Pqf4MBOB1UKPVsJsravFaQ7BmOLp3R0XyhoNrnmd/OOxU6r1TH1
+    wh5vx2CAOO4tujvnihgeADU8yQdwDKBkOtjjV0TdY0MFxecLowtmEnrKfIO9kSS3
+    tpnAgdBgfq7eOYvsrKw31AqxAgMBAAGjUDBOMB0GA1UdDgQWBBTqkIEarX28jATB
+    MBsv/Vse5jCebDAfBgNVHSMEGDAWgBTqkIEarX28jATBMBsv/Vse5jCebDAMBgNV
+    HRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4ICAQB73tG3G1mZt93j5MoRXimsB6sO
+    q47A/lZiyJKqJiLIeSq1V8GOPwqfQyNAe40inhLWHYky5rPfhhXw+FlyW4zotv7W
+    ZygTjtCwa7EbawUMOoG9YcMhK9NZx/EoPT0cs4BK6UvajpH28Kl5+fyvSLN5ZY7K
+    arBIMUWNVs7m3O9e5doLx6e98soj2U5PkGq1AB2xgwX7F0spIj3Yg3WS4C5z5KkF
+    b1cviVgHuFnxJNGu5nY+h08+i5cZNu/Uc1M9pkYthlfnhpyPlONxD9rTpDm5LEkU
+    3af9zyqwJuuunWDJMfKKZGPB5BCgfM6hBw4D3iLWTWxrHfjNghNVqCh6K+L+GdfD
+    hzT/LVSHW/bOjHh+wAVGFcFxxXedXxq/prj1ZwflPI7XvxuCwj1EVA630FIBSC6/
+    xWq8mHoECXXp839Gccd3tmeauELrchkty6OaBpwHg/dB44GEByJz/T+lbLIOZLXd
+    K+kpgaN4TmA5wtlQPMq0HQLvEax+cCUYtE78QSe+86mV/2Q1EeJNEesT7p5C2U4c
+    aQZbPQ6YgvRZtvPD/3CrQS9CD0DJwaCrj2dEISb4lEj/fz5wlLETyS7X/0KYUMKR
+    UmqyKwz2Zs9jM7By0HxM1i+0f/ovMDuKuQ6IQTROEu0TZZVH6KRsDuujv+/VJ2Nb
+    szlrRw3la1H71eU9UQ==
+    -----END CERTIFICATE-----
+  ca_cert: |
+    -----BEGIN CERTIFICATE-----
+    MIIDETCCAfmgAwIBAgIUKL3RL+N3QyXiVQ7Dun/NcFd7tSMwDQYJKoZIhvcNAQEL
+    BQAwGDEWMBQGA1UEAwwNS3ViZXJuZXRlcy1jYTAeFw0yMTAzMjUwNzQzMDlaFw00
+    ODA4MTAwNzQzMDlaMBgxFjAUBgNVBAMMDUt1YmVybmV0ZXMtY2EwggEiMA0GCSqG
+    SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC347YB0fgpi8GbPREvQ/G6EM1sOMIqrylk
+    M1ibtBCxFA4HKT+e7Uu41C8m36Rl3Co068nK4LLrPuj9MNncJGsKvUXSW5zodXyJ
+    zYslTA0E+8hLRU2BhOJZtihYL/o4l74RBJjv512TkjUnqigRoD85+gyxPkdNyuXP
+    y8RkYGSeQmUVRL8CX6r2KT8UoWKGM72ThaNf7DUdbCVh5WIPUas4ioMDhFzqABTJ
+    rSj6oYFf5Zfl4sgwEdK65EZBw6CDhBQAZxNyeGp/FTHGbPvh+GBlaj5HnirsfL+G
+    RDY3RR1xSlzQPfnfyEWTn3JU1xZSCHnrcnqdvHC05/nSyGjiyN9VAgMBAAGjUzBR
+    MB0GA1UdDgQWBBT/m5uEfOH7B0BdKNmmoEDd/JT/1DAfBgNVHSMEGDAWgBT/m5uE
+    fOH7B0BdKNmmoEDd/JT/1DAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUA
+    A4IBAQA0UnHM8alGos136qGP1DYWOv298YRbd0aBLZKkdivCedEPjf8nB0dVbIQo
+    YVzUJ0LQr4wT7aNdNzGevSncP5S/Q6t9tfqg6f3wsYqkS26cMC1witThgA6pPsZC
+    yb2PtwZY447sHIrnbAcDgi1xTiWATDdqaD72m6uEK62fcxT906+3CpC5hBEuo3CH
+    B40zLKwgHuP0E+ALrbVO8GYDnlexxEOTHYkgzbqmsRt21WpRBGpE0wlHMBQ+IonU
+    +mti7kozPKkhHhC1i9/6ezEHLuvun4RGkY2oH4FTufUaDSCA50mzPJsQEArUxp3P
+    HRz9NWGe2pY040hihLwIA2MuMKr5
+    -----END CERTIFICATE-----
+  ca_key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEowIBAAKCAQEAt+O2AdH4KYvBmz0RL0PxuhDNbDjCKq8pZDNYm7QQsRQOByk/
+    nu1LuNQvJt+kZdwqNOvJyuCy6z7o/TDZ3CRrCr1F0luc6HV8ic2LJUwNBPvIS0VN
+    gYTiWbYoWC/6OJe+EQSY7+ddk5I1J6ooEaA/OfoMsT5HTcrlz8vEZGBknkJlFUS/
+    Al+q9ik/FKFihjO9k4WjX+w1HWwlYeViD1GrOIqDA4Rc6gAUya0o+qGBX+WX5eLI
+    MBHSuuRGQcOgg4QUAGcTcnhqfxUxxmz74fhgZWo+R54q7Hy/hkQ2N0UdcUpc0D35
+    38hFk59yVNcWUgh563J6nbxwtOf50sho4sjfVQIDAQABAoIBAHjCg14Co3O1Iblu
+    iwB9IBtOuXhedbROP2JcDc6Cm4uOXf/56JvXvahtP2HJ8E4sHVOPnH8svJKcR6ku
+    EYPuLpVo4pdYLlzB+r0MTFp77Pje2BQGOPXbbEH5y9jN+QZ9MAZA/KZfTCaDF4Eq
+    zxF0KNFMElW7TlwZ6H1jlV9NpgX++qcnP6X8LyJXnZHF0/0wqygK+MoeSbo7Jdqb
+    /bA9mWL9GTf3lvLaDbNoRqB/6ctUt3u3DPglC05szMLEUFBAovbUSWmli7hfIh/T
+    2BOlZXYLsQIuFqNFjhxXRotrzYow6ST5mJJfa+16knAKgcci968aMO65YEDwOoxJ
+    j46EJMECgYEA5ikxr4AJ1Gm8AUu6w17Xyjua6FBHTBFzY6kzMYz5R2+oF7AHCxOx
+    1wdu5ymbAqt8K7P4yvMcOgzoO+RzBiRY+BT3vBfYzIaqa8/HrTNJczgarCOLnGoP
+    K0fWosafAHS5PABhRzycICY7swOZaIcHQI2q124eql+hCaET6dD82FkCgYEAzIiu
+    GjhyhpPPWh0nu4JEnpnGZNpUaGtK+QF6wxiT+zwunWdmPzp6025uyFZMWWbkM4F5
+    cdD8qooUk2oSyFYY/tL35jgSCoCXQFAYbhSFKc4AW6HPw9tmikBe7RZvmREV66Ks
+    yBMzlGdwPTbHD3D3yQoc3Q6N4BA0D8a1Js8nn10CgYEAj0o8LZfYBs8hBemAx5sn
+    WzdKlLFOAfSnUveG8KVkmG3SR5UGfYXwZP+ysuW7JKlgb9Dm5mr+OsHIX2k1lzBP
+    13suVILALWz1cpN0K8dPRhU6vcqPY3zAHuDlpodjfCQvIkTWS0RXqshCyItIGcRe
+    5niMUPy0yLsqhdUrkZjToVkCgYAV+8ravp5woIp04RVYLhQ6B8UvKdhQsNeKFAKh
+    3Y5qPnm0KVzwBtUUzJXTqpLiORDmCFCJTzEZE2ZKwefq6HYfTYWflP87ab7YBsPZ
+    cRMu/xlCwA2Yu4g1691IFlVAWnnEreNsTcQJe2Sw76ZNnpLDZPbdO6c8IgG2gGEQ
+    HsvfcQKBgDa8I3ZZwFhTm4GmLdwAPYFZuWau11ZCsdCDeWa5CtpQf45SdUeEOVqM
+    JkcoHcLXoOUAqfA561IqbW9FMfNTI4eQEeJjf81ne2prK5xYLDKGXiLC99meKShA
+    Ioa1vBgf6GtYmp2+YndDPjCRlCdJ94s1Iwog/GFiK8ioKmxCLuET
+    -----END RSA PRIVATE KEY-----
+
+  public_key: >
+    ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDAjXPfGUC8fBvYN0cx6icqvRTaSTIdBZNHxz6ufPALT67g7ARXT5BhyQyT6KTSnsFW+SniFjz2ls3u9bx86OXWWs2R40Jch7rMXbKx4gR3VSaNfkiKxGlTp+aEpwjnPlO3TyNMrfbZUe57UJrLo7oo7ZsnJfKZ1z9N+NVGCks8Jp9oa2OBG9viG5vYB4o/3Tdl5/LiLHYm74AAsuTXnOWVOOowzvT3v2SMkLeyvTd/LBpVEvEXfG1kK+hdxfyRlpqERlOM10CeeYeBd5UrN8+xt5XDoTlnZjp2W3GWJeL3ZjMIU3MxOpmrNksqR6qeZQNF2BGGINs032/QMwYa1M/1 TS Dual-Mode 5GC CCD Deployment
+
+  ################################### Optional variables #########################
+  # Custom root password for console access
+  # must be sha-256 or sha-512 password hash type
+  # update the below value to set the root password
+  console_password_hash: '$6$riMvNtbPehi.s.rs$vM07tC/sCQ365l9FAVYXMNHZZe6sFdy.aNMCtTO4u36pmehasvntocVfGKpeV.5aDzgle0lqSsGDBRd6YXZdd/'

@@ -1,0 +1,49 @@
+ceeinfraPassword: <CHANGE_ME>
+lcmApiInternalClientPassword: <CHANGE_ME>
+disk: 50G
+memory: 5120
+vcpus: 6
+hostname: cee-seed-vm
+domain: cee.tld
+timezone: UTC
+lcm_ctrl_sp:
+  hostBridge: br_lcm_ctrl
+  cidr: 192.168.0.10/24
+cee_ctrl_sp:
+  segmentationId: 2
+  cidr: 192.168.2.10/24
+# The ksServer section is only neeed for automated installations, e.g. by
+# Ericsson CDD. It provides information on how the automation can reach and
+# login to the Kickstart server
+ksServer:
+  ip: <IP-OF-KICKSTART-SERVER>
+  # NB! The user needs sudo rights to be able to install Seed VM
+  user: <USER-ON-KICKSTART>
+  # NB! If the user has ssh-key based login the password does not have to be
+  #     disclosed here
+  password: <PASSWORD-FOR-USER-ON-KICKSTART>
+# When LCM O&M access is possible to the SeedVM the lcm_om_sp can be configured.
+# NB! The SeedVM NBI does not provide TLS so it is less secure. Only enable this
+#     if this is acceptable.
+#lcm_om_sp:
+#  # Either a bond or a bridge, not both, for the LCM O&M network is needed
+#  hostBridge: <BRIDGE NAME>
+#  hostBond: <BOND NAME>
+#  cidr: <HOST-IP/PREFIXSIZE>
+#  gateway: <GATEWAY-IP>
+#  # External DNS servers can optionally be configured in SeedVM
+#  externalDnsServers:
+#  - <IP-ADDRESS-OF-DNS-SERVER1>
+#  - <IP-ADDRESS-OF-DNS-SERVER2>
+#  - <IP-ADDRESS-OF-DNS-SERVER3>
+# If separate Out Of Band Managment network is needed configure oobm_ctrl_sp
+#oobm_ctrl_sp:
+#  segmentationId: 3
+#  cidr: 10.0.3.10/24
+# For BSP neither lcm_om_sp nor oobm_ctrl_sp should be specified, instead LCT
+# network must be added
+#lct_cidr: 10.0.10.10/24
+# Internal PKI configuration
+# configure leaf certificate expiry if default is not applicable: number of days
+#certExpiry: 730
+#cacertExpiry: 1825

@@ -1,0 +1,104 @@
+global:
+  scrape_interval: {{ vmagent_scrapeInterval }}
+  scrape_timeout: {{ vmagent_scrapeTimeout }}
+  external_labels:
+    monitor: 'CEE'
+
+scrape_configs:
+{% if inventory_hostname in groups["collectd"] | d([]) %}
+  - job_name: collectd
+    static_configs:
+      - targets:
+        - '{{ 'api' | kolla_address(inventory_hostname) | put_address_in_context('url') }}:9103'
+        labels:
+          exported_host_fqdn: {{ hostvars[inventory_hostname]['hostname_full'] }}
+          cluster: {{ cluster_name }}
+    metric_relabel_configs:
+{% if vmagent_ovs_filterOut_tapIface %}
+      - source_labels: [ovs_stats]
+        regex: '(.*)(tap)(.*)'
+        action: drop
+{% endif %}
+{% if vmagent_ovs_filterOut_vhuIface %}
+      - source_labels: [ __name__, ovs_stats ]
+        regex: '({{vmagent_ovs_vhu_metrics_filterOut}});(.*)(vhu)(.*)'
+        action: drop
+{% endif %}
+{% if vmagent_ovs_filterOut_dpdkIface %}
+{% if hostvars[inventory_hostname]['dpdk_devices'] %}
+{% for data in vmagent_ovs_filterOut_dpdkIface_list  %}
+      - source_labels: [ __name__, ovs_stats ]
+        regex: '{{vmagent_ovs_filterOut_dpdkIface_list}};(.*)({{data}})(.*)'
+        action: drop
+{% endfor %}
+{% endif %}
+{% endif %}
+{% endif %}
+
+{% if inventory_hostname in groups["prometheus-cadvisor"] | d([]) %}
+  - job_name: cadvisor
+    static_configs:
+      - targets:
+        - "{{ 'api' | kolla_address(inventory_hostname) | put_address_in_context('url') }}:{{ prometheus_cadvisor_port }}"
+        labels:
+          exported_host_fqdn: {{ hostvars[inventory_hostname]['hostname_full'] }}
+          cluster: {{ cluster_name }}
+    metric_relabel_configs:
+      - source_labels: [ __name__ ]
+        regex: 'container_cpu_usage_seconds_total|container_memory_rss|container_memory_usage_bytes|container_memory_working_set_bytes|container_last_seen'
+        action: keep
+      - regex: 'container_label_monitoring'
+        replacement: 'monitoring_mode'
+        action: labelmap
+      - regex: 'container_label_.*|id|image'
+        action: labeldrop
+{% endif %}
+
+{% if inventory_hostname in groups["prometheus-node-exporter"] | d([]) %}
+  - job_name: node
+    static_configs:
+      - targets:
+        - "{{  'api' | kolla_address(inventory_hostname)| put_address_in_context('url') }}:{{ prometheus_node_exporter_port }}"
+        labels:
+          exported_host_fqdn: {{ hostvars[inventory_hostname]['hostname_full'] }}
+          cluster: {{ cluster_name }}
+{% endif %}
+
+{% if ((inventory_hostname in groups["vmselect"] | d([])) or
+       (inventory_hostname in groups["vminsert"] | d([]))  or
+       (inventory_hostname in groups["vmstorage"] | d([])) or
+       ((vmagent_enable_metrics) and (inventory_hostname in groups["vmagent"] | d([])))
+      )  %}
+  - job_name: victoria_metrics
+    scrape_interval: {{ vm_scrapeInterval }}
+    static_configs:
+    - targets:
+{% if inventory_hostname in groups["vmselect"] | d([]) %}
+      - '{{ 'api' | kolla_address(inventory_hostname) | put_address_in_context('url') }}:{{ vmselect_port }}'
+{% endif %}
+{% if inventory_hostname in groups["vminsert"] | d([]) %}
+      - '{{ 'api' | kolla_address(inventory_hostname) | put_address_in_context('url') }}:{{ vminsert_port }}'
+{% endif %}
+{% if inventory_hostname in groups["vmstorage"] | d([]) %}
+      - '{{ 'api' | kolla_address(inventory_hostname) | put_address_in_context('url') }}:{{ vmstorage_port }}'
+{% endif %}
+{% if vmagent_enable_metrics %}
+{% if inventory_hostname in groups["vmagent"] | d([]) %}
+      - '{{ 'api' | kolla_address(inventory_hostname) | put_address_in_context('url') }}:{{ vmagent_port }}'
+{% endif %}
+{% endif %}
+      labels:
+        exported_host_fqdn: {{ hostvars[inventory_hostname]['hostname_full'] }}
+        cluster: {{ cluster_name }}
+{% endif %}
+
+{% if inventory_hostname in rsyslog_service_hosts_names | d([]) %}
+  - job_name: rsyslog-exporter
+    scrape_interval: {{ prometheus_rsyslog_exporter_interval }}
+    static_configs:
+    - targets:
+      - '{{ 'api' | kolla_address(inventory_hostname) | put_address_in_context('url') }}:{{ prometheus_rsyslog_exporter_port }}'
+      labels:
+        exported_host_fqdn: {{ hostvars[inventory_hostname]['hostname_full'] }}
+        cluster: {{ cluster_name }}
+{% endif %}

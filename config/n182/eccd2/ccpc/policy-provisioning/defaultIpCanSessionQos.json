@@ -1,0 +1,10 @@
+{
+"profileId": "defaultIpCanSessionQos",
+"qci": 5,
+"mbrDownlink": 5000000,
+"mbrUplink": 3000000,
+"arpPriorityLevel": 2,
+"arpPci": true,
+"arpPvi": false
+}
+

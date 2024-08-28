@@ -1,0 +1,33 @@
+#######################################################################################
+##  Configuration file for VxSDS cinder backends in CEE                               #
+#######################################################################################
+##
+## Under the top 'backends' key, the used VxSDS backends grouped together, where the
+## name of the cinder backends are the keys, and below them there are the cinder
+## parameters.
+##
+## There is an extraParams/vxsdsCluster meta-parameter that must be set to the VxSDS
+## cluster name the cinder backend will connect to. Based on this reference the
+## appropriate VxSDS cinder backend paramaters are automatically computed from the
+## VxSDS service definition. (vxsds.yml). The user can override these parameters
+## however.
+##
+## This file should be referred from services.yaml, from cinder-volume service
+## component's plugins section, e.g.:
+##
+## plugins:
+##   ## "vxsds" plugin name must be used in case of VxSDS backends!
+##   - name: vxsds
+##     pluginConfig:
+##       filename: config/vxsds/vxsds_backends.yml
+---
+## Uncomment lines below, only if VxSDS client (SDC) service will also be deployed to this cluster
+#backends:
+#
+#  vxsds-1:
+#    ## User can override VxSDS cinder backend parameters here
+#    ## ..
+#    extraParams:
+#      ## insert the name of vxsdsCluster that cinder will use (from vxsds.yml service config file)
+#      vxsdsCluster: <TO.BE.FILLED>
+...

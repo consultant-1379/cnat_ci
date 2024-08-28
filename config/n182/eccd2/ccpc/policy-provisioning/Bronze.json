@@ -1,0 +1,10 @@
+{
+"dataplanName": "Bronze",
+"globalScope": false,
+"staticQualification":
+{
+"maxBearerQosProfileId": "defaultIpCanSessionQos",
+"minBearerQosProfileId": "defaultIpCanSessionQos"
+},
+"defaultPriority": 4
+}

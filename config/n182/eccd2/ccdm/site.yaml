@@ -1,0 +1,157 @@
+######################################
+## CNF general information
+######################################
+# CCDM single instance is only supported for the small-system profile.
+nodeName: n182-vpod2-ccdm1
+nodeType: ERIC-CCDM
+systemProfile: small
+
+vnflcm:
+  clusterName: n182-eccd2
+  namespace: ccdm
+
+users:
+  day1:
+  - username: ccdm-admin
+    password: Changeme@1st
+    groups:
+    - udr-admin
+    - pf-admin
+    - pf-operator
+    - nrfagent-admin
+    - system-admin
+  - username: ccdm-sec
+    password: Changeme@1st
+    groups:
+    - udr-security-admin
+    - nrfagent-security-admin
+    - system-security-admin
+  oauth2-client:
+  - id: mapi-client
+    secret: mapi-secret
+    groups:
+    - scopes.ericsson.com/activation/mapi.read
+    - scopes.ericsson.com/activation/mapi.write
+  - id: replay-client
+    secret: replay-secret
+    groups:
+    - scopes.ericsson.com/activation/mapi.write
+    - scopes.ericsson.com/activation/replay.callback
+
+license:
+  customerId: "946060"
+  swltId: "STA-CCDM-31"
+
+#oamVip: 10.228.194.163
+
+#soapNotifyHost: ccsm1-udm-5g-sig.site1-cluster2
+
+#Remove multiSite but reserve siteId: 1
+#siteId: 1
+
+vtap:
+  remotePath: vtap/node182-cluster2-ccdm1
+
+cnom:
+  fqdn: cnom.ccdm1.n182.vpod2.seli.gic.ericsson.se
+
+#Add new parameter consistency
+#consistency:
+#  remotePath: ccdm/consistencyreport
+
+snmp:
+  agentEngineId: 800000c1046363646d3163347331
+  sourceIdentifier: 10.228.194.196
+  heartbeatInterval: 600
+
+ddc:
+  remotePath: /mnt/ddc/node182-cluster2-ccdm1
+
+######################################
+## CNF specific information
+######################################
+ccdm:
+  udr:
+    host: ccdm1-5g-traffic.site1-cluster2
+    port: 443
+    instanceId: f8b5865c-49e8-463e-8f16-554452a1c4d1
+    geored:
+      local:
+        host: ccdm1-intersite.site1-cluster2
+        provisioning-priority: 3
+      remote:
+        host: ccdm1-intersite.n182-vpod2
+        provisioning-priority: 2
+  externalLdapServer:
+    host: external-ldap-server.seli.gic.ericsson.se
+  consistency:
+    remotePath: consistency/node182-cluster2-ccdm1
+  proclog:
+    remotePath: proclog/node182-cluster2-ccdm1
+  indexManagement:
+    eric-data-search-engine-adp-app-logs: 91
+    eric-data-search-engine-adp-app-debug-logs: 516
+
+######################################
+### CNF certificates specific
+#######################################
+certs:
+ iccr-external-tls-certificate:
+   p12: ../certificates/ccdm1/ccdm1-iccr-server.p12
+ eric-ccdm-sbi-server-certificate:
+   p12: ../certificates/ccdm1/ccdm1-sbi-server.p12
+ eric-ccdm-sbi-client-certificate:
+   p12: ../certificates/ccdm1/ccdm1-sbi-client.p12
+ eric-ccdm-4gtraffic-server-certificate:
+   p12: ../certificates/ccdm1/ccdm1-4g-traffic-server.p12
+ eric-ccdm-4gtraffic-client-certificate:
+   p12: ../certificates/ccdm1/ccdm1-4g-traffic-client.p12
+ eric-ccdm-prov-server-certificate:
+   p12: ../certificates/ccdm1/ccdm1-prov-server.p12
+ eric-ccdm-4gprovisioning-server-certificate:
+   p12: ../certificates/ccdm1/ccdm1-4g-prov-server.p12
+ eric-ccdm-4gprovisioning-client-certificate:
+   p12: ../certificates/ccdm1/ccdm1-4g-prov-client.p12
+######################################
+## CNF dimensioning specific
+######################################
+#replicaCount:
+#  eric-ingressgw-eda-provisioning: 6
+#  eric-udr-kvdb-ag-server: 4
+#  eric-ingressgw-udr-ldap-traffic: 6
+#  eric-ingressgw-udr-ldap-provisioning: 6
+#  eric-ingressgw-udr-traffic: 11
+#  eric-ingressgw-udr-intersite: 5
+#  eric-data-search-engine-data: 5
+replicaCount:
+  eric-ingressgw-eda-provisioning: 1
+  eric-udr-kvdb-ag-server: 1
+  eric-ingressgw-udr-ldap-traffic: 1
+  eric-ingressgw-udr-ldap-provisioning: 1
+  eric-ingressgw-udr-traffic: 1
+  eric-ingressgw-udr-intersite: 1
+  eric-data-search-engine-data: 1
+
+hpaReplica:
+ eric-udr-nudrfe: {min: 3, max: 9}
+ eric-udr-notificationsubscription: {min: 2, max: 4}
+ eric-udr-gudrestfe: {min: 2, max: 8}
+ eric-udr-provisioningfe: {min: 2, max: 7}
+ eric-udr-ldapfe: {min: 2, max: 4}
+ eric-udr-ldap-balancer: {min: 7, max: 7}
+ eric-udr-rest-notifchecker: {min: 2, max: 4}
+ eric-udr-rest-notifsender: {min: 2, max: 4}
+ eric-udr-soap-notifchecker: {min: 2, max: 4}
+ eric-udr-soap-notifsender: {min: 2, max: 4}
+ eric-udr-prov-sync-fe: {min: 2, max: 4}
+
+pvcSize:
+ eric-pm-server: 35
+ eric-ctrl-bro: 128
+ eric-act-mb-kf: 2
+ eric-data-wide-column-database-cd: 23
+
+
+
+
+

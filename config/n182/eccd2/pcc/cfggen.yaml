@@ -1,0 +1,32 @@
+nodeInfo: site.yaml
+siteGlobal: ../site_global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: pcc/1.31/values.yaml.jinja2
+  target: values.yaml
+- template: pcc/1.31/pc-mm-config.txt.jinja2
+  target: pc-mm-config.txt
+- template: pcc/1.31/instantiate.json.jinja2
+  target: instantiate.json
+- template: common/snmp-config.json.jinja2
+  target: snmp-config.json
+- template: common/user-config.txt.jinja2
+  target: user-config.txt
+- template: common/ddc-config.txt.jinja2
+  target: ddc-config.txt
+- template: pcc/1.31/pc-sm-config.txt.jinja2
+  target: pc-sm-config.txt
+- template: pcc/1.31/vpngw-config.txt.jinja2
+  target: vpngw-config.txt
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml
+- template: pcc/1.31/pc-mm-external-certificates.txt.jinja2
+  target: pc-mm-external-certificates.txt
+- template: pcc/1.31/pc-sm-external-certificates.txt.jinja2
+  target: pc-sm-external-certificates.txt
+

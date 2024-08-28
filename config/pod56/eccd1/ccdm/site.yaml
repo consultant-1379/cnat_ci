@@ -1,0 +1,119 @@
+# CCDM single instance is only supported for the small-system profile.
+nodeName: pod56-ccdm1
+nodeType: CCDM
+instance: ""
+systemProfile: standard
+
+vnflcm:
+  clusterName: pod56-eccd1
+  namespace: ccdm
+
+users:
+  day1:
+  - username: ccdmoam
+    password: Changeme@1st
+    groups:
+    - udr-admin
+    - pf-admin
+    - pf-operator
+    - nrfagent-admin
+    - system-admin
+  - username: ccdmsec
+    password: Changeme@1st
+    groups:
+    - udr-security-admin
+    - nrfagent-security-admin
+    - system-security-admin
+  oauth2-client:
+  - id: mapi-client
+    secret: mapi-secret
+    groups:
+    - scopes.ericsson.com/activation/mapi.read
+    - scopes.ericsson.com/activation/mapi.write
+  - id: replay-client
+    secret: replay-secret
+    groups:
+    - scopes.ericsson.com/activation/mapi.write
+    - scopes.ericsson.com/activation/replay.callback
+
+license:
+  customerId: "946060"
+  swltId: STA-CCDM-12
+
+cnom:
+  fqdn: cnom.ccdm.pod56-eccd1.seln.ete.ericsson.se
+snmp:
+  agentEngineId: 8000137001C0A856ECCD1D3F41
+  sourceIdentifier: 10.130.34.225
+
+ddc:
+  remotePath: /sftpuser/ddc/eccd1/pod56-ccdm1
+
+######################################
+## CNF specific information
+######################################
+ccdm:
+  iamFqdn: iam.ccdm.pod56-eccd1.seln.ete.ericsson.se
+  udr:
+    instanceId: f8b5865c-49e8-463e-8f16-56eccd1d3f41
+    host: udr1.pod56
+    port: 443
+    geored:
+      local:
+        host: udr1-intersite.pod56
+        provisioning-priority: 3
+      remote:
+        host: udr2-intersite.pod56
+        provisioning-priority: 2
+  consistency:
+    remotePath: /sftpuser/consistencyreport
+######################################
+## CNF certificates specific
+######################################
+certs:
+  iccr-external-tls-certificate:
+    p12: ../../../certs/pod56-eccd1/ccdm/ccdm-iccr-server.p12
+  eric-ccdm-sbi-server-certificate:
+    p12: ../../../certs/pod56-eccd1/ccdm/ccdm-sbi-server.p12
+  eric-ccdm-sbi-client-certificate:
+    p12: ../../../certs/pod56-eccd1/ccdm/ccdm-sbi-client.p12
+  eric-ccdm-4gtraffic-server-certificate:
+    p12: ../../../certs/pod56-eccd1/ccdm/ccdm-4g-traffic-server.p12
+  eric-ccdm-4gtraffic-client-certificate:
+    p12: ../../../certs/pod56-eccd1/ccdm/ccdm-4g-traffic-client.p12
+  eric-ccdm-prov-server-certificate:
+    p12: ../../../certs/pod56-eccd1/ccdm/ccdm-prov-server.p12
+  eric-ccdm-4gprovisioning-server-certificate:
+    p12: ../../../certs/pod56-eccd1/ccdm/ccdm-4g-prov-server.p12
+  eric-ccdm-4gprovisioning-client-certificate:
+    p12: ../../../certs/pod56-eccd1/ccdm/ccdm-4g-prov-client.p12
+
+######################################
+## CNF dimensioning specific
+######################################
+replicaCount:
+  eric-ingressgw-eda-provisioning: 2
+  eric-udr-kvdb-ag-server: 4
+  eric-ingressgw-udr-ldap-traffic: 2
+  eric-ingressgw-udr-ldap-provisioning: 2
+  eric-ingressgw-udr-traffic: 2
+  eric-ingressgw-udr-intersite: 2
+
+hpaReplica:
+  eric-udr-nudrfe: {min: 4, max: 9}
+  eric-udr-notificationsubscription: {min: 2, max: 4}
+  eric-udr-gudrestfe: {min: 2, max: 4}
+  eric-udr-provisioningfe: {min: 2, max: 6}
+  eric-udr-ldapfe: {min: 2, max: 5}
+  eric-udr-ldap-balancer: {min: 2, max: 8}
+  eric-udr-rest-notifchecker: {min: 2, max: 4}
+  eric-udr-rest-notifsender: {min: 2, max: 4}
+  eric-udr-soap-notifchecker: {min: 2, max: 4}
+  eric-udr-soap-notifsender: {min: 2, max: 4}
+  eric-udr-prov-sync-fe: {min: 2, max: 4}
+
+pvcSize:
+  eric-pm-server: 8
+  eric-ctrl-bro: 128
+  eric-act-mb-kf: 1.656928
+  eric-data-wide-column-database-cd: 22.199

@@ -1,0 +1,1040 @@
+tags:
+  eric-ccpc-sm-pcf-pcrf-data: true
+  eric-ccpc-sm-pcf-pcrf-voice: true
+  eric-ccpc-ue-pcf: false
+  eric-ccpc-geored: false
+  eric-ccpc-n28: false
+  eric-ccpc-policy-studio: false
+
+global:
+  nodeSelector: {}
+  databaseName: "eric-pcf-dms"
+  profiles:
+    std-system:
+      enabled: true
+    small-system:
+      enabled: false
+    cleartext-traffic-gw:
+      enabled: false
+    cleartext-provisioning-gw:
+      enabled: false
+    cleartext-policy-studio-gw:
+      enabled: false
+    cleartext-geored:
+      enabled: false
+    mtls-traffic-gw:
+      enabled: true
+    mtls-provisioning-gw:
+      enabled: true
+    mtls-policy-studio-gw:
+      enabled: true
+    mtls-geored:
+      enabled: true
+    tls-policy-studio-gw:
+      enabled: false
+    tls-provisioning-gw:
+      enabled: false
+    pm-bulk-reporter-osmn-backend:
+      enabled: false
+  autoScaling:
+    enabled: true
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: 'CCPC'
+          customerId: '946060'
+          swltId: 'STA-CCPC-19'
+  security:
+    policyBinding:
+      create: false
+    policyReferenceMap:
+      default-restricted-security-policy: "default-restricted-security-policy"
+    tls:
+      enabled: true
+  logAnonymization: false
+  internalMtls:
+    enabled: "on"
+  pullSecret: regcred
+  registry:
+    url: armdocker.rnd.ericsson.se
+    imagePullPolicy: IfNotPresent
+  timezone: CET
+  istio:
+    ingress:
+      gateways:
+        eric-pcf-traffic-gw:
+          enabled: true
+        eric-ccpc-provisioning-gw:
+          enabled: true
+        eric-ccpc-policy-studio-gw:
+          enabled: true
+        eric-pcf-intersite-gw:
+          enabled: false
+      oauth2:
+        eric-pcf-traffic:
+          enabled: false
+          permissive: true
+          selector: "eric-ingressgw-pcf-traffic"
+          keys:
+          - issuer: "nrf-a-id"
+            jwks: '{"keys":[
+                {
+                  "crv":"P-256",
+                  "kid":"key-c-id",
+                  "kty":"EC",
+                  "x":"wO3-TFT5fd-Xqx5f9eGLlJHmR9ZgEvRfEoBLXro97co",
+                  "y":"rETYnJ2jUfav7lFr8I0pQnnF_1nDXfnOWG3vv-gvKEc"
+                }
+              ]}'
+          rules:
+          - paths: ["/npcf-smpolicycontrol/v1*"]
+            methods: ["POST","PUT","PATCH","DELETE"]
+            audiences: ["pcf-a-id"]
+            subjects: ["smf-a-id"]
+            issuers: ["nrf-a-id"]
+            scopes: ["npcf-smpolicycontrol"]
+          - paths: ["/npcf-ue-policy-control/v1*"]
+            methods: ["POST","DELETE"]
+            audiences: ["pcf-a-id"]
+            subjects: ["amf-a-id"]
+            issuers: ["nrf-a-id"]
+            scopes: ["npcf-ue-policy-control"]
+    egress:
+      enabled: true
+      endpoints:
+        eric-ccrc-sbi-traffic-mtls:
+          enabled: true
+          host: "*.5gc.mnc081.mcc240.3gppnetwork.org" #FQDN for CCRC
+          ports:
+            - port: 443 # HTTPS target destination
+              name: https-port-for-mTLS-origination
+              mode: mTLS # Values allowed [ TLS, mTLS ]
+              protocol: HTTP2
+        eric-smf-sbi-traffic-mtls:
+          enabled: true
+          host: "*.5gc.mnc081.mcc240.3gppnetwork.org"
+          ports:
+            - port: 6060 # HTTPS target destination
+              name: https-port-for-mTLS-origination
+              mode: mTLS # Values allowed [ TLS, mTLS ]
+              protocol: HTTP2
+        eric-amf-sbi-traffic-mtls:
+          enabled: true
+          host: "*.amfset.5gc.mnc081.mcc240.3gppnetwork.org"
+          ports:
+            - port: 443 # HTTPS target destination
+              name: https-port-for-mTLS-origination
+              mode: mTLS # Values allowed [ TLS, mTLS ]
+              protocol: HTTP2
+        eric-scp-sbi-traffic-mtls:
+          enabled: true
+          host: "*.scpset.5gc.mnc081.mcc240.3gppnetwork.org" #  Keep the default FQDN value in day0 file for SCP
+          ports:
+            - port: 443 # HTTPS target destination
+              name: https-port-for-mTLS-origination
+              mode: mTLS # Values allowed [ TLS, mTLS ]
+              protocol: HTTP2
+        eric-ccpc-sbi-traffic-mtls:
+          enabled: true
+          host: "*.ccpcset.5gc.mnc081.mcc240.3gppnetwork.org" #FQDN for CCPC
+          ports:
+            - port: 443 # HTTPS target destination
+              name: https-port-for-mTLS-origination
+              mode: mTLS # Values allowed [ TLS, mTLS ]
+              protocol: HTTP2
+          resolution: NONE
+  enableCrashDumps: true # enable core dump generation
+  tapagent:
+    enabled: true
+  database:
+    multiSite:
+      runtimeConfigMode:
+        enabled: false
+  diameter:
+    originHostForOutgoingRequests:
+      siteCreatingSession:
+        enabled: true
+  egressproxy:
+    istio:
+      udrSubRetransConfig:
+        attempts: 3
+#Define this parameters ONLY on dual stack clusters
+#  externalIPv4:
+#    enabled: true
+#  externalIPv6:
+#    enabled: false
+#  internalIPFamily: "IPv4"
+
+externalcertificate:
+  ingress:
+    trustedCertificateListName: eric-ccpc-sbi-server-certs-cacerts
+    asymmetricKeyCertificateName: eric-ccpc-sbi-server-key/eric-ccpc-sbi-server-certificate
+  egress:
+    trustedCertificateListName: eric-ccpc-sbi-client-certs-cacerts
+    asymmetricKeyCertificateName: eric-ccpc-sbi-client-key/eric-ccpc-sbi-client-certificate
+
+eric-udm-mesh-integration:
+  eric-mesh-controller:
+    pilot:
+      env:
+        PILOT_ENABLE_INBOUND_PASSTHROUGH: "true" #Set to false in dual stack clusters
+  enabled: true
+  eric-ingressgw-pcf-traffic:
+    enabled: true
+    externalTrafficPolicy: Local
+    service:
+      loadBalancerIP: "" #Used for setting the ingress-gateway VIP
+      annotations:
+        addressPoolName: ccpc-5g-traffic
+        cloudProviderLB: {}
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-5g-traffic
+      #     sharedVIPLabel: ""
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-5g-traffic
+      #     sharedVIPLabel: ""
+    dscpDualStack: false
+# Uncomment to define DSCP in target port
+#    ports:
+#      https-mtls:
+#        dscp:
+#      http2-clear:
+#        dscp:
+  eric-ingressgw-ccpc-provisioning:
+    enabled: true
+    externalTrafficPolicy: Local
+    service:
+      loadBalancerIP: "" #Used for setting the ingress-gateway VIP
+      annotations:
+        addressPoolName: ccpc-5g-prov
+        cloudProviderLB: {}
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-5g-prov
+      #     sharedVIPLabel: ""
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-5g-prov
+      #     sharedVIPLabel: ""
+    dscpDualStack: false
+# Uncomment to define DSCP in target port
+#    ports:
+#      https-mtls:
+#        dscp:
+#      https-tls:
+#        dscp:
+#      http2-clear:
+#        dscp:
+  eric-ingressgw-ccpc-policy-studio:
+    enabled: true
+    externalTrafficPolicy: Local
+    service:
+      annotations:
+        addressPoolName: ccpc-policy-studio
+        cloudProviderLB: {}
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-policy-studio
+      #     sharedVIPLabel: ""
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-policy-studio
+      #     sharedVIPLabel: ""
+    dscpDualStack: false
+# Uncomment to define DSCP in target port
+#    ports:
+#      https-mtls:
+#        dscp:
+#      https-tls:
+#        dscp:
+#      http2-clear:
+#        dscp:
+  eric-ingressgw-pcf-intersite:
+    enabled: false
+    externalTrafficPolicy: Local
+    service:
+      loadBalancerIP: "" #Used for setting the ingress-gateway VIP
+      annotations:
+        addressPoolName: ccpc-5g-geored
+        cloudProviderLB: {}
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-5g-geored
+      #     sharedVIPLabel: ""
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-5g-geored
+      #     sharedVIPLabel: ""
+    dscpDualStack: false
+# Uncomment to define DSCP in target port
+#    ports:
+#      https-mtls:
+#        dscp:
+#      tls-kvdb-loc:
+#        dscp:
+#      tls-kvdb-recv:
+#        dscp:
+#      http2-clear:
+#        dscp:
+#      tcp-kvdb-loc:
+#        dscp:
+#      tcp-kvdb-recv:
+#        dscp:
+servicemesh:
+  namespace: ccpc
+
+eric-nrfagent:
+  global:
+    ipStackMode: "'ipv4'"
+    istio:
+      nrfagent_egressrule_enabled: false
+      egress:
+        enabled: true
+        nrfAgent_secretName: "eric-ccpc-sbi-client-certs"
+        caSecretNameSuffix: "-cacert"
+        certsPath: "/etc/istio/egress-certs/"
+        caCertsPath: "/etc/istio/egress-ca-certs/"
+        clientCertificate: "tls.crt"
+        privateKey: "tls.key"
+        caCertificates: "cacert"
+    scheduler:
+      nodeSelector: {}
+# Define the DSCP value
+#  egress:
+#    dscp: 0
+
+#adp: define sevice types and required IPs according to cluster specifics
+eric-adp-5g-udm:
+  eric-lm-combined-server:
+    licenseServerClient:
+      licenseServer:
+        thrift:
+          host: 'nelsaas-vnf1-thrift.sero.gic.ericsson.se'
+          port: '9095'
+    service:
+      endpoints:
+        licenseConsumerHandler:
+          restapi:
+            tls:
+              verifyClientCertificate: optional
+
+  eric-si-application-sys-info-handler:
+    nodeSelector: {}
+    asih:
+      applicationId: ccpc
+
+  eric-pm-server:
+    server:
+      serviceAccountName: eric-adp-5g-udm-pm-server
+      persistentVolume:
+        storageClass: network-block
+    rbac:
+      appMonitoring:
+        enabled: true
+        federation:
+          jobOverride: true
+          jobConfiguration: |
+            - job_name: 'federate-victoria'
+              scrape_interval: 1m
+              honor_labels: true
+              metrics_path: '/select/0/prometheus/federate'
+              params:
+                'match[]':
+                  - '{job="kubernetes-nodes",namespace="ccpc"}'
+                  - '{job="kubernetes-nodes-cadvisor",namespace="ccpc"}'
+              static_configs:
+                - targets:
+                  - 'eric-victoria-metrics-cluster-vmselect.monitoring:8481'
+    service:
+      endpoints:
+        reverseproxy:
+          tls:
+            enforced: "optional"
+
+  eric-pm-bulk-reporter:
+    nodeSelector: {}
+    userConfig:
+      ldap:
+        enabled: true
+    env:
+      nodeName: "ccpc"
+      nodeType: CCPC
+    persistentVolumeClaim:
+      storageClassName: "network-block"
+    objectStorage:
+      secretName: eric-data-object-storage-mn-creds
+    service:
+      annotations:
+        sharedVIPLabel: ccpc-oam
+        addressPoolName: ccpc-oam
+        cloudProviderLB: {}
+      type: LoadBalancer
+      loadBalancerIP: ""
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+
+  eric-cm-yang-provider:
+    nodeSelector: {}
+    persistentVolumeClaim:
+      storageClassName: "network-block"
+    service:
+      annotations:
+        addressPoolName: ccpc-oam
+        sharedVIPLabel: ccpc-oam
+        cloudProviderLB: {}
+      type: LoadBalancer
+      loadBalancerIP: ""
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+    ldap:
+      enabled: true
+      ipv6Enabled: false
+    authorization:
+      enabled: true
+    keyManagement:
+      storeHostKeys: false
+    externaldb:
+      dbuser: customname
+    pmMetrics:
+      enabled: true
+      enableQueryMetricsCommands: true
+      httpsHost: eric-pm-server:9089
+    externalTls:
+      netconf:
+        enabled: false
+
+  eric-cm-mediator:
+    nodeSelector: {}
+    cmkey:
+      enable: true
+    backend:
+      dbuser: customname
+
+  eric-data-document-database-pg:
+    nodeSelector:
+      postgres: {}
+      brAgent: {}
+      cleanuphook: {}
+    persistentVolumeClaim:
+      storageClassName: "network-block"
+      backup:
+        storageClassName: "network-block"
+
+  eric-data-document-database-pg-ah:
+    enabled: true
+    nodeSelector:
+      postgres: {}
+      brAgent: {}
+      cleanuphook: {}
+    postgresDatabase: adp_gs_ah
+    persistentVolumeClaim:
+      storageClassName: network-block
+
+  eric-data-document-database-pg-lm:
+    enabled: true
+    nodeSelector:
+      postgres: {}
+      brAgent: {}
+      cleanuphook: {}
+    postgresDatabase: adp_gs_lm
+    persistentVolumeClaim:
+      storageClassName: network-block
+
+  eric-data-document-database-pg-iam:
+    nodeSelector:
+      postgres: {}
+      brAgent: {}
+      cleanuphook: {}
+    postgresDatabase: adp_gs_iam
+    persistentVolumeClaim:
+      storageClassName: network-block
+
+  eric-sec-access-mgmt:
+    http:
+      hostValidation:
+        allowedHosts: prov-ccpc1-n182-vpod2.seli.gic.ericsson.se
+    nodeSelector: {}
+
+  eric-sec-ldap-server:
+    persistentVolumeClaim:
+      storageClassName: network-block
+    nodeSelector:
+      ldap: {}
+      ldapAgent: {}
+      ldapProxy: {}
+
+  eric-sec-key-management:
+    nodeSelector: {}
+
+  eric-sec-sip-tls:
+    nodeSelector: {}
+
+  eric-log-transformer:
+    egress:
+      syslog:
+        enabled: false
+        tls:
+          enabled: true
+        certificates:
+          asymmetricKeyCertificateName: log-syslog-client
+          trustedCertificateListName: log-syslog-client
+        remoteHosts: []
+        inclusions: []
+        exclusions: []
+        filter: ""
+
+  eric-data-search-engine:
+    nodeSelector:
+      data: {}
+      ingest: {}
+      master: {}
+      bragent: {}
+    persistence:
+      data:
+        persistentVolumeClaim:
+          storageClassName: "network-block"
+      # For data-search-engine >= 6.0.0-29
+      master:
+        persistentVolumeClaim:
+          storageClassName: network-block
+    service:
+      network:
+        protocol:
+          IPv6: false #If ipv6 is used, it must be set to true
+
+  eric-data-search-engine-curator:
+    nodeSelector: {}
+
+  eric-data-coordinator-zk:
+    nodeSelector:
+      brAgent: {}
+      datacoordinatorzk: {}
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: "network-block"
+
+  eric-data-distributed-coordinator-ed:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+      brAgent:
+        backupVolume:
+          storageClassName: "network-block"
+
+  eric-data-message-bus-kf:
+    nodeSelector: {}
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: "network-block"
+
+  eric-cnom-server:
+    nodeSelector: {}
+    fqdn: cnom.ccpc1.n182.vpod2.seli.gic.ericsson.se
+    dashboards:
+      configMap: eric-ccpc-cnom-dashboards
+
+  eric-fh-alarm-handler:
+    nodeSelector: {}
+    backend:
+      dbname: adp_gs_ah
+      dbuser: customname
+
+  eric-fh-snmp-alarm-provider:
+    nodeSelector: {}
+    service:
+      annotations:
+        sharedVIPLabel: ccpc-oam
+        addressPoolName: ccpc-oam
+        cloudProviderLB: {}
+      type: LoadBalancer
+      loadBalancerIP: ""
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+    sourceIdentifierType: 1
+    sourceIdentifier: "10.221.125.11"
+
+  eric-ctrl-bro:
+   nodeSelector: {}
+   persistence:
+     persistentVolumeClaim:
+       size: 1Gi
+       storageClassName: network-block
+
+  eric-tm-ingress-controller-cr:
+    service:
+      annotations:
+        sharedVIPLabel: ccpc-oam
+        addressPoolName: ccpc-oam
+        cloudProviderLB: {}
+      type: LoadBalancer
+      loadBalancerIP: ""
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+    nodeSelector:
+      envoy: {}
+    resources:
+    # NFVI-CCD has the same problem as CNIS and OpenShift
+    # According ADP Service User Guide
+      contour:
+        limits:
+          cpu: 150m
+          memory: "1000Mi"
+      envoy:
+        limits:
+          cpu: "2"
+          memory: "600Mi"
+
+  eric-odca-diagnostic-data-collector:
+    env:
+      enableFileCollector: true
+    objectStorage:
+      enabled: true
+    nodeSelector: {}
+    # UDM5GP-82567, Increase CPU/ephemeral-storage resource to avoid high CPU utilization and crash issue.
+    # Fixed in CCPC 1.13
+    resources:
+      diagnostic-data-collector:
+        requests:
+          memory: 512Mi
+          cpu: 500m
+        limits:
+          memory: 1Gi
+          ephemeral-storage: 17Gi
+          cpu: 2500m
+
+  eric-data-object-storage-mn:
+    affinity:
+      podAntiAffinity: "hard"
+    persistentVolumeClaim:
+      storageClassName: "network-block"
+
+
+eric-stm-diameter:
+  replicaCount: 2 # Default 2
+  # UDM5GP-82572, Increase the limits.memory from 95Mi to 300Mi to avoid high diameter memory utilization.
+  resources:
+    diameter:
+      limits:
+        memory: 300Mi
+  service:
+    sctp:
+      enable: true
+    annotations:
+      cloudProviderLB: {}
+    tcp:
+      enable: true
+    externalIPv4:
+      enabled: true
+      annotations:
+        addressPoolNameDiameterOverTCP: "ccpc-4g-traffic"
+        sharedVIPLabelDiameterOverTCP: ""
+    externalIPv6:
+      enabled: false
+      annotations:
+        addressPoolNameDiameterOverTCP: "ccpc-4g-traffic"
+        sharedVIPLabelDiameterOverTCP: ""
+    certificates:
+      asymmetricKeyCertificateName: diameter-tls
+      trustedCertificateListName: diameter-tls
+  initialConfig:
+    dsl:
+      enableIPv6: false
+    sctp:
+      enable: false
+
+eric-slt-dsl:
+  initialConfig:
+    dsl:
+      enableIPv6: false
+
+datamodel:
+  redundantCopies: 1
+
+dms:
+    # UDM5GP-87281, Increase the dms-server memory from 48Gi to 50Gi to avoid KVDB memory alarm
+    # Fixed in CCPC 1.13
+  resources:
+    server:
+      requests:
+        memory: 50Gi
+      limits:
+        memory: 50Gi
+  nameOverride: "eric-pcf-dms"
+  replicaCount:
+    server: 4 # Default 4
+  persistence:
+    backup:
+      persistentVolumeClaim:
+        enabled: true
+        storageClassName: network-block
+        locator:
+          size: 64Mi
+        server:
+          size: 8Gi
+        adminMgr:
+          size: 1Gi
+    data:
+      persistentVolumeClaim:
+        enabled: true
+        storageClassName: network-block
+        server:
+          size: 36Gi # Default 30Gi
+    gwsender:
+      persistentVolumeClaim:
+        enabled: false
+        storageClassName: network-block
+        size: 1Gi
+  nodeSelector:
+    locator:
+    server:
+    adminMgr:
+    brAgent: {}
+  multiSite:
+    enabled: false
+    runtimeConfigMode:
+      enabled: false
+    locator:
+      localHost:
+  ipv6stackPreferred: false
+
+dms-operator:
+  nodeSelector:
+    operator: {}
+  ipv6stackPreferred: false
+
+eric-pcf-license-handler:
+  nodeSelector: {}
+  licensehandler:
+    licenses:
+      data:
+        smpc_bp:
+          enabled: true
+        smpc_miot_bp:
+          enabled: true
+        smpc_data_vp:
+          enabled: true
+        smpc_miot_data_vp:
+          enabled: true
+        smpc_voice_vp:
+          enabled: true
+        smpc_voice_miot_vp:
+          enabled: true
+        ampc_bp:
+          enabled: true
+
+eric-pcf-nrf-registration:
+  nodeSelector: {}
+
+da:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 5 # Default 5
+    maxReplicas: 15 # Default 150
+
+eric-pcf-session-management-policy-control:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 5 # Default 70
+  sessionmanagementpolicycontrol:
+    smpcConfiguration:
+      properties:
+        checkForSessionAlive: true
+        inactivityPeriod: 86400
+    # UDM5GP-86623, Increase the limits.memory from 512Mi to 3Gi to avoid OOMKilled issue.
+    resources:
+      limits:
+        memory: 3Gi
+      requests:
+        memory: 1Gi
+# Define the DSCP value
+#  egress:
+#    dscp: 0
+
+eric-pcf-ue-policy-control:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 60 # Default 60
+
+# Uncomment to define DSCP value
+#  egress:
+#    dscp:
+
+eric-pcrf-ipcan-session-management:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 4 # Default 70
+  ipcansessionmanagement:
+    diameter:
+      dsd:
+        network_type: "ip"
+    ipsmConfiguration:
+      properties:
+        checkForSessionAlive: true
+        inactivityPeriod: 86400
+
+eric-pcf-charging:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 70 # Default 70
+
+eric-pcf-rx-policy-control:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 60 # Default 60
+  rxpolicycontrol:
+    diameter:
+      dsd:
+        network_type: "ip"
+    rxpcConfiguration:
+      properties:
+        afStrWaitNetlocTimeout: 3000
+
+prov:
+  nodeSelector: {}
+
+eric-pcf-peer-discoverer:
+  nodeSelector: {}
+  peerdiscoverer:
+    config:
+      data:
+        connectivityConfiguration:
+          tlsMode: 2
+          alpnProtocols: h2,http/1.1
+          timeout: 500
+          outlier:
+            consecutiveFailures: 3
+          healthCheck:
+            interval: 1000
+            unhealthyThreshold: 3
+            healthyThreshold: 1
+            resource: /nudr-dr/v2/policy-data/ues/imsi-100000/sm-data
+            acceptedCodes:
+              - 200,300
+              - 404,405
+            unhealthyTresholdCodes:
+              - 300,403
+              - 405,600
+        targetNFSpecification:
+          maxRedundantNFs: 3
+
+eric-pcf-peer-discoverer-chf:
+  nodeSelector: {}
+  peerdiscoverer:
+    config:
+      data:
+        connectivityConfiguration:
+          tlsMode: 2
+          alpnProtocols: h2,http/1.1
+          timeout: 500
+          outlier:
+            consecutiveFailures: 3
+          healthCheck:
+            interval: 1000
+            unhealthyThreshold: 3
+            healthyThreshold: 1
+            resource: /nchf-spendinglimitcontrol/v1/subscriptions/imsi100000
+            acceptedCodes:
+              - 200,300
+              - 404,405
+            unhealthyTresholdCodes:
+              - 300,403
+              - 405,600
+        targetNFSpecification:
+          maxRedundantNFs: 3
+
+eric-pcf-peer-discoverer-bsf:
+  nodeSelector: {}
+  peerdiscoverer:
+    config:
+      data:
+        connectivityConfiguration:
+          tlsMode: 2
+          alpnProtocols: h2,http/1.1
+          timeout: 500
+          outlier:
+            consecutiveFailures: 3
+          healthCheck:
+            interval: 1000
+            unhealthyThreshold: 3
+            healthyThreshold: 1
+            resource: /nbsf-management/v1/pcfBindings/pcf-dummy-bindingid
+            acceptedCodes:
+              - 200,300
+              - 404,406
+            unhealthyTresholdCodes:
+              - 300,403
+              - 406,600
+        targetNFSpecification:
+          maxRedundantNFs: 3
+
+eric-pcf-peer-discoverer-ccpc:
+  nodeSelector: {}
+  peerdiscoverer:
+    config:
+      data:
+        connectivityConfiguration:
+          alpnProtocols: h2,http/1.1
+          timeout: 1720
+          outlier:
+            consecutiveFailures: 3
+        targetNFSpecification:
+          maxRedundantNFs: 3
+
+eric-pcf-egress-proxy:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 5 # Default 60
+# Uncomment to define DSCP value
+#  egress:
+#    dscp:
+  egressproxy:
+    secure:
+      secret:
+        cert:
+          name: eric-ccpc-sbi-client-certs
+        cacert:
+          name: eric-ccpc-sbi-client-certs-cacert
+    # UDM5GP-77809
+    resources:
+      limits:
+        memory: 400Mi
+  # UDM5GP-77809
+  envoymanager:
+    resources:
+      limits:
+        memory: 176Mi
+
+eric-pcf-egress-proxy-chf:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 40 # Default 40
+# Uncomment to define DSCP value
+#  egress:
+#    dscp:
+  egressproxy:
+    secure:
+      secret:
+        cert:
+          name: eric-ccpc-sbi-client-certs
+        cacert:
+          name: eric-ccpc-sbi-client-certs-cacert
+
+eric-pcf-egress-proxy-bsf:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 40 # Default 40
+# Uncomment to define DSCP value
+#  egress:
+#    dscp:
+  egressproxy:
+    secure:
+      secret:
+        cert:
+          name: eric-ccpc-sbi-client-certs
+        cacert:
+          name: eric-ccpc-sbi-client-certs-cacert
+
+eric-pcf-egress-proxy-ccpc:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 30 # Default 30
+  egressproxy:
+    secure:
+      secret:
+        cert:
+          name: eric-ccpc-sbi-client-certs
+        cacert:
+          name: eric-ccpc-sbi-client-certs-cacert
+    # UDM5GP-76258 update resources of egressproxy and envoymanager
+    resources:
+      limits:
+        memory: 200Mi
+      requests:
+        memory: 170Mi
+  # UDM5GP-76258 update resources of egressproxy and envoymanager
+  envoymanager:
+    resources:
+      requests:
+        cpu: 47m
+        memory: 76Mi
+      limits:
+        memory: 91Mi
+
+eric-pcf-geored-controller:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 1
+    maxReplicas: 1
+
+eric-pcf-kvdb-supervisor:
+  nodeSelector: {}
+  persistence:
+    persistentVolumeClaim:
+      storageClassName: network-block
+
+eric-pcf-end-user-notifier:
+  nodeSelector: {}
+  autoScaling:
+    minReplicas: 2 # Default 2
+    maxReplicas: 4 # Default 60
+# Define the DSCP value
+#  egress:
+#    dscp: 0
+
+eric-data-sftp-server:
+  service:
+    annotations:
+      sharedVIPLabel: ccpc-oam
+      addressPoolName: ccpc-oam
+      #Define these parameters ONLY on dual stack clusters
+      # externalIPv4:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam
+      # externalIPv6:
+      #   annotations:
+      #     addressPoolName: ccpc-oam
+      #     sharedVIPLabel: ccpc-oam

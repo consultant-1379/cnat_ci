@@ -1,0 +1,9 @@
+{
+  "clusterName": "pod56-eccd1",
+  "additionalParams": {
+    "namespace": "pcg",
+    "applicationTimeOut": "1200",
+    "skipJobVerification": "false",
+    "skipVerification": "true"
+  }
+}

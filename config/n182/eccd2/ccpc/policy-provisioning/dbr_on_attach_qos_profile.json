@@ -1,0 +1,11 @@
+{
+    "gbrDownlink": 16000,
+    "gbrUplink": 8000,
+    "mbrDownlink": 16000,
+    "mbrUplink": 8000,
+    "profileId": "dbr_on_attach_qos_profile",
+    "qci": 1,
+    "arpPriorityLevel": 15,
+    "arpPvi": false,
+    "arpPci": false
+}

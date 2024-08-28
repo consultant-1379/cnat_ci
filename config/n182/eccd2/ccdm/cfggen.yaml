@@ -1,0 +1,49 @@
+nodeInfo: site.yaml
+siteGlobal: ../site_global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: ccdm/1.11/values.yaml.jinja2
+  target: values.yaml
+- template: ccdm/1.11/instantiate.json.jinja2
+  target: instantiate.json
+- template: ccdm/1.11/consistency-config.xml.jinja2
+  target: consistency-config.xml
+- template: ccdm/1.11/proclog-config.xml.jinja2
+  target: proclog-config.xml
+- template: common/snmp-config.json.jinja2
+  target: snmp-config.json
+- template: common/user-config.xml.jinja2
+  target: user-config.xml
+- template: ccdm/1.11/external-certificates.xml.jinja2
+  target: external-certificates.xml
+- template: ccdm/1.11/nrfagent-config.xml.jinja2
+  target: nrfagent-config.xml
+- template: ccdm/1.11/udr-config.xml.jinja2
+  target: udr-config.xml
+- template: ccsm/1.12/hssepc-application-counters.xml.jinja2
+  target: hssepc-application-counters.xml
+- template: ccsm/1.12/eir-application-counters.xml.jinja2
+  target: eir-application-counters.xml
+- template: ccsm/1.12/eir-main-branches-setting.ldif.jinja2
+  target: eir-main-branches-setting.ldif
+- template: ccsm/1.12/eir-search-order-setting.ldif.jinja2
+  target: eir-search-order-setting.ldif
+- template: ccsm/1.12/schema/hssepc-schema.xml.jinja2
+  target: schema/hssepc-schema.xml
+- template: ccsm/1.12/schema/eir-schema.xml.jinja2
+  target: schema/eir-schema.xml
+- template: ccdm/1.11/ddc-config.xml.jinja2
+  target: ddc-config.xml
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml
+- template: ccdm/1.11/ccdm-kvdb-priorityclass.yaml.jinja2
+  target: ccdm-kvdb-priorityclass.yaml
+- template: ccdm/1.11/ldap-configuration.json.jinja2
+  target: ldap-configuration.json
+- template: ccdm/1.11/eric-sec-certm-deployment-configuration.json.jinja2
+  target: eric-sec-certm-deployment-configuration.json

@@ -1,0 +1,33 @@
+{
+  "server": [
+    {
+      "name" : "externalLdapServer",
+      "tcp":
+      {
+        "address": "external-ldap-server.seli.gic.ericsson.se",
+        "ldap":
+        {
+          "port": 389
+        },
+        "ldaps":
+        {
+          "port": 636
+        }
+      }
+    }
+  ],
+  "security":
+  {
+    "user-base-dn": "ou=people,dc=ericsson,dc=com",
+    "simple-authenticated":
+    {
+      "bind-dn": "uid=client-bind-admin,ou=people,dc=ericsson,dc=com",
+      "bind-password": "cleartext-bind-password"
+    }
+  },
+  "options":
+  {
+      "timeout": 10,
+      "enable-referrals": true
+  }
+}

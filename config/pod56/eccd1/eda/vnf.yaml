@@ -1,0 +1,25 @@
+vnflcm:
+  vnfInstanceName: pod56-eda1
+  vnfProductName: EDA
+  vnfSoftwareVersion: 1.49.95-4
+  instantiate-file: instantiate.json
+  values-file: values.yaml
+  evnfmName: pod56
+
+pipeline:
+- module: create-namespace
+- module: instantiate
+- module: verify-pod-running
+- module: run-k8s-command
+  name: Create networkpolicy to allow accessing eric-pm-server and eric-data-search-engine
+  cmd: |
+    apply -f {file1}
+    apply -f {file2}
+  inline-files:
+    file1: network-policy/eric-pm-server-allow.yaml
+    file2: network-policy/eric-data-search-engine-allow.yaml
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: |-
+    create ingress eric-pm-server --rule="eric-pm-server-eda.ingress.pod56-eccd1.seln.ete.ericsson.se/*=eric-pm-server:9090"
+    patch svc eric-pm-server --type=json -p='[{"op": "add", "path": "/spec/ports/1", "value": { "name": "http", "port": 9090, "protocol": "TCP", "targetPort": 9090 }}]'

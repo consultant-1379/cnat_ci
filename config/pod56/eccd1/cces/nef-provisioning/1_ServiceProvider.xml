@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Entity xmlns="http://schemas.ericsson.com/provisioning/generic">
+    <EntityType>ServiceProvider</EntityType>
+    <TypeSpace>DefaultSpace</TypeSpace>
+    <Id name="ServiceProviderId" value="sp1"/>
+    <Property name="Name" value="SpName-01"/>
+    <Property name="Status" value="active"/>
+</Entity>

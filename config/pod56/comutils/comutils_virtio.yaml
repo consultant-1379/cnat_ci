@@ -1,0 +1,206 @@
+heat_template_version: rocky
+description: comutils server for DM5GC test
+
+parameters:
+  extnet_vlan_id:
+    type: string
+    default: ''
+  extnet_cidr:
+    type: string
+    default: ''
+  extnet_gateway_ip:
+    type: string
+    default: ''
+  server1_fixed_ip_v4:
+    type: string
+    default: ''
+  server1_fixed_ip_v4_len:
+    type: string
+    default: ''
+  dns_server_ips:
+    type: comma_delimited_list
+    default: []
+  soapui_service_ip:
+    type: string
+    default: ''
+  flavor_name:
+    type: string
+    default: ''
+  volume_size:
+    type: string
+    default: ''
+  image_name:
+    type: string
+    default: ''
+  proxy_server:
+    type: string
+    default: ''
+  proxy_port:
+    type: string
+    default: ''
+  ntp_server_ips:
+    type: comma_delimited_list
+    default: []
+
+resources:
+  server1:
+    depends_on:
+    - net
+    - subnet
+    type: OS::Nova::Server
+    properties:
+      name:
+        str_replace:
+          params:
+            <stack_name>:
+              get_param: OS::stack_name
+          template: <stack_name>_server1
+      config_drive: true
+      user_data:
+        str_replace:
+          template: |
+            #!/bin/bash
+            echo "Running misc server ini configuration"
+            ## disable cloud-init network configuration
+            echo network: {config: disabled} > /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+            rm -rf /etc/netplan/*.yaml
+
+            ## enable default user login and set the password
+            sed -i 's/^PasswordAuthentication no$/PasswordAuthentication yes/' /etc/ssh/sshd_config
+            sed -i 's;^ubuntu:.*;ubuntu:$6$dE9Lh018$7U/pv4OPUz4XnpRbxoVb4FcW/d.XqAHJfw6OFaJmKKCSHWl3cERrF/3PW8uGH.b9bqpd2JtdWEKA2tchJnMrT1:18735:0:99999:7:::;' /etc/shadow
+
+            ## server network configuration
+            cat << EOF > /etc/netplan/net.yaml
+            network:
+              ethernets:
+                eth0:
+                  dhcp4: false
+                  addresses:
+                  - $serverip/$serveriplen
+                  - $serviceip/32
+                  gateway4: $gatewayip
+                  nameservers:
+                    addresses: $dnsservers
+                  match:
+                    macaddress: $macaddr
+                  set-name: eth0
+              version: 2
+            EOF
+
+            ## configure sftp-server
+            groupadd sftp
+            useradd sftpuser -d /sftpuser -g sftp
+            echo -e 'sftppass\nsftppass\n' | passwd sftpuser
+            mkdir -p /var/sftproot/sftpuser/ccdm-1-ddc
+            mkdir -p /var/sftproot/sftpuser/ccrc-1-ddc
+            mkdir -p /var/sftproot/sftpuser/ccsm-1-ddc
+            mkdir -p /var/sftproot/sftpuser/eda-1-ddc
+            mkdir -p /var/sftproot/sftpuser/pcc-1-ddc
+            mkdir -p /var/sftproot/sftpuser/pcg-1-ddc
+            [ ! -d /var/sftproot/ccdm-1-backups ] && mkdir /var/sftproot/ccdm-1-backups
+            cd /var/sftproot/
+            chown -R sftpuser:sftp sftpuser
+            chown -R sftpuser:sftp ccdm-1-backups
+            sed -i 's/^Subsystem\(.*\)/#Subsystem\1/' /etc/ssh/sshd_config
+            cat << EOF >> /etc/ssh/sshd_config
+            Subsystem sftp internal-sftp
+            Match group sftp
+                ChrootDirectory /var/sftproot
+                ForceCommand internal-sftp
+                X11Forwarding no
+                AllowTcpForwarding no
+                PasswordAuthentication yes
+            EOF
+
+            ## set proxy
+            echo 'Acquire::http::Proxy  "http://$proxyserver:$proxyport";' > /etc/apt/apt.conf.d/99proxy
+            echo 'Acquire::https::Proxy  "http://$proxyserver:$proxyport";' >> /etc/apt/apt.conf.d/99proxy
+
+            ## install necessary tools
+            apt update -y
+            apt install openjdk-8-jdk -y
+            apt install firefox -y
+            apt install ntp -y
+
+            ## configure ntp server
+            sed -i 's/^pool/#pool/g' /etc/ntp.conf
+            echo "pool $ntpserver1 iburst" >> /etc/ntp.conf
+            echo "pool $ntpserver2 iburst" >> /etc/ntp.conf
+
+            ## set timezone
+            timedatectl  set-timezone Asia/Shanghai
+
+            ## reboot server to take effect
+            reboot
+          params:
+            $macaddr: {get_attr: [port1, mac_address]}
+            $gatewayip: {get_param: extnet_gateway_ip}
+            $dnsservers: {get_param: dns_server_ips}
+            $serverip: {get_param: server1_fixed_ip_v4}
+            $serveriplen: {get_param: server1_fixed_ip_v4_len}
+            $serviceip: {get_param: soapui_service_ip}
+            $proxyserver: {get_param: proxy_server}
+            $proxyport: {get_param: proxy_port}
+            $ntpserver1: { get_param: [ ntp_server_ips, 0 ] }
+            $ntpserver2: { get_param: [ ntp_server_ips, 1 ] }
+      block_device_mapping_v2:
+      - device_name: vda
+        volume_id:
+          get_resource: server1_boot_volume
+      flavor:
+        get_param: flavor_name
+      networks:
+      - port: {get_resource: port1}
+  net:
+    type: OS::Neutron::Net
+    properties:
+      name:
+        str_replace:
+          params:
+            <stack_name>: { get_param: "OS::stack_name" }
+          template: <stack_name>_net
+      port_security_enabled: false
+      value_specs:
+        segments:
+          - provider:segmentation_id: { get_param: extnet_vlan_id }
+            provider:network_type: vlan
+            provider:physical_network: default
+  subnet:
+    type: OS::Neutron::Subnet
+    properties:
+      name:
+        str_replace:
+          params:
+            <stack_name>: { get_param: "OS::stack_name" }
+          template: <stack_name>_net_subnet
+      cidr: { get_param: extnet_cidr }
+      enable_dhcp: false
+      gateway_ip: { get_param: extnet_gateway_ip }
+      network: { get_resource: net }
+
+  port1 :
+    type: OS::Neutron::Port
+    properties:
+      name:
+        str_replace:
+          params:
+            <stack_name>: { get_param: "OS::stack_name" }
+          template: <stack_name>_server1_ext
+      port_security_enabled: false
+      network_id:
+        get_resource: net
+      fixed_ips:
+      - ip_address: { get_param: server1_fixed_ip_v4 }
+  server1_boot_volume:
+    properties:
+      availability_zone: nova
+      image:
+        get_param: image_name
+      name:
+        str_replace:
+          params:
+            <stack_name>:
+              get_param: 'OS::stack_name'
+          template: <stack_name>_server1_boot_volume
+      size: { get_param: volume_size }
+    type: 'OS::Cinder::Volume'

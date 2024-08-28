@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <edit-config>
+    <target><running/></target>
+    <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <!--
+        Configuration for the UDM Network Function.
+      -->
+      <udm xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udm">
+        <!--
+          Contains configuration parameters for remote-nf-profile.
+        -->
+        <remote-nf-profile>
+          <!-- List of remote-nf-profile. -->
+          <remote-nf-profile>
+            <!-- Unique ID for the remote endpoint. -->
+            <instance-id>9448c0d3-6590-4e54-b90f-485353a1c4d2</instance-id>
+            <!-- Type of Network Function. -->
+            <type>hss</type>
+            <!-- FQDN of the Network Function. -->
+            <fqdn>ccsm1-hss-epc-http-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+            <!--
+              List of ipv4-address: IPv4 addresses of the Network Function.
+            -->
+            <!-- <ipv4-address>{REMOTE_NF_PROFILE_IPV4_ADDRESS}</ipv4-address> -->
+            <!--
+              List of ipv6-address: IPv6 addresses of the Network Function.
+            -->
+            <!-- <ipv6-address>{REMOTE_NF_PROFILE_IPV6_ADDRESS}</ipv6-address> -->
+            <!--  List of remote-nf-service. -->
+            <hss-info-list>
+              <id>1</id>
+              <hss-info>
+                <imsi-range>
+                  <id>24081</id>
+                  <imsi-start>240810000000000</imsi-start>
+                  <imsi-end>240819999999999</imsi-end>
+                </imsi-range>
+                <group-id>1</group-id>
+              </hss-info>
+            </hss-info-list>
+            <remote-nf-service>
+              <!--
+                Unique ID of the remote NF Service Instance within the NF Instance.
+              -->
+              <instance-id>nhss-uecm-0</instance-id>
+              <!-- Name of the remote NF Service Instance. -->
+              <name>nhss-uecm</name>
+              <!-- FQDN of the remote NF Service Instance. -->
+              <fqdn>ccsm1-hss-epc-http-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+              <scheme>http</scheme>
+              <!-- List of ip-endpoint. -->
+              <ip-endpoint>
+                <!--
+                  Unique ID that represents endpoint of the remote NF Service Instance.
+                -->
+                <id>1</id>
+                <!-- IPv4 ddresses of the service instance. -->
+                <!-- <ipv4-address>{REMOTE_NF_SERVICE_IPV4_ADDRESS}</ipv4-address> -->
+                <!-- IPv6 ddresses of the service instance. -->
+                <!-- <ipv6-address>{REMOTE_NF_SERVICE_IPV6_ADDRESS}</ipv6-address> -->
+                <!-- Port number of the service instance. -->
+                <port>80</port>
+              </ip-endpoint>
+              <!--
+                OAuth data.
+                If the name of the service instance REMOTE_NF_SERVICE_NAME is configured as
+                "oauth-ropc", oauth-ropc-data container must be configured.
+              -->
+              <!-- <oauth-ropc-data> -->
+                <!--
+                  The unique ID of the trusted OAuth client.
+                -->
+                <!-- <client-id>{OAUTH_CLIENT_ID}</client-id> -->
+                <!--
+                  The client secret that together with the client_id identifies the OAuth client.
+                -->
+                <!-- <client-secret>{OAUTH_CLIENT_SECRET}</client-secret> -->
+                <!--
+                  The user_name of a Service Account that is used for OAuth2 authentication.
+                -->
+                <!-- <user-name>{OAUTH_USER_NAME}</user-name> -->
+                <!--
+                  The password of a Service Account that is used for Oauth2 authentication.
+                -->
+                <!-- <password>{OAUTH_PASSWORD}</password> -->
+              <!-- </oauth-ropc-data> -->
+              <version>
+                 <api-version-in-uri>v1</api-version-in-uri>
+              </version>
+            </remote-nf-service>
+          </remote-nf-profile>
+        </remote-nf-profile>
+      </udm>
+    </config>
+  </edit-config>
+  </rpc>
+  <close-session/>

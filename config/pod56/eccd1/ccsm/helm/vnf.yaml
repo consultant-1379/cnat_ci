@@ -1,0 +1,219 @@
+vnflcm:
+  vnfInstanceName: pod56-ccsm1
+  vnfProductName: CCSM
+  values-file: values.yaml
+  orchestrator: helm
+  namespace: ccsm
+  csar-file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/Ericsson.CCSM.CXP9037722_1_11_5_6.csar
+  clusterName: pod56-eccd1
+
+access-info:
+  oam: 10.130.34.226
+  ldap-admin:
+    user: sysadmin
+    pass: c3lzQWRtMW5ARGF5MA==
+  users:
+  - user: ccsm-admin
+    pass: RG01R0NAUzBsdXQhb24=
+    pass-init: Q2hhbmdlbWVAMXN0
+  - user: ccsm-sec
+    pass: RG01R0NAUzBsdXQhb24=
+    pass-init: Q2hhbmdlbWVAMXN0
+pipeline:
+# As this module will take too much time. Therefore, comment it out. But this config is available.
+#- module: push-images-to-registry
+#  cleanup: true
+#  remote-server:
+#    host: pod56-eccd1.seln.ete.ericsson.se
+#    user: eccd
+#    ssh-key: /lab/pccc_utils/scripts/ssh_key/pod56_key
+#  tool:
+#    cli: docker
+#  registry:
+#     url: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+#     user: admin
+#     pass: YWRtaW4xMjM=
+- module: install-crd
+  namespace: eric-crd-ns
+  registry:
+    host: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+    username: admin
+    password: YWRtaW4xMjM=
+  pullSecret: regcred
+  additional-values:
+    eric-tm-ingress-controller-cr-crd:
+      rbac.create: true
+- module: create-namespace
+- module: run-k8s-command
+  name: Create docker registry secret
+  cmd: create secret docker-registry regcred --docker-server=container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se --docker-username=admin --docker-password=admin123
+- module: create-k8s-secret
+  name: eric-sec-ldap-server-creds
+  sources:
+  - type: literal
+    key: adminuser
+    value: sysadmin
+  - type: literal
+    key: passwd
+    value: sysAdm1n@Day0
+  - type: literal
+    key: adminpasswd
+    value: $6$fzLPYlRZCpweJMJC$AiNfP0WYE3npY8Za6GxMFoGj75TOl.TS6tmnnky2Bv5wY0Ek8RIoJlr9pyj0LF3wMMaNsNTUH4jp2lIHviJGS0
+- module: create-k8s-secret
+  name: snmp-alarm-provider-config
+  sources:
+  - type: file
+    key: config.json
+    file: ../snmp-config.json
+- module: create-k8s-secret
+  name: eric-data-distributed-coordinator-creds
+  sources:
+  - type: literal
+    key: etcdpasswd
+    value: sysAdm1n@Day0
+- module: instantiate
+- module: verify-pod-running
+  ignore-not-running:
+  - eric-data-search-engine-curator
+- module: run-k8s-command
+  name: Create networkpolicy to allow accessing eric-pm-server and eric-data-search-engine
+  cmd: |
+    apply -f {file1}
+    apply -f {file2}
+  inline-files:
+    file1: ../network-policy/eric-pm-server-allow.yaml
+    file2: ../network-policy/eric-data-search-engine-allow.yaml
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: create ingress eric-pm-server --rule="eric-pm-server-ccsm.ingress.pod56-eccd1.seln.ete.ericsson.se/*=eric-pm-server:9090"
+- module: verify-pod-ready
+  check-interval: 5
+  deployments:
+  - eric-cm-yang-provider
+- module: load-cmyp-user-config
+  file: ../user-config.xml
+  proto: netconf
+  retry-interval: 30
+- module: sleep
+  duration: 120
+- module: change-initial-password
+- module: load-cmyp-app-config
+  file: ../external-certificates.xml
+  user-id: 1
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../nrfagent-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../ausf-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../udm-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../avg-config/1-seed-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../avg-config/2-customerkey-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../avg-config/3-arpf-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../avg-config/4-hnkey-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../avg-config/5-a4key-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../avg-config/6-fset-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../hss-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../ccsm-sctp-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../hssepc-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../hss-remote-nf-profile.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../udm-remote-nf-profile.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../diameter-epc-s6a-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../diameter-eir-s13-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../eir-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../ddc-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ../snmp-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 15

@@ -1,0 +1,167 @@
+vnflcm:
+  vnfInstanceName: vpod2-ccsm1
+  vnfProductName: CCSM
+  vnfSoftwareVersion: 1.17.1+16
+  instantiate-file: instantiate.json
+  values-file: values.yaml
+  clusterName: n182-eccd2
+  namespace: ccsm
+access-info:
+  oam: ccsm1-n182-vpod2.seli.gic.ericsson.se
+  ldap-admin:
+    user: sysadmin
+    pass: c3lzQWRtMW5ARGF5MA==
+  users:
+  - user: ccsm-admin
+    pass: RG01R0NAUzBsdXQhb24=
+    pass-init: Q2hhbmdlbWVAMXN0
+  - user: ccsm-sec
+    pass: RG01R0NAUzBsdXQhb24=
+    pass-init: Q2hhbmdlbWVAMXN0
+pipeline:
+- module: create-namespace
+- module: create-k8s-secret
+  name: eric-sec-ldap-server-creds
+  sources:
+  - type: literal
+    key: adminuser
+    value: sysadmin
+  - type: literal
+    key: passwd
+    value: sysAdm1n@Day0
+  - type: literal
+    key: adminpasswd
+    value: $6$fzLPYlRZCpweJMJC$AiNfP0WYE3npY8Za6GxMFoGj75TOl.TS6tmnnky2Bv5wY0Ek8RIoJlr9pyj0LF3wMMaNsNTUH4jp2lIHviJGS0
+- module: create-k8s-secret
+  name: eric-data-distributed-coordinator-creds
+  sources:
+  - type: literal
+    key: etcdpasswd
+    value: sysAdm1n@Day0
+- module: instantiate
+- module: verify-pod-running
+  ignore-not-running:
+  - eric-data-search-engine-curator
+- module: run-k8s-command
+  name: Create networkpolicy to allow accessing eric-pm-server and eric-data-search-engine
+  cmd: |
+    apply -f {file1}
+    apply -f {file2}
+  inline-files:
+    file1: network-policy/eric-pm-server-allow.yaml
+    file2: network-policy/eric-data-search-engine-allow.yaml
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: create ingress eric-pm-server --rule="eric-pm-server-ccsm1.ingress.node182-cluster2.seli.gic.ericsson.se/*=eric-pm-server:9090"
+- module: verify-pod-ready
+  check-interval: 5
+  deployments:
+  - eric-cm-yang-provider
+- module: load-cmyp-user-config
+  file: user-config.xml
+  proto: netconf
+  retry-interval: 30
+- module: sleep
+  duration: 300
+- module: change-initial-password
+- module: load-cmyp-app-config
+  file: external-certificates.xml
+  user-id: 1
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: nrfagent-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ausf-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: udm-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: avg-config/1-seed-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: avg-config/2-customerkey-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: avg-config/3-arpf-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: avg-config/4-hnkey-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: avg-config/5-a4key-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: avg-config/6-fset-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: hss-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ccsm-sctp-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: hssepc-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: hss-remote-nf-profile.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: udm-remote-nf-profile.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: diameter-epc-s6a-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: diameter-eir-s13-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: eir-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15
+- module: load-cmyp-app-config
+  file: ddc-config.xml
+  proto: netconf
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: snmp-config.xml
+  proto: netconf
+- module: sleep
+  duration: 15

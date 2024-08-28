@@ -1,0 +1,19 @@
+## ## The configuration is used for non-443 ports outbound traffic(NRF notification) TLS
+apiVersion: networking.istio.io/v1beta1
+kind: ServiceEntry
+metadata:
+  name: eric-nrf-service-mesh-sbi-traffic
+spec:
+  ports:
+    - name: http-port-for-nontls-origination
+      number: 80
+      protocol: HTTP2
+    - name: http-port-for-tls-origination
+      number: 443
+      protocol: HTTP2
+    - name: http-port-for-tls-origination-amf
+      number: 8443
+      protocol: HTTP2
+    - name: http-port-for-tls-origination-smf
+      number: 7070
+      protocol: HTTP2

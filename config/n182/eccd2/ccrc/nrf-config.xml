@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>]]>]]>
+<rpc message-id="4" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <!--xmlns="urn:rdns:com:ericsson:oammodel:ericsson-nrf" NRF configuration.-->
+            <nrf xmlns="urn:rdns:com:ericsson:oammodel:ericsson-nrf">
+                <!--http-header: Configuration of http-header. -->
+                <http-header>
+                    <!--nf-peer-info-enabled: The status of 3gpp-Sbi-NF-Peer-Info header support. Default value is false. -->
+                    <nf-peer-info-enabled>false</nf-peer-info-enabled>
+                    <!--user-agent-enabled: The status of user-agent header support. Default value is true. -->
+                    <user-agent-enabled>true</user-agent-enabled>
+                </http-header>
+                <common>
+                    <!--relay-mode: In NRF layered deployment, the NRF relay mode to handle discovery or subscription.-->
+                    <!--<relay-mode>forward</relay-mode>-->
+                    <!--next-hop: The same/upper layer NRFs, towards which region NRF registers itself and forwards discovery request in case no match result within region itself.-->
+                    <next-hop>
+                        <!--mode: Traffic load balance mode among different NRFs in the same pool.-->
+                        <mode>active-standby</mode>
+                        <!--failover-threshold: The percentage threshold value of failed response, to trigger failover within NRF pool.-->
+                        <failover-threshold>10</failover-threshold>
+                        <!--pool: NRFs in each pool belong to a geographical redundancy system.-->
+                        <pool>
+                            <!--required items of pool: id.-->
+                            <!--id: Unique ID represents the pool of NRFs.-->
+                            <id>pool1</id>
+                            <!--layer: NRF pool is in the same layer or upper layer. each pool should have the same layer type within one next-hop-->
+                            <layer>same-layer</layer>
+                            <!--profile: NRF profile of next hop.-->
+                            <profile>
+                                <!--required items of profile: id.-->
+                                <!--id: Unique ID represents the NRF.-->
+                                <id>1</id>
+                                <!--instance-id: NRF instance-id.-->
+                                <instance-id>0c765084-9cc5-49c6-9876-4e5246a1c4d2</instance-id>
+                                <!--At least one of the NF level addresses(fqdn or ipv4-address or ipv6-address ) shall be present.-->
+                                <!--The perfered order of addresses to be used is Service level FQDN, Service level IP Address, NF level FQDN, NF level IP Address.-->
+                                <!--Scheme and port number are defined in service level: profile.service.scheme, profile.service.ip-endpoint.port.-->
+                                <!--You have a CHOICE of the ipv4-address and ipv6-address at this level.-->
+                                <!--fqdn: NF level FQDN of the NRF.-->
+                                <fqdn>ccrc1-nrf-sig-n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                                <!--ipv4-address: NF level IPv4 address(es) of the NRF.-->
+                                <!--<ipv4-address>{{PLMN-NRF-IPV4-ADDRESS}}</ipv4-address>-->
+                                <!--ipv6-address: NF level IPv6 address(es) of the NRF.-->
+                                <!--<ipv6-address>{{PLMN-NRF-IPV6-ADDRESS}}</ipv6-address>-->
+                                <!--priority: Priority of this NRF compared to the set of NRF in redundancy mode;lower values indicate a higher priority If priority is also present in the service parameters, those will have precedence over this value.-->
+                                <priority>1</priority>
+                                <service>
+                                    <!--required items of service: id, name, scheme, version.-->
+                                    <!--id: Unique ID represents the NRF service.-->
+                                    <id>1</id>
+                                    <!--name: Name of the NRF service.-->
+                                    <name>nnrf-nfm</name>
+                                    <!--version: -Versions of the service instance to be used in the URI for accessing the API.-->
+                                    <version>
+                                        <!--api-version-in-uri: Versions of the service instance to be used in the URI for accessing the API.-->
+                                        <api-version-in-uri>v1</api-version-in-uri>
+                                        <!--api-full-version: Full version number of the API. It is reserved for future release.-->
+                                        <api-full-version>1.R15.1.1</api-full-version>
+                                        <!--expiry: Expiry date and time of the NRF service. This represents the planned retirement date. It is reserved for future release.-->
+                                        <expiry>2029-07-06T02:54:32Z</expiry>
+                                    </version>
+                                    <!--scheme: Protocol schema (e.g. "http", "https").-->
+                                    <scheme>https</scheme>
+                                    <!--fqdn: FQDN of the service instance.-->
+                                    <fqdn>ccrc1-nrf-sig-n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                                    <!--ip-endpoint: IP address(es) and port information where the service is listening for incoming service requests.-->
+                                    <ip-endpoint>
+                                        <!--At most one occurrence of either ipv4-address or ipv6-address.-->
+                                        <!--id: Unique ID that represents the NRF service instance.-->
+                                        <id>1</id>
+                                        <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                                        <!--<ipv4-address>{{PLMN-NRF-SERVICE-IPV4-ADDRESS}}</ipv4-address>-->
+                                        <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                                        <!--<ipv6-address>{{PLMN-NRF-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                                        <!--transport: Transport protocol. -->
+                                        <transport>tcp</transport>
+                                        <!--port: Port number that the NRF service is listening on.-->
+                                        <port>443</port>
+                                    </ip-endpoint>
+                                    <!--priority: Priority to be used for NRF Service selection.-->
+                                    <priority>1</priority>
+                                </service>
+                                <service>
+                                    <!--required items of service: id, name, scheme, version.-->
+                                    <!--id: Unique ID represents the NRF service.-->
+                                    <id>2</id>
+                                    <!--name: Name of the NRF service.-->
+                                    <name>nnrf-disc</name>
+                                    <!--version: -Versions of the service instance to be used in the URI for accessing the API.-->
+                                    <version>
+                                        <!--api-version-in-uri: Versions of the service instance to be used in the URI for accessing the API.-->
+                                        <api-version-in-uri>v1</api-version-in-uri>
+                                        <!--api-full-version: Full version number of the API. It is reserved for future release.-->
+                                        <api-full-version>1.R15.1.1</api-full-version>
+                                        <!--expiry: Expiry date and time of the NRF service. This represents the planned retirement date. It is reserved for future release.-->
+                                        <expiry>2029-07-06T02:54:32Z</expiry>
+                                    </version>
+                                    <!--scheme: Protocol schema (e.g. "http", "https").-->
+                                    <scheme>https</scheme>
+                                    <!--fqdn: FQDN of the service instance.-->
+                                    <fqdn>ccrc1-nrf-sig-n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                                    <!--ip-endpoint: IP address(es) and port information where the service is listening for incoming service requests.-->
+                                    <ip-endpoint>
+                                        <!--At most one occurrence of either ipv4-address or ipv6-address.-->
+                                        <!--id: Unique ID that represents the NRF service instance.-->
+                                        <id>1</id>
+                                        <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                                        <!--<ipv4-address>{{PLMN-NRF-SERVICE-IPV4-ADDRESS}}</ipv4-address>-->
+                                        <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                                        <!--<ipv6-address>{{PLMN-NRF-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                                        <!--transport: Transport protocol. -->
+                                        <transport>tcp</transport>
+                                        <!--port: Port number that the NRF service is listening on.-->
+                                        <port>443</port>
+                                    </ip-endpoint>
+                                    <!--priority: Priority to be used for NRF Service selection.-->
+                                    <priority>1</priority>
+                                </service>
+                                <!-- <service> -->
+                                    <!--required items of service: id, name, scheme, version.-->
+                                    <!--id: Unique ID represents the NRF service.-->
+                                    <!-- <id>{{PLMN-NRF-SERVICE-ID}}</id> -->
+                                    <!--name: Name of the NRF service.-->
+                                    <!-- <name>nnrf-oauth2</name> -->
+                                    <!--version: -Versions of the service instance to be used in the URI for accessing the API.-->
+                                    <!-- <version> -->
+                                        <!--api-version-in-uri: Versions of the service instance to be used in the URI for accessing the API.-->
+                                        <!-- <api-version-in-uri>v1</api-version-in-uri> -->
+                                        <!--api-full-version: Full version number of the API. It is reserved for future release.-->
+                                        <!-- <api-full-version>1.R15.1.1</api-full-version> -->
+                                        <!--expiry: Expiry date and time of the NRF service. This represents the planned retirement date. It is reserved for future release.-->
+                                        <!-- <expiry>2029-07-06T02:54:32Z</expiry> -->
+                                    <!-- </version> -->
+                                    <!--scheme: Protocol schema (e.g. "http", "https").-->
+                                    <!-- <scheme>{{PLMN-NRF-SERVICE-SCHEME}}</scheme> -->
+                                    <!--fqdn: FQDN of the service instance.-->
+                                    <!-- <fqdn>{{PLMN-NRF-SERVICE-FQDN}}</fqdn> -->
+                                    <!--ip-endpoint: IP address(es) and port information where the service is listening for incoming service requests.-->
+                                    <!-- <ip-endpoint> -->
+                                        <!--At most one occurrence of either ipv4-address or ipv6-address.-->
+                                        <!--id: Unique ID that represents the NRF service instance.-->
+                                        <!-- <id>{{PLMN-NRF-SERVICE-IP-ENDPOINT-ID}}</id> -->
+                                        <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                                        <!-- <ipv4-address>{{PLMN-NRF-SERVICE-IPV4-ADDRESS}}</ipv4-address> -->
+                                        <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                                        <!-- <ipv6-address>{{PLMN-NRF-SERVICE-IPV6-ADDRESS}}</ipv6-address> -->
+                                        <!--transport: Transport protocol. -->
+                                        <!-- <transport>tcp</transport> -->
+                                        <!--port: Port number that the NRF service is listening on.-->
+                                        <!-- <port>{{PLMN-NRF-SERVICE-PORT}}</port> -->
+                                    <!-- </ip-endpoint> -->
+                                    <!--priority: Priority to be used for NRF Service selection.-->
+                                    <!-- <priority>{{PLMN-NRF-SERVICE-PRIORITY}}</priority> -->
+                                <!-- </service> -->
+                            </profile>
+                        </pool>
+                    </next-hop>
+                    <!--geo-red: Additional options to control NRF service availability status when Geographical Redundancy function encounters external faults. The Geographical Redundancy function itself has to be setup manually according to user guide.-->
+
+                    <!--NRF forward discovery request,subscribe request based on NFInstance to HNRF via SEPP and notification to taraget NF in different PLMN.-->
+                    <!-- <roaming> -->
+                        <!--sepp information.-->
+                        <!-- <sepp> -->
+                            <!--Unique ID representing the SEPP.-->
+                            <!-- <id>{{sepp id}}</id> -->
+                            <!--Protocol schema.-->
+                            <!-- <scheme>{{http/https}}</scheme> -->
+                            <!--FQDN or IP Address of the SEPP-->
+                            <!-- <fqdn>{{SEPP FQDN}}</fqdn> -->
+                            <!--Port of the SEPP-->
+                            <!-- <port>{{SEPP port}}</port> -->
+                            <!--Lower values indicate a higher priority. -->
+                            <!-- <priority>{{SEPP priority}}</priority> -->
+                            <!--Optional path segment(s) used to construct the {apiRoot} variable of the different API URIs.-->
+                            <!-- <api-prefix>{{prefix}}</api-prefix> -->
+                        <!-- </sepp> -->
+                        <!--Indicat roaming traffic forward relay on SEPP or upper-layer-nrf-->
+                        <!-- <relay-node>sepp</relay-node> -->
+                    <!-- </roaming> -->
+                </common>
+                <!--nf-profile: NRF own NFProfile info.-->
+                <nf-profile>
+                    <!--required items of nf-profile: instance-id, plmn-id, service.-->
+                    <!--At least one of the NF profile addresses(ipv4-address or ipv6-address or fqdn) shall be present.-->
+                    <!--If the fqdn and ipEndpoint of service are not present, the FQDN or IP address from nf-profile shall be used to construct the API URIs of this service.-->
+                    <!--The perfered order of addresses to be used is  Service level FQDN, Service level IP Address, NF profile level FQDN, NF profile level IP Address.-->
+                    <!--For allowedPlmns, allowedNfTypes, allowedNfDomains, allowedNssais, If this item is present in the NFService and in the NF profile, the item from the NFService shall prevail. The absence of this item in the NFService and in the NFProfile indicates that there is no corresponding restriction to access the service instance.-->
+                    <!--instance-id: Unique identity of the NRF Instance.-->
+                    <instance-id>0c765084-9cc5-49c6-9876-4e5246a1c4d2</instance-id>
+                    <!--requested-status: Administrative status requested to be set in registration/update process at another NRF, that shall be the value of the NFStatus parameter.-->
+                    <requested-status>registered</requested-status>
+                    <!--requested-heartbeat-timer: Time in seconds expected between 2 consecutive heart-beat messages from an NRF Instance to the another NRF, to be included in the registration request.-->
+                    <requested-heartbeat-timer>60</requested-heartbeat-timer>
+                    <!--plmn-id(mandatory): PLMNs of the Network Function.-->
+                    <plmn-id>
+                        <!--required items of plmn-id: mcc, mnc.-->
+                        <!--mcc: mobile country code of the PLMN ID.-->
+                        <mcc>240</mcc>
+                        <!--mnc: mobile network code of the PLMN ID.-->
+                        <mnc>81</mnc>
+                    </plmn-id>
+                    <!--snssai: S-NSSAIs of the Network Function.-->
+                    <snssai>
+                        <!--required items of snssai: id, sst.-->
+                        <!--id: Unique ID that represents the S-NSSAI.-->
+                        <id>1</id>
+                        <!--sst: Slice/service type of the S-NSSAI, the value range is 0-255-->
+                        <sst>1</sst>
+                        <!--sd: Slice Differentiator of the S-NSSAI.-->
+                        <sd>000002</sd>
+                    </snssai>
+                    <!--snssai: NSI identities of the Network Function.-->
+                    <nsi>testNSI</nsi>
+                    <!--fqdn: FQDN of the Network Function.-->
+                    <fqdn>ccrc1-nrf-sig-n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                    <!--ipv4-address: IPv4 addresses of the Network Function.-->
+                    <!--<ipv4-address>{{NRF-SERVICE-IPV4-ADDRESS}}</ipv4-address>-->
+                    <!--ipv6-address: IPv6 addresses of the Network Function.-->
+                    <!--<ipv6-address>{{NRF-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                    <!--allowed-nf-type: Type of the NFs allowed to access the NF instance.-->
+                    <allowed-nf-type>nrf</allowed-nf-type>
+                    <!--priority: Priority (relative to other NFs of the same type) in the range of 0-65535, to be used for NF selection; lower values indicate a higher priority. If priority is also present in the nfServiceList parameters, those will have precedence over this value.-->
+                    <priority>1</priority>
+                    <!--service: List of NF Service Instances. It shall include the services produced by the NF that can be discovered by other NFs.-->
+                    <service>
+                        <!--required items of service: instance-id, name, scheme, status.-->
+                        <!--instance-id: Unique ID of the service instance within the NF Instance.-->
+                        <instance-id>nnrf-nfm-01</instance-id>
+                        <!--name: Name of the service instance.-->
+                        <name>nnrf-nfm</name>
+                        <!--scheme(mandatory): Protocol schema of URI (e.g. "http", "https").-->
+                        <scheme>https</scheme>
+                        <!--requested-status: Administrative status requested to be set in registration process at another NRF. When set to "registered" or "suspended", that shall be the value of the NFServiceStatus parameter in the registration/update request towards NRF.-->
+                        <requested-status>registered</requested-status>
+                        <!--fqdn: FQDN of the NF Service Instance.-->
+                        <fqdn>ccrc1-nrf-sig-n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                        <!--ip-endpoint: IP addresses and port information of the Network Function (including IPv4 and/or IPv6 address) where the service is listening for incoming service requests.-->
+                        <ip-endpoint>
+                            <!--required items of ip-endpoint: id.-->
+                            <!--At most one occurrence of either ipv4-address or ipv6-address.-->
+                            <!--id: Unique ID that represents endpoint of the NRF service instance.-->
+                            <id>1</id>
+                            <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                            <!--<ipv4-address>{{NRF-SERVICE-IPV4-ADDRESS}}</ipv4-address>-->
+                            <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                            <!--<ipv6-address>{{NRF-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                            <!--transport: Transport protocol. -->
+                            <transport>tcp</transport>
+                            <!--port: Port number that the NRF service is listening on.-->
+                            <port>443</port>
+                        </ip-endpoint>
+                        <!--allowed-nf-type: Type of the NFs allowed to access the service instance. The absence of this item indicates that any NF type is allowed to access the service instance.-->
+                        <allowed-nf-type>nrf</allowed-nf-type>
+                        <!--priority: Priority (relative to other services of the same type) in the range of 0-65535 to be used for NF Service selection; lower values indicate a higher priority.-->
+                        <priority>1</priority>
+                    </service>
+                    <!--service: List of NF Service Instances. It shall include the services produced by the NF that can be discovered by other NFs.-->
+                    <service>
+                        <!--required items of service: instance-id, name, scheme, status.-->
+                        <!--instance-id: Unique ID of the service instance within the NF Instance.-->
+                        <instance-id>nnrf-disc-01</instance-id>
+                        <!--name: Name of the service instance.-->
+                        <name>nnrf-disc</name>
+                        <!--scheme(mandatory): Protocol schema of URI (e.g. "http", "https").-->
+                        <scheme>https</scheme>
+                        <!--requested-status: Administrative status requested to be set in registration process at another NRF. When set to "registered" or "suspended", that shall be the value of the NFServiceStatus parameter in the registration/update request towards NRF.-->
+                        <requested-status>registered</requested-status>
+                        <!--fqdn: FQDN of the NF Service Instance.-->
+                        <fqdn>ccrc1-nrf-sig-n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                        <!--ip-endpoint: IP addresses and port information of the Network Function (including IPv4 and/or IPv6 address) where the service is listening for incoming service requests.-->
+                        <ip-endpoint>
+                            <!--required items of ip-endpoint: id.-->
+                            <!--At most one occurrence of either ipv4-address or ipv6-address.-->
+                            <!--id: Unique ID that represents endpoint of the NRF service instance.-->
+                            <id>1</id>
+                            <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                            <!--<ipv4-address>{{NRF-SERVICE-IPV4-ADDRESS}}</ipv4-address>-->
+                            <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                            <!--<ipv6-address>{{NRF-SERVICE-IPV6-ADDRESS}}</ipv6-address>-->
+                            <!--transport: Transport protocol. -->
+                            <transport>tcp</transport>
+                            <!--port: Port number that the NRF service is listening on.-->
+                            <port>443</port>
+                        </ip-endpoint>
+                        <!--allowed-nf-type: Type of the NFs allowed to access the service instance. The absence of this item indicates that any NF type is allowed to access the service instance.-->
+                        <allowed-nf-type>nrf</allowed-nf-type>
+                        <!--priority: Priority (relative to other services of the same type) in the range of 0-65535 to be used for NF Service selection; lower values indicate a higher priority.-->
+                        <priority>1</priority>
+                    </service>
+                    <!--service: List of NF Service Instances. It shall include the services produced by the NF that can be discovered by other NFs.-->
+                    <!-- <service> -->
+                        <!--required items of service: instance-id, name, scheme, status.-->
+                        <!--instance-id: Unique ID of the service instance within the NF Instance.-->
+                        <!-- <instance-id>{{NRF-SERVICE-INSTANCE-ID}}</instance-id> -->
+                        <!--name: Name of the service instance.-->
+                        <!-- <name>nnrf-oauth2</name> -->
+                        <!--scheme(mandatory): Protocol schema of URI (e.g. "http", "https").-->
+                        <!-- <scheme>{{NRF-SERVICE-SCHEME}}</scheme> -->
+                        <!--requested-status: Administrative status requested to be set in registration process at another NRF. When set to "registered" or "suspended", that shall be the value of the NFServiceStatus parameter in the registration/update request towards NRF.-->
+                        <!-- <requested-status>{{NRF-SERVICE-STATUS}}</requested-status> -->
+                        <!--fqdn: FQDN of the NF Service Instance.-->
+                        <!-- <fqdn>{{NRF-SERVICE-FQDN}}</fqdn> -->
+                        <!--ip-endpoint: IP addresses and port information of the Network Function (including IPv4 and/or IPv6 address) where the service is listening for incoming service requests.-->
+                        <!-- <ip-endpoint> -->
+                            <!--required items of ip-endpoint: id.-->
+                            <!--At most one occurrence of either ipv4-address or ipv6-address.-->
+                            <!--id: Unique ID that represents endpoint of the NRF service instance.-->
+                            <!-- <id>{{NRF-SERVICE-IP-ENDPOINT-ID}}</id> -->
+                            <!--ipv4-address: IPv4 address of NRF service which is listening for incoming service requests.-->
+                            <!-- <ipv4-address>{{NRF-SERVICE-IPV4-ADDRESS}}</ipv4-address> -->
+                            <!--ipv6-address: IPv6 address of NRF service which is listening for incoming service requests.-->
+                            <!-- <ipv6-address>{{NRF-SERVICE-IPV6-ADDRESS}}</ipv6-address> -->
+                            <!--transport: Transport protocol. -->
+                            <!-- <transport>tcp</transport> -->
+                            <!--port: Port number that the NRF service is listening on.-->
+                            <!-- <port>{{NRF-SERVICE-PORT}}</port> -->
+                        <!-- </ip-endpoint> -->
+                        <!--allowed-nf-type: Type of the NFs allowed to access the service instance. The absence of this item indicates that any NF type is allowed to access the service instance.-->
+                        <!-- <allowed-nf-type>nrf</allowed-nf-type> -->
+                        <!--priority: Priority (relative to other services of the same type) in the range of 0-65535 to be used for NF Service selection; lower values indicate a higher priority.-->
+                        <!-- <priority>{{NRF-SERVICE-PRIORITY}}</priority> -->
+                    <!-- </service> -->
+                </nf-profile>
+                <!--management-service: configuration for NRF Management service.-->
+                <management-service>
+                    <!--required items of management-service: heartbeat.-->
+                    <!--heartbeat: Heartbeat Timer that NF shall contact the NRF periodically.-->
+                    <heartbeat>
+                        <!--required items of heartbeat: default.-->
+                        <!--default: Default NF heartbeat timer in seconds that the NRF shall be contacted, this value will be used if the NF type is not matched with default-per-nftype.nf-type.-->
+                        <default>60</default>
+                        <!--default-per-nftype: Default NF heartbeat timer in seconds per NF type that the NRF shall be contacted.-->
+                        <default-per-nftype>
+                            <!--required items of default-per-nftype: nf-type.-->
+                            <!--nf-type: Specifies the type of NF (e.g. "udm", "ausf").-->
+                            <nf-type>ausf</nf-type>
+                            <!--value: Defaul heartbeat time of specific NF type which is matched with default-per-nftype.nf-type.-->
+                            <value>45</value>
+                        </default-per-nftype>
+                        <!--grace-period: Extra time in seconds that NRF will wait before NRF change one NF status to SUSPENDED. If one NF has not updated its profile for heartbeat timer interval plus heartbeat-grace-period, NRF will change the status of the NF to SUSPENDED and consider that the NF and its services can no longer be discovered by other NFs via the NFDiscovery service.-->
+                        <grace-period>5</grace-period>
+                    </heartbeat>
+                    <!--subscription-expired-time: NF subscription expiration in seconds, NRF will consider one subscription invalid after the time interval.-->
+                    <subscription-expired-time>86400</subscription-expired-time>
+                    <!--traffic-rate-limit-per-instance: NRF management traffic rate limit per NF instance per second for status code 429 too many requests. NRF management will reply with status code 429 if traffic request of a NF instance exceeds this value per second.-->
+                    <traffic-rate-limit-per-instance>50</traffic-rate-limit-per-instance>
+                </management-service>
+                <!--discovery-service: configuration for NRF Discovery service.-->
+                <discovery-service>
+                    <!--response-cache-time: Time period for caching discovery result by NF Service Consumer in seconds. During the discovery response cache time, the discovery result is considered valid and can be cached by the NF Service Consumer.-->
+                    <response-cache-time>86400</response-cache-time>
+                    <!--traffic-rate-limit-per-instance: NRF discovery traffic rate limit per NF instance per second for status code 429 too many requests. NRF discovery will reply with status code 429 if traffic request of a NF instance exceeds this value per second.-->
+                    <traffic-rate-limit-per-instance>1000</traffic-rate-limit-per-instance>
+                    <!--local-cache: NRF discovery caches the NF Profiles of the discovery result from other NRF.-->
+                    <local-cache>
+                        <!--enabled: Indicate whether enable local cache when hierarchical NRFs are deployed. When enabled, NRF discovery caches NF Profiles of discovery result from other NRF.-->
+                        <enabled>false</enabled>
+                        <!--timeout: Time period for caching local cache in seconds.-->
+                        <timeout>3000</timeout>
+                        <!--capacity: Maximum number of local cache records.-->
+                        <capacity>100</capacity>
+                    </local-cache>
+                    <!--overload-redirection: Determines the behavior of redirection when NRF discovery overload.-->
+                    <overload-redirection>
+                        <!--enabled: Indicate whether enable Overload redirection feature.-->
+                        <enabled>false</enabled>
+                    </overload-redirection>
+                </discovery-service>
+                <!--accesstoken-service: configuration for NRF Accesstoken service.-->
+                <accesstoken-service>
+                    <!--The expired-in value used in NRF accesstoken service response. It indicates the number of-->
+                    <!--seconds after which the access token is considered to be expired.-->
+                    <expired-time>21600</expired-time>
+                    <!--This parameter controls meaning of nf-allowed-info structure.-->
+                    <!--When 'false':-->
+                    <!--absence of nf-allowed-info attribute indicates that all consumer NFs are allowed to access all NF types.-->
+                    <!--if there's no match of nf-allowed-info nf-type, consumer NF is allowed to access NF type.-->
+                    <!--absence of service-allowed-info attribute indicates that all consumer NF types are allowed to access the service.-->
+                    <!--if there's no match of service-allowed-info service-name, it is allowed to access the service.-->
+                    <!--absence of allowed-nf-type attribute indicates that all NF types are allowed to access the service.-->
+                    <!--empty allowed-nf-type list indicates that all NF types are allowed to access the service.-->
+                    <!--When 'true':.-->
+                    <!--absence of nf-allowed-info attribute indicates that all consumer NFs are disallowed from access any NF type.-->
+                    <!--if there's no match of nf-type, consumer NF is disallowed from access NF type.-->
+                    <!--absence of service-allowed-info attribute indicates that all consumer NFs are disallowed from access any NF type.-->
+                    <!--if there's no match of service-allowed-info service-name, consumer NF is disallowed from access NF type.-->
+                    <!--absence of allowed-nf-type attribute indicates that all NF types are disallowed from access the service.-->
+                    <!--empty allowed-nf-type list indicates that all NF types are disallowed from access the service.-->
+                    <nf-allowed-info-strict-mode>false</nf-allowed-info-strict-mode>
+                    <!--Authorization information of NRF accesstoken service, when access token request is for an NFType, min-elements 0.-->
+                    <!--When nf-allowed-info-strict-mode parameter is set to false:-->
+                    <!--absence of this attribute indicates that all consumer NFs are allowed to access all NF types.-->
+                    <!--if there's no match of nf-type, consumer NF is allowed to access NF type.-->
+                    <!--When nf-allowed-info-strict-mode parameter is set to true:-->
+                    <!--absence of this attribute indicates that all consumer NFs are disallowed from access any NF type.-->
+                    <!--if there's no match of nf-type, consumer NF is disallowed from access NF type.-->
+                    <nf-allowed-info>
+                        <!--NF type of the NF service producer.-->
+                        <nf-type>udm</nf-type>
+                        <!--NRF accesstoken service allowed nf-type information, for each NF service of NF producer, min-elements 0.-->
+                        <!--When nf-allowed-info-strict-mode parameter is set to false:-->
+                        <!--absence of this attribute indicates that all NF types are allowed to access the service.-->
+                        <!--if there's no match of service-name, it is allowed to access the service.-->
+                        <!--When nf-allowed-info-strict-mode parameter is set to true:-->
+                        <!--absence of this attribute indicates that all NF types are disallowed from access the service.-->
+                        <!--if there's no match of service-name, it is not allowed to access the service.-->
+                        <service-allowed-info>
+                            <!--The name of NF service of NF service producer.-->
+                            <service-name>nudm-sdm</service-name>
+                            <!--Types of consumer NFs which are allowed to access service-name service, min-elements 0.-->
+                            <!--When nf-allowed-info-strict-mode parameter is set to false:-->
+                            <!--absence of this attribute indicates that all NF types are allowed to access the service.-->
+                            <!--empty list indicates that all NF types are allowed to access the service.-->
+                            <!--if there's no match of nf type, it is not allowed to access the service.-->
+                            <!--list with empty parameter [\"\"] indicates that all NF types are disallowed from access the service.-->
+                            <!--When nf-allowed-info-strict-mode parameter is set to true:-->
+                            <!--absence of this attribute indicates that all NF types are disallowed from access the service.-->
+                            <!--empty list indicates that all NF types are disallowed from access the service.-->
+                            <!--if there's no match of nf type, it is not allowed to access the service.-->
+                            <!--list with empty parameter [\"\"] indicates that all NF types are disallowed from access the service.-->
+                            <allowed-nf-type>amf</allowed-nf-type>
+                            <allowed-nf-type>smf</allowed-nf-type>
+                            <allowed-nf-type>smsf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nudm-uecm</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                            <allowed-nf-type>smf</allowed-nf-type>
+                            <allowed-nf-type>smsf</allowed-nf-type>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                            <allowed-nf-type>gmlc</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nudm-ueau</service-name>
+                            <allowed-nf-type>ausf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nudm-ee</service-name>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nudm-pp</service-name>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nudm-niddau</service-name>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>amf</nf-type>
+                        <service-allowed-info>
+                            <service-name>namf-comm</service-name>
+                            <allowed-nf-type>smf</allowed-nf-type>
+                            <allowed-nf-type>smsf</allowed-nf-type>
+                            <allowed-nf-type>pcf</allowed-nf-type>
+                            <allowed-nf-type>lmf</allowed-nf-type>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                            <allowed-nf-type>udm</allowed-nf-type>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>namf-evts</service-name>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                            <allowed-nf-type>smf</allowed-nf-type>
+                            <allowed-nf-type>udm</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>namf-mt</service-name>
+                            <allowed-nf-type>udm</allowed-nf-type>
+                            <allowed-nf-type>smsf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>namf-loc</service-name>
+                            <allowed-nf-type>udm</allowed-nf-type>
+                            <allowed-nf-type>gmlc</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>smf</nf-type>
+                        <service-allowed-info>
+                            <service-name>nsmf-pdusession</service-name>
+                            <allowed-nf-type>smf</allowed-nf-type>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nsmf-event-exposure</service-name>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>ausf</nf-type>
+                        <service-allowed-info>
+                            <service-name>nausf-auth</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nausf-sorprotection</service-name>
+                            <allowed-nf-type>udm</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nausf-upuprotection</service-name>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>nef</nf-type>
+                        <service-allowed-info>
+                            <service-name>nnef-pfdmanagement</service-name>
+                            <allowed-nf-type>smf</allowed-nf-type>
+                            <allowed-nf-type>af</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>pcf</nf-type>
+                        <service-allowed-info>
+                            <service-name>npcf-am-policy-control</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>npcf-smpolicycontrol</service-name>
+                            <allowed-nf-type>smf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>npcf-policyauthorization</service-name>
+                            <allowed-nf-type>af</allowed-nf-type>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>npcf-bdtpolicycontrol</service-name>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>npcf-eventexposure</service-name>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>npcf-ue-policy-control</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                            <allowed-nf-type>pcf</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>smsf</nf-type>
+                        <service-allowed-info>
+                            <service-name>nsmsf-sms</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>nssf</nf-type>
+                        <service-allowed-info>
+                            <service-name>nnssf-nsselection</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                            <allowed-nf-type>nssf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nnssf-nssaiavailability</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>udr</nf-type>
+                        <service-allowed-info>
+                            <service-name>nudr-dr</service-name>
+                            <allowed-nf-type>udm</allowed-nf-type>
+                            <allowed-nf-type>pcf</allowed-nf-type>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>ncudr-gud-dr</service-name>
+                            <allowed-nf-type>5g-eir</allowed-nf-type>
+                            <allowed-nf-type>hss</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>lmf</nf-type>
+                        <service-allowed-info>
+                            <service-name>nlmf-loc</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>5g-eir</nf-type>
+                        <service-allowed-info>
+                            <service-name>n5g-eir-eic</service-name>
+                            <allowed-nf-type>amf</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>bsf</nf-type>
+                        <service-allowed-info>
+                            <service-name>nbsf-management</service-name>
+                            <allowed-nf-type>pcf</allowed-nf-type>
+                            <allowed-nf-type>nef</allowed-nf-type>
+                            <allowed-nf-type>af</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>chf</nf-type>
+                        <service-allowed-info>
+                            <service-name>nchf-spendinglimitcontrol</service-name>
+                            <allowed-nf-type>pcf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nchf-convergedcharging</service-name>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                    <nf-allowed-info>
+                        <nf-type>nwdaf</nf-type>
+                        <service-allowed-info>
+                            <service-name>nnwdaf-eventssubscription</service-name>
+                            <allowed-nf-type>pcf</allowed-nf-type>
+                            <allowed-nf-type>nssf</allowed-nf-type>
+                        </service-allowed-info>
+                        <service-allowed-info>
+                            <service-name>nnwdaf-analyticsinfo</service-name>
+                            <allowed-nf-type>pcf</allowed-nf-type>
+                            <allowed-nf-type>nssf</allowed-nf-type>
+                        </service-allowed-info>
+                    </nf-allowed-info>
+                </accesstoken-service>
+                <!--dns-service: configuration for NRF DNS service.-->
+                <!-- <dns-service> -->
+                    <!--default-zone-ttl: TTL in seconds for deault zone.-->
+                    <!-- <default-zone-ttl>3600</default-zone-ttl> -->
+                    <!--soa: values for SOA record when DNS response NXDOMAIN.-->
+                    <!-- <soa> -->
+                        <!--mname: mname for SOA record when DNS response NXDOMAIN.-->
+                        <!-- <mname>{{MNAME}}</mname> -->
+                        <!--rname: rname for SOA record when DNS response NXDOMAIN.-->
+                        <!-- <rname>{{RNAME}}</rname> -->
+                        <!--negative-ttl: TTL for SOA record when DNS response NXDOMAIN.-->
+                        <!-- <negative-ttl>5</negative-ttl> -->
+                    <!-- </soa> -->
+                    <!--zone-ttl-info: list of TTL in seconds for each Zone.-->
+                    <!-- <zone-ttl-info> -->
+                        <!--zone: zone name.-->
+                        <!-- <zone>{{ZONE1}}</zone> -->
+                        <!--ttl: TTL in seconds for zone.-->
+                        <!-- <ttl>7200</ttl> -->
+                    <!-- </zone-ttl-info> -->
+                    <!-- <zone-ttl-info> -->
+                        <!--zone: zone name.-->
+                        <!-- <zone>{{ZONE2}}</zone> -->
+                        <!--ttl: TTL in seconds for zone.-->
+                        <!-- <ttl>4800</ttl> -->
+                    <!-- </zone-ttl-info> -->
+                    <!--<combined-nf-policy> -->
+                        <!--epc-node: EPC(4G) node type-->
+                            <!-- <epc-node>{{EPC-NODE1}}</epc-node> -->
+                        <!--dyn-status-enabled: Indicates whether NRF embedded DNS considers status of the combined 5G NF for DNS query.-->
+                        <!-- <dyn-status-enabled>false</dyn-status-enabled> -->
+                        <!--dyn-load-enabled: Indicates whether NRF embedded DNS considers priority, load, and capacity of the combined 5G NF for DNS query.-->
+                        <!-- <dyn-load-enabled>false</dyn-load-enabled> -->
+                    <!-- </combined-nf-policy> -->
+                    <!-- <combined-nf-policy> -->
+                        <!--epc-node: EPC(4G) node type-->
+                        <!-- <epc-node>{{EPC-NODE2}}</epc-node> -->
+                        <!--dyn-status-enabled: Indicates whether NRF embedded DNS considers status of the combined 5G NF for DNS query.-->
+                        <!-- <dyn-status-enabled>false</dyn-status-enabled> -->
+                        <!--dyn-load-enabled: Indicates whether NRF embedded DNS considers priority, load, and capacity of the combined 5G NF for DNS query.-->
+                        <!-- <dyn-load-enabled>false</dyn-load-enabled> -->
+                    <!-- </combined-nf-policy> -->
+                    <!--recursive-server-options: Configuration for NRF embedded DNS acting as a recursive/caching name server.-->
+                    <!-- <recursive-server-options> -->
+                        <!--cache-min-ttl: Time to live minimum for response messages and resource record sets in the cache, in seconds.-->
+                        <!-- <cache-min-ttl>0</cache-min-ttl> -->
+                        <!--cache-max-ttl: Time to live maximum for response messages and resource record sets in the cache, in seconds.-->
+                        <!-- <cache-max-ttl>86400</cache-max-ttl> -->
+                        <!--cache-max-neg-ttl: Time to live maximum for negative responses (nxdomain and nodata) in the cache, in seconds.-->
+                        <!-- <cache-max-neg-ttl>3600</cache-max-neg-ttl> -->
+                    <!-- </recursive-server-options> -->
+                <!-- </dns-service> -->
+                <!--extnotify-service: configuration for NRF Extended Notification Service.-->
+                <!-- <extnotify-service> -->
+                    <!--max-sic-subscription: The maximum number of Service Inventory Collector (SIC) subscriptions.-->
+                    <!-- <max-sic-subscription>100</max-sic-subscription> -->
+                    <!--subscription-validity-time: The validity time of subscription from SIC.-->
+                    <!-- <subscription-validity-time>86400</subscription-validity-time> -->
+                <!-- </extnotify-service> -->
+                <policy>
+                    <!--required items of policy: management-service, nf-profile.-->
+                    <management-service>
+                        <!--subscription: The subscription policy-->
+                        <subscription>
+                            <!--allowed-subscription-to-all-nfs: Policy for subscriptions to all NFs without subscrCond in SubscriptionData. Set allowed-nf-type alone, or set it together with allowed-nf-domains to configure the subscription policy for the NFs which are allowed to subscribe to all NFs. By default, NRF rejects subscriptions to all NFs.-->
+                            <allowed-subscription-to-all-nfs>
+                                <!--required items of lowed-subscription-to-all-nfs: id, allowed-nf-type.-->
+                                <!--id: Index number-->
+                                <id>1</id>
+                                <!--allowed-nf-type: The type of NF which is allowed to subscribe to all NFs.-->
+                                <allowed-nf-type>nef</allowed-nf-type>
+                                <!--allowed-nf-domains: Pattern(regular expression) representing the NF domain names allowed to subscribe to all NFs. If present, NRF allows those subscriptions whose reqNfFqdn matches the defined pattern to subscribe to all NFs.-->
+                                <allowed-nf-domains>[".*"]</allowed-nf-domains>
+                            </allowed-subscription-to-all-nfs>
+                        </subscription>
+                    </management-service>
+                    <!--sbi-message-priority-policy: Range definition of priority groups (high, medium, low), by default, high:(0..7) medium:(8..15) low:(16..31)-->
+                    <sbi-message-priority-policy>
+                        <!--priority-group-medium-start: Value of priority policy group medium start.-->
+                        <priority-group-medium-start>8</priority-group-medium-start>
+                        <!--priority-group-low-start: Value of priority policy group low start.-->
+                        <priority-group-low-start>16</priority-group-low-start>
+                        <!--default-message-priority: Defualt message priority value.-->
+                        <default-message-priority>24</default-message-priority>
+                    </sbi-message-priority-policy>
+                </policy>
+                <!--nrf license cm control -->
+                <optional-feature>
+                    <!-- whether enable vp license -->
+                    <distributed-network>deactivated</distributed-network>
+                    <distributed-network-miot>deactivated</distributed-network-miot>
+                    <embedded-dns>deactivated</embedded-dns>
+                    <embedded-dns-miot>deactivated</embedded-dns-miot>
+                    <nrf-automation-analytics>deactivated</nrf-automation-analytics>
+                    <nrf-automation-analytics-miot>deactivated</nrf-automation-analytics-miot>
+                    <!-- whether enable external query license -->
+                    <extended-query>deactivated</extended-query>
+                    <!-- whether enable extended notification license -->
+                    <extended-notify>deactivated</extended-notify>
+                    <nrf-dynamic-policy-framework>deactivated</nrf-dynamic-policy-framework>
+                    <nrf-dynamic-policy-framework-miot>deactivated</nrf-dynamic-policy-framework-miot>
+                </optional-feature>
+                <!--administrative-state: When set to unlocked NRF can handle traffic normally. When Set to shutting-down/locked NRF reject all traffic and deregisters its profile at peer/plmn NRFs.-->
+                <administrative-state>unlocked</administrative-state>
+                <!--dscp: DSCP configuration.-->
+                <!-- <dscp> -->
+                    <!--ingress: DSCP configuration for ingress traffic.-->
+                    <!-- <ingress> -->
+                        <!--interface: Traffic interface to which the DSCP value is applied to-->
+                        <!-- <interface>{{TRAFFIC-INTERFACE-1}}</interface> -->
+                        <!--value: DSCP value -->
+                        <!-- <value>{{DSCP-VALUE}}</value> -->
+                    <!-- </ingress> -->
+                    <!-- <ingress> -->
+                        <!--interface: Traffic interface to which the DSCP value is applied to-->
+                        <!-- <interface>{{TRAFFIC-INTERFACE-2}}</interface> -->
+                        <!--value: DSCP value -->
+                        <!-- <value>{{DSCP-VALUE}}</value> -->
+                    <!-- </ingress> -->
+                    <!--egress: DSCP configuration for egress traffic.-->
+                    <!-- <egress> -->
+                        <!--interface: Traffic interface to which the DSCP value is applied to-->
+                        <!-- <interface>{{TRAFFIC-INTERFACE-1}}</interface> -->
+                        <!--value: DSCP value -->
+                        <!-- <value>{{DSCP-VALUE}}</value> -->
+                    <!-- </egress> -->
+                    <!-- <egress> -->
+                        <!--interface: Traffic interface to which the DSCP value is applied to-->
+                        <!-- <interface>{{TRAFFIC-INTERFACE-2}}</interface> -->
+                        <!--value: DSCP value -->
+                        <!-- <value>{{DSCP-VALUE}}</value> -->
+                    <!-- </egress> -->
+                <!-- </dscp> -->
+            </nrf>
+        </config>
+    </edit-config>
+</rpc>

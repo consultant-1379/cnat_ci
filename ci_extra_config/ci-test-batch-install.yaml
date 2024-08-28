@@ -1,0 +1,7 @@
+batch-size: 2
+vnf-info-files:
+- ../config/n182/eccd2/ccrc/vnf.yaml
+- ../config/n182/eccd2/pcg/vnf.yaml
+cfggen-info-files:
+- ../config/n182/eccd2/ccrc/cfggen.yaml
+- ../config/n182/eccd2/pcg/cfggen.yaml

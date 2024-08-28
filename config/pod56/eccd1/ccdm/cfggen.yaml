@@ -1,0 +1,41 @@
+nodeInfo: site.yaml
+siteGlobal: ../site-global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: ccdm/1.10/values.yaml.jinja2
+  target: values.yaml
+- template: ccdm/1.10/instantiate.json.jinja2
+  target: instantiate.json
+- template: ccdm/1.10/consistency-config.xml.jinja2
+  target: consistency-config.xml
+- template: common/snmp-config.json.jinja2
+  target: snmp-config.json
+- template: common/user-config.xml.jinja2
+  target: user-config.xml
+- template: ccdm/1.10/external-certificates.xml.jinja2
+  target: external-certificates.xml
+- template: ccdm/1.10/nrfagent-config.xml.jinja2
+  target: nrfagent-config.xml
+- template: ccdm/1.10/udr-config.xml.jinja2
+  target: udr-config.xml
+- template: ccsm/1.11/hssepc-application-counters.xml.jinja2
+  target: hssepc-application-counters.xml
+- template: ccsm/1.11/eir-application-counters.xml.jinja2
+  target: eir-application-counters.xml
+- template: ccsm/1.11/eir-main-branches-setting.ldif.jinja2
+  target: eir-main-branches-setting.ldif
+- template: ccsm/1.11/eir-search-order-setting.ldif.jinja2
+  target: eir-search-order-setting.ldif
+- template: ccsm/1.11/schema/hssepc-schema.xml.jinja2
+  target: schema/hssepc-schema.xml
+- template: ccsm/1.11/schema/eir-schema.xml.jinja2
+  target: schema/eir-schema.xml
+- template: ccdm/1.10/ddc-config.xml.jinja2
+  target: ddc-config.xml
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml

@@ -1,0 +1,9 @@
+{
+  "user_info": "Day1 EDA GUI Login Account",
+  "roles": [
+    "allrights"
+  ],
+  "lockable": true,
+  "locked": false,
+  "email": "eda-admin@ericsson.com"
+}

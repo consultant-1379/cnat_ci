@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>urn:ietf:params:netconf:base:1.0</capability>
+    </capabilities>
+</hello>]]>]]>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+    <edit-config>
+        <target><running/></target>
+        <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+            <ausf xmlns="urn:rdns:com:ericsson:oammodel:ericsson-ausf">
+                <!-- Container ausf-engine -->
+                <ausf-engine>
+                    <session-timer>5</session-timer>
+                    <retry-number>2</retry-number>
+                    <udm-url>https://udm1.pod56.5gc.mnc081.mcc240.3gppnetwork.org:443/nudm-ueau/v1</udm-url>
+                </ausf-engine>
+                <!-- Container nf-profile state the Network Function profile -->
+                <!-- The default nf-profile must not be deleted and recreated. -->
+                <nf-profile>
+                    <!-- NF uuid -->
+                    <!-- AUSF creates this NF uuid randomly in Day 0 configuration during deployment. -->
+                    <!-- Update it if needed. -->
+                    <instance-id>76f4b62e-f3f7-454e-9562-56eccd1d0793</instance-id>
+                    <!--
+                      NF Status: enum (registered, suspended, deregistered)
+                    -->
+                    <requested-status>registered</requested-status>
+                    <!--
+                      List Identifier of the supported PLMNs.
+                      The length of mcc is 3 digits and mnc is 2 or 3 digits.
+                    -->
+                    <plmn-id>
+                        <mcc>240</mcc>
+                        <mnc>81</mnc>
+                    </plmn-id>
+                    <!-- Container s-nssai -->
+                    <snssai>
+                        <id>1</id>
+                        <sst>1</sst>
+                        <sd>000002</sd>
+                    </snssai>
+                    <!-- AUSF Fully Qualified Domain Name -->
+                    <fqdn>ausf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                    <!--ipv4-address: IPv4 addresses of the Network Function.-->
+                    <!-- <ipv4-address>{AUSF-IPV4-ADDRESS}</ipv4-address> -->
+                    <!--ipv6-address: IPv6 addresses of the Network Function.-->
+                    <!-- <ipv6-address>{AUSF-IPV6-ADDRESS}</ipv6-address> -->
+                    <priority>1</priority>
+                    <locality>LN1</locality>
+                    <ausf-info>
+                        <!--
+                          States the list of SUPI ranges:
+                          If supi-start and supi-end are not defined,
+                          it will accept all SUPIs
+                        -->
+                        <supi-range>
+                            <id>1</id>
+                            <supi-start>240810000000000</supi-start>
+                            <supi-end>240819999999999</supi-end>
+                        </supi-range>
+                        <!-- Routing indicator -->
+                        <routing-indicator>0</routing-indicator>
+                    </ausf-info>
+                    <!--service: List of NF Service Instances. It shall include the services produced by the NF that can be discovered by other NFs-->
+                    <!--required items of service: instance-id, name, scheme, status.-->
+                    <!--The default service instance must not be deleted and recreated. -->
+                    <service>
+                        <!--instance-id: Unique ID of the service instance within the NF Instance.-->
+                        <instance-id>nausf-auth-01</instance-id>
+                        <!--name: Name of the service instance. For AUSF service, it should be "nausf-auth" -->
+                        <name>nausf-auth</name>
+                        <!--scheme(mandatory): Protocol schema of URI (e.g. "http", "https").-->
+                        <scheme>https</scheme>
+                        <!--status: Status of the NF Service Instance.-->
+                        <requested-status>registered</requested-status>
+                        <!--fqdn: FQDN of the NF Service Instance.-->
+                        <fqdn>ausf1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+                        <!--: IP addresses and port information of the Network Function (including IPv4 and/or IPv6 address) where the service is listening for incoming service requests.-->
+                        <ip-endpoint>
+                            <!--id: Unique ID that represents the AUSF service instance.-->
+                            <id>1</id>
+                            <!--ipv4-address: IPv4 address of AUSF service which is listening for incoming service requests.-->
+                            <!-- <ipv4-address>{AUSF-SERVICE-IPV4-ADDRESS}</ipv4-address> -->
+                            <!--ipv6-address: IPv6 address of AUSF service which is listening for incoming service requests.-->
+                            <!-- <ipv6-address>{AUSF-SERVICE-IPV6-ADDRESS}</ipv6-address> -->
+                            <!--port: Port number that the AUSF service is listening on.-->
+                            <port>443</port>
+                        </ip-endpoint>
+                        <!--
+                          allowed-nf-type: Type of the NFs allowed to access the service instance.
+                          The absence of this item indicates that any NF type is allowed to access the service instance.
+                          For AUSF service, it should be "amf"
+                        -->
+                        <allowed-nf-type>amf</allowed-nf-type>
+                    </service>
+                </nf-profile>
+                <!--Attention: Make sure nf-profile configuration is correct after Day 1 configuration is made. -->
+            </ausf>
+        </config>
+    </edit-config>
+</rpc>
+<close-session/>

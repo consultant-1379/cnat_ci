@@ -1,0 +1,44 @@
+# version: 1.0.0
+
+################################################################################
+#
+#   Description:
+#   This file includes the definition of the default search order.
+#
+#  Instructions:
+#  - Value "<root_DN>" ,root Distinguished Name, must be updated with the value
+#    that is correct for the particular installation according to the operator
+#    requirements; e.g.: "dc=operator,dc=com"
+#  - The file "EIR main branches initial setting" should have been executed in advance.
+#    The entry "serv=equipmentcheck" and "ou=searchorder" must be created before running this file.
+#  - "UnknownRsp" is mandatory attribute. Add lists to search via ldif -this file- or via CAI3G SetSearchOrder.
+#       lxNum: x list to search   x=1-5
+#       rspx: color associated to the searched list  x=1-5
+#       NOTE: lxNum is OctectString, OctectString is encoded in Base64 format.
+#
+#################################################################################
+
+#Define the Default Search Order
+dn: imsiPr=-1,ou=searchorder,serv=equipmentcheck,ou=servCommonData,dc=operator,dc=com
+objectclass: top
+objectClass: EI1
+imsiPr: -1
+
+# -1, searchorder, equipmentcheck, servCommonData, <root_DN>
+# The values below are an example, this file has to be customized per project
+# "unknownRsp" is a mandatory attribute
+dn: ei=searchorderData,imsiPr=-1,ou=searchorder,serv=equipmentcheck,ou=servCommonData,dc=operator,dc=com
+imsiPr: -1
+unknownRsp: U
+l1Num:: AQ==
+rsp1: B
+l2Num:: AA==
+rsp2: W
+l3Num:: Ag==
+rsp3: G
+l4Num:: BA==
+rsp4: B
+ei: searchorderData
+objectClass: CUDBExtensibleObject
+objectClass: EI5
+objectclass: top

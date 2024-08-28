@@ -1,0 +1,10 @@
+config
+diagnostic-data-collection sftp-server Default
+ endpoints endpoint Default
+  remote-address 11.100.3.51
+  remote-port    22
+  remote-path    /mnt/ddc/node182-cluster2-pcg1
+  client-identity username sftpuser
+  client-identity password bG1jX3hkZw==
+commit
+end

@@ -1,0 +1,11 @@
+*.pyc
+!.gitignore
+.vscode
+.idea
+.pytest_cache
+.pkg_path
+.config
+cnat
+*/__pycache__
+ts-config
+test_resource

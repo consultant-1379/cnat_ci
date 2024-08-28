@@ -1,0 +1,837 @@
+#External values file
+#Please set up the values regarding to deployment which you want to deploy
+#In some variable values there are small-system and standard-system suggestion you can recognize it by comment {{small-system value|standard-system value}}
+#The exact value for those variables is result of dimensioning exercise
+#Please remove curly brackets {{}} surrounding the final value to set it right
+
+global:
+  #Possible deployments [small-system(ex. 10k), standard-system(ex. 1m), clear-text(ex. non-mtls), mtls]. Enable only one dimensioning profile and one security profile
+  timezone: CET
+  nrfagent:
+    enabled: true #  true if CCDM is deployed in a solution where NRF is deployed, false otherwise.
+  security:
+    policyBinding:
+      create: false  # Default is false
+      defaultAdpBinding: true
+    policyReferenceMap:
+      default-restricted-security-policy: default-restricted-security-policy
+      plc-privileged-for-istio: plc-privileged-for-istio
+      plc-privileged-for-udr: plc-privileged-for-udr
+      plc-privileged-for-adp: plc-privileged-for-adp
+      plc-privileged-for-swprobe: plc-privileged-for-swprobe
+      plc-dd66cc53d8554f93ad34971900932e: plc-dd66cc53d8554f93ad34971900932e
+      plc-e393f1841dfc4cbcca713b5a97eb83: plc-e393f1841dfc4cbcca713b5a97eb83
+      plc-9c20871f9bf62c7b09fd0c684ac651: plc-9c20871f9bf62c7b09fd0c684ac651
+      plc-38dc0a0ee2b2564ef10039d2c6c0e0: plc-38dc0a0ee2b2564ef10039d2c6c0e0
+      plc-59d0cf1dcc793a78b6ce30bfbe6553: plc-59d0cf1dcc793a78b6ce30bfbe6553
+      plc-03ad10577718e69c935814b4f30054: plc-03ad10577718e69c935814b4f30054
+      plc-29c4b823c87a16cad810082eb11106: plc-29c4b823c87a16cad810082eb11106
+  profiles:
+    small-system:
+      enabled: true
+    standard-system:
+      enabled: false
+    large-system:
+      enabled: false
+    cleartext:
+      enabled: false
+    mtls:
+      enabled: true
+  tapagent:
+    pvtb:
+      enabled: false #default is false
+    egress_exclude_ips: "10.96.0.0/12,192.168.0.0/16"
+    enabled: false
+#  domainName: {{DOMAIN-NAME}}
+#  clusterName: {{NAMESPACE}}
+  enableCrashDumps: true
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: "CCDM"
+          customerId: "946060"
+          swltId: "STA-CCDM-31"
+  licensing:
+    sites:
+      - hostname: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+        #Remove the following comments to allow the IP and Priority configurations. IP will override the hostname configuration
+        #ip: {{ip_address}}
+        #priority: {{100}}
+  ipStackMode: "ipv4"
+  #for supporting new pull secret levels
+  pullSecret: regcred
+  registry:
+    url: registry01.eoaas.n182.vpod1.seli.gic.ericsson.se
+    pullSecret: regcred
+    imagePullPolicy: IfNotPresent # Default is IfNotPresent
+  imageCredentials:
+    pullPolicy: IfNotPresent # Default is IfNotPresent
+  ## CCDM FSGROUP CONFIGURATION
+  #  The next configuration defines the global fsGroup, if different configuration is needed change on purpose.
+  #
+  #  NOTE:
+  #  - The default value 10000 for fsGroup will be used when no other value will be set.
+  fsGroup:
+    manual: 10000
+    namespace: false # default is false
+  istio:
+    # UDM MESH WA: select IPv4 address or IPv6 address for IPv6 deployments
+    kubernetes_service_ipaddress: 10.0.10.1
+    # - Global INGRESS configuration
+    ingress:
+      gateways:
+        eric-ingressgw-udr-ldap-provisioning-gw:
+          ports:
+            tcp-ldap-provisioning:
+              enabled: false # Enable/Disable LDAP (cleartext), default is false
+        eric-ingressgw-udr-ldap-traffic-gw:
+          ports:
+            tcp-ldap-traffic:
+              enabled: false # Enable/Disable LDAP (cleartext), default is false
+        # eric-ingress-udr-intersite
+        # Ingress gateway for Zookeeper multisite coordination, KV Apache Geode replication, 5G Provisioning Proxy, Data Consistency Check and 4G/5G traffic for site to site communication
+        eric-udr-intersite-gw:
+          ports:
+            tcp-ldap-proxy:
+              enabled: false # Enable/Disable LDAP (cleartext), default is false
+    # Global configuration for 5g INGRESS/EGRESS mTLS enabled. Remove comment symbol "#" and configure for your specific environment
+            https-papi-provisioning:
+              settings:
+                minProtocolVersion: TLSV1_2 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                maxProtocolVersion: TLSV1_3 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                # - DHE-RSA-AES128-GCM-SHA256 not supported by istio
+                # Optional: If specified, only support the specified cipher list. Otherwise default to the default cipher list supported by Envoy
+                cipherSuites:
+                  - ECDHE-ECDSA-AES128-GCM-SHA256
+                  - ECDHE-RSA-AES128-GCM-SHA256
+                #  - ECDHE-ECDSA-AES128-SHA256
+                #  - ECDHE-RSA-AES128-SHA256
+                  - ECDHE-ECDSA-AES256-GCM-SHA384
+                  - ECDHE-RSA-AES256-GCM-SHA384
+                #  - ECDHE-ECDSA-AES256-SHA384
+                #  - ECDHE-RSA-AES256-SHA384
+            tls-eric-udr-kvdb-ag-locators:
+              settings:
+                minProtocolVersion: TLSV1_2 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                maxProtocolVersion: TLSV1_3 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                # - DHE-RSA-AES128-GCM-SHA256 not supported by istio
+                # Optional: If specified, only support the specified cipher list. Otherwise default to the default cipher list supported by Envoy
+                cipherSuites:
+                  - ECDHE-ECDSA-AES128-GCM-SHA256
+                  - ECDHE-RSA-AES128-GCM-SHA256
+                #  - ECDHE-ECDSA-AES128-SHA256
+                #  - ECDHE-RSA-AES128-SHA256
+                  - ECDHE-ECDSA-AES256-GCM-SHA384
+                  - ECDHE-RSA-AES256-GCM-SHA384
+                #  - ECDHE-ECDSA-AES256-SHA384
+                #  - ECDHE-RSA-AES256-SHA384
+            tls-eric-udr-kvdb-ag-gateway-receivers:
+              settings:
+                minProtocolVersion: TLSV1_2 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                maxProtocolVersion: TLSV1_3 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                # - DHE-RSA-AES128-GCM-SHA256 not supported by istio
+                # Optional: If specified, only support the specified cipher list. Otherwise default to the default cipher list supported by Envoy
+                cipherSuites:
+                  - ECDHE-ECDSA-AES128-GCM-SHA256
+                  - ECDHE-RSA-AES128-GCM-SHA256
+                #  - ECDHE-ECDSA-AES128-SHA256
+                #  - ECDHE-RSA-AES128-SHA256
+                  - ECDHE-ECDSA-AES256-GCM-SHA384
+                  - ECDHE-RSA-AES256-GCM-SHA384
+                #  - ECDHE-ECDSA-AES256-SHA384
+                #  - ECDHE-RSA-AES256-SHA384
+            tls-eric-udr-zookeeper:
+              settings:
+                minProtocolVersion: TLSV1_2 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                maxProtocolVersion: TLSV1_3 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                # - DHE-RSA-AES128-GCM-SHA256 not supported by istio
+                # Optional: If specified, only support the specified cipher list. Otherwise default to the default cipher list supported by Envoy
+                cipherSuites:
+                  - ECDHE-ECDSA-AES128-GCM-SHA256
+                  - ECDHE-RSA-AES128-GCM-SHA256
+                #  - ECDHE-ECDSA-AES128-SHA256
+                #  - ECDHE-RSA-AES128-SHA256
+                  - ECDHE-ECDSA-AES256-GCM-SHA384
+                  - ECDHE-RSA-AES256-GCM-SHA384
+                #  - ECDHE-ECDSA-AES256-SHA384
+                #  - ECDHE-RSA-AES256-SHA384
+        # eric-udr-traffic gateway configuring eric-ingressgw-udr-traffic service mesh ingress gateway
+        # Ingress gateway for 5G Traffic (HTTP2) and 5G proxy multisite traffic HTTP2
+        eric-udr-traffic-gw: # Gateway resource name.
+          ports:
+            https-mtls:
+              settings:
+                minProtocolVersion: TLSV1_2 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                maxProtocolVersion: TLSV1_3 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                # - DHE-RSA-AES128-GCM-SHA256 not supported by istio
+                # Optional: If specified, only support the specified cipher list. Otherwise default to the default cipher list supported by Envoy
+                cipherSuites:
+                  - ECDHE-ECDSA-AES128-GCM-SHA256
+                  - ECDHE-RSA-AES128-GCM-SHA256
+                #  - ECDHE-ECDSA-AES128-SHA256
+                #  - ECDHE-RSA-AES128-SHA256
+                  - ECDHE-ECDSA-AES256-GCM-SHA384
+                  - ECDHE-RSA-AES256-GCM-SHA384
+                #  - ECDHE-ECDSA-AES256-SHA384
+                #  - ECDHE-RSA-AES256-SHA384
+        # Ingress gateway for 5G Provisioning (HTTP2)
+        eric-eda-provisioning-gw: # Gateway resource name.
+          ports:
+            https-mtls:
+              settings:
+                minProtocolVersion: TLSV1_2 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                maxProtocolVersion: TLSV1_3 # Values allowed [ TLSV1_1, TLSV1_2, TLSV1_3 ]
+                # - DHE-RSA-AES128-GCM-SHA256 not supported by istio
+                # Optional: If specified, only support the specified cipher list. Otherwise default to the default cipher list supported by Envoy
+                cipherSuites:
+                  - ECDHE-ECDSA-AES128-GCM-SHA256
+                  - ECDHE-RSA-AES128-GCM-SHA256
+                #  - ECDHE-ECDSA-AES128-SHA256
+                #  - ECDHE-RSA-AES128-SHA256
+                  - ECDHE-ECDSA-AES256-GCM-SHA384
+                  - ECDHE-RSA-AES256-GCM-SHA384
+                #  - ECDHE-ECDSA-AES256-SHA384
+                #  - ECDHE-RSA-AES256-SHA384
+
+    egress:
+      # - CCDM egress endpoints
+      endpoints:
+        # EGRESS CCDM ENDPOINTS TO BE DEFINED
+        # - Egress individual rules, one per CCDM peer.
+        # -- CCSM, Nudm interface notifications
+        eric-ccsm-sbi-traffic-mtls:
+          enabled: false
+#          host: {{EGRESS-CCSM-HOST}}
+#          addresses:
+#            - {{EGRESS-CCSM-VIP}}
+#          ports:
+#            http2-port-for-mTLS-origination:
+#              maxProtocolVersion: {{EGRESS-CCSM-MAXTLS}} # Values allowed [ TLSv1_2, TLSv1_3 ]
+        # -- CCPC, Npcf interface notifications
+        eric-ccpc-sbi-traffic-mtls:
+          enabled: false
+#          host: {{EGRESS-CCPC-HOST}}
+#          addresses:
+#            - {{EGRESS-CCPC-VIP}}
+#          ports:
+#            http2-port-for-mTLS-origination:
+#              maxProtocolVersion: {{EGRESS-CCPC-MAXTLS}} # Values allowed [ TLSv1_2, TLSv1_3 ]
+        # -- CCRC, Nnr interface NRF registration/notifications
+        eric-ccrc-sbi-traffic-mtls:
+          enabled: false
+#          host: {{EGRESS-CCRC-HOST}}
+#          addresses:
+#            - {{EGRESS-CCRC-VIP}}
+#          ports:
+#            http2-port-for-mTLS-origination:
+#              maxProtocolVersion: {{EGRESS-CCRC-MAXTLS}} # Values allowed [ TLSv1_2, TLSv1_3 ]
+        # -- CCxx wildcard, if EGRESS-WILDCARD enabled EGRESS-CCSM-ENABLED, EGRESS-CCRC-ENABLED and EGRESS-CCPC must be disabled.
+        eric-wildcard-sbi-traffic-mtls:
+          enabled: true
+          host: "*.5gc.mnc081.mcc240.3gppnetwork.org"
+          ports:
+            http2-port-for-mTLS-origination:
+              maxProtocolVersion: TLSv1_3 # Values allowed [ TLSv1_2, TLSv1_3 ]
+#
+#        # -- List of new remote endpoints where (m)TLS is enabled and it's not covered in the current list. Remove '# ' for enabling the element in the list. Repeat element format for more remote endpoints.
+#        # Examples: New CCSM/CCPC/CCRC destinations where wildcard can not be used for identifying multiple destinations .
+#        # <endpoint name>: # Free name but be careful that there has not been set previously.
+#        #   enabled: true # Enable/Disable the service entry, values allowed [true, false].
+#        #   host: "new.5gc.mnc310.mcc014.3gppnetwork.org" # FQDN or wildcard for new endpoint (it should not be defined before).
+#        #   addresses: # Addresses is an optional field and it's only required for intersite, meaning communication among CCDM sites. Other destination should not define the address field.
+#        #     - 127.0.0.1 # VIP resolution from host defined in the "host" parameter.
+#        #   ports: # list of ports for the destination where mtls is required.
+#        #   - port: 443 # Port number.
+#        #     name: <protocol>-<port name> # For instance, https-newendpoint
+#        #     protocol: TCP
+#        #     mode: mTLS
+#        #   resolution: NONE
+#End of Global configuration for 5g INGRESS/EGRESS mTLS enabled
+
+  # Prov Funct global parameters
+  activation:
+    # ip protocol stack mode ipv6: true or false
+    ipv6: false
+    nodeSelector: {} #Deprecated
+
+  # nodeSelector spec value
+  nodeSelector: {}
+
+networkPolicy:
+  # default value should be set to "true"
+  enabled: true
+
+eric-nrfagent:
+  global:
+    # ip protocol stack mode ipv6: ipv4 or ipv6
+    ipStackMode: "ipv4"
+
+
+# Provisioning Function
+eric-act-ccdm:
+  eric-act-proclog-cassandra-stasher:
+    misc:
+      proclog_stasher:
+        replicaCount: 1
+    nodeSelector:
+      proclogStasher: {} #Deprecated
+      proclogStasherTopic: {} #Deprecated
+  eric-act-mapi-provisioning:
+    misc:
+      replicaCount: 3
+    nodeSelector: {} #Deprecated
+  eric-act-user-data-activator:
+    uda:
+      misc:
+        replicaCount: 3
+    uds:
+      misc:
+        synchronizerCount: 2
+    nodeSelector:
+      activator: {} #Deprecated
+      synchronizer: {} #Deprecated
+  eric-act-oauth-token-validator:
+    misc:
+      replicaCount: 2
+    nodeSelector: {} #Deprecated
+  eric-data-wide-column-database-cd:
+    persistence:
+      dataVolume:
+        persistentVolumeClaim:
+          storageClassName: network-block
+          size: 22Gi # {32G} #Value of this parameter is result of dimensioning exercise
+    # ip protocol stack mode ipv6: true or false
+    resources:
+      cassandra:
+        network:
+          useIPv6: false
+    nodeSelector:
+      annotator: {} #Deprecated
+      bra: {} #Deprecated
+      configureKeyspacesJob: {} #Deprecated
+      hooklauncher: {} #Deprecated
+      operator: {} #Deprecated
+      rackController: {} #Deprecated
+      cassandra: {} #Deprecated
+      tlsRestarter: {} #Deprecated
+    replicaCount: 3
+  eric-act-mb-kf:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+        size: 2Gi  # {20Gi} # same value for all deployments
+    replicaCount: 4
+    nodeSelector: {} #Deprecated
+  eric-act-proclog-manager:
+    nodeSelector:
+      proclogManager: {} #Deprecated
+      datamodelJob: {} #Deprecated
+  eric-act-application-resource-monitor:
+    nodeSelector: {} #Deprecated
+  eric-act-secret-onboarding:
+    nodeSelector: {} #Deprecated
+  eric-act-cmm-config-ccdm:
+    nodeSelector: {} #Deprecated
+  eric-act-service-locator-registry:
+    nodeSelector: {} #Deprecated
+# ADP common components
+eric-adp:
+  eric-si-application-sys-info-handler:
+    asih:
+      applicationId: n182-vpod2-ccdm1
+  eric-data-document-database-pg:
+    persistentVolumeClaim:
+      storageClassName: network-block
+    nodeSelector:
+      postgres: {} #Deprecated
+      brAgent: {} #Deprecated
+      cleanuphook: {} #Deprecated
+      hooklauncher: {} #Deprecated
+
+  eric-data-coordinator-zk:
+    replicas: 3
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+    nodeSelector:
+      brAgent: {} #Deprecated
+      datacoordinatorzk: {} #Deprecated
+
+  eric-pm-bulk-reporter:
+    userConfig:
+      ldap:
+        useIPv6DNSFirst: false #true if using IPv6 stack mode
+    service:
+      annotations:
+        sharedVIPLabel: ccdm-oam
+        addressPoolName: ccdm-oam
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    persistentVolumeClaim:
+      storageClassName: network-block
+    env:
+      # nf_node_type, one of: NRF,UDM-AUSF,UDR,NSSF,5G_UDM (All the NFs within the same cluster)
+      nodeType: 5G_UDM
+      supportedGps: fifteen-min thirty-min one-hour twelve-hour one-day one-min five-min
+    nodeSelector:
+      eric-pm-bulk-reporter: {} #Deprecated
+      hooklauncher: {} #Deprecated
+
+  eric-data-search-engine:
+    persistence:
+      data:
+        persistentVolumeClaim:
+          storageClassName: network-block
+      master:
+        persistentVolumeClaim:
+          storageClassName: network-block
+    # ip protocol stack mode ipv6: true or false
+    service:
+      network:
+        protocol:
+          IPv6: false
+    nodeSelector:
+      ingest: {} #Deprecated
+      master: {} #Deprecated
+      data: {} #Deprecated
+      bragent: {} #Deprecated
+      preupgradehook: {} #Deprecated
+      helmtest: {} #Deprecated
+      hooklauncher: {} #Deprecated
+
+
+    # Number of replicas for Search Engine.
+    #replicaCount:
+    # Number of replicas for eric-data-search-engine-data container. This parameter is applicable to CCDM Standard and CCDM Large system configurations ONLY. Please, do not include this parameter for CCDM Small system configurations.
+    # Value of this parameter is result of a dimensioning exercise.
+    #  data: {{search_engine_data_replicas}}
+    # Number of replicas for eric-data-search-engine-ingest/eric-data-search-engine-ingest-tls containers. This parameter is applicable to CCDM Large system configurations ONLY. Please, do not include this parameter for CCDM Small or Standard system configurations.
+    # Value of this parameter is result of a dimensioning exercise.
+    #  ingest: {{search_engine_ingest_replicas}}
+
+    # Index Management configuration for Search Engine in CCDM Standard and CCDM Large system configurations only (do not include this parameter for CCDM Small system configurations).
+    # Value of this parameter is result of a dimensioning exercise.
+
+    #index_management:
+    #  delete_indices_by_diskspace:
+    #  - index: adp-app-logs-*
+    #    size: {{size_adp_app_logs}}gb
+    #  - index: adp-app-debug-logs-*
+    #    size: {{size_adp_app_debug_logs}}gb
+
+  eric-sec-ldap-server:
+    persistentVolumeClaim:
+      storageClassName: network-block
+    nodeSelector:
+      ldap: {} #Deprecated
+      ldapProxy: {} #Deprecated
+
+  eric-cnom-server:
+    fqdn: cnom.ccdm1.n182.vpod2.seli.gic.ericsson.se
+    nodeSelector: {} #Deprecated
+    legalNotice: "IF YOU ARE NOT AN AUTHORIZED USER, PLEASE EXIT IMMEDIATELY\n\nThis system processes personal information. Handle personal information with care. Misuse, including unauthorized access, is grounds for legal action. Version: 1.0, Date: October 27, 2020."
+
+  eric-data-distributed-coordinator-ed:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+      brAgent:
+        backupVolume:
+          storageClassName: network-block
+    nodeSelector:
+      brAgent: {} #Deprecated
+      dced: {} #Deprecated
+
+  eric-cm-yang-provider:
+    externalTls :
+      netconf:
+        enabled: false # default value is false
+    service:
+      annotations:
+        sharedVIPLabel: ccdm-oam
+        addressPoolName: ccdm-oam
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    ldap:
+      ipv6Enabled: false
+    persistentVolumeClaim:
+      storageClassName: network-block
+    nodeSelector:
+      eric-cm-yang-provider: {} #Deprecated
+    #newLinesInBinaryBase64Enabled: {{true|false}}
+
+  eric-ctrl-bro:
+    persistence:
+      persistentVolumeClaim:
+        size: 120Gi  # {4Gi|64Gi|256Gi} #{small-system value|standard-system value|large-system value}
+        storageClassName: network-block
+    nodeSelector:
+      backupAndRestore: {}
+
+  eric-fh-snmp-alarm-provider:
+    service:
+      annotations:
+        sharedVIPLabel: ccdm-oam
+        addressPoolName: ccdm-oam
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    nodeSelector:
+      snmpAP: {} #Deprecated
+      hooklauncher: {} #Deprecated
+    # Needs to be configured when integrating CCDM with ENM FM using SNMPv2c sourceIdentifier.
+    # Requires ENM 22.1 (sprint 22.02)
+    # Possible values are 0(Unknown), 1(IPV4), 2(IPV6)
+    sourceIdentifierType: 1
+    # Needs to be configured when integrating CCDM with ENM FM using SNMPv2c sourceIdentifier.
+    # Should be in IPv4 or IPv6 format, depending on SourceIdentifierType
+    sourceIdentifier: 10.228.194.196
+
+  eric-pm-server:
+    rbac:
+      appMonitoring:
+        enabled: true
+        federation:
+          jobOverride: true
+          jobConfiguration: |
+            - job_name: 'federate-victoria'
+              scrape_interval: 1m
+              honor_labels: true
+              metrics_path: '/select/0/prometheus/federate'
+              params:
+                'match[]':
+                  - '{job="kubernetes-nodes",namespace="ccdm"}'
+                  - '{job="kubernetes-nodes-cadvisor",namespace="ccdm"}'
+              static_configs:
+                - targets:
+                  - 'eric-victoria-metrics-cluster-vmselect.monitoring:8481'
+    server:
+      extraArgs:
+        storage.tsdb.retention.size: 29.75GB # {13GB|30GB|30GB} #These are default values for small-system, standard-system and large-system but value of this parameter should be set to 85% of eric-adp.eric-pm-server.server.persistentVolume.size
+      persistentVolume:
+        storageClass: network-block
+        size: 33Gi # {16Gi|35Gi|35Gi}  #These are default values for small-system, standard-system and large-system but the exact value for this parameter is result of dimensioning exercise
+    nodeSelector:
+      eric-pm-server: {} #Deprecated
+
+  eric-tm-ingress-controller-cr:
+    service:
+      annotations:
+        sharedVIPLabel: ccdm-oam
+        addressPoolName: ccdm-oam
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+    nodeSelector:
+      contour: {} #Deprecated
+      envoy: {} #Deprecated
+      hooklauncher: {} #Deprecated
+
+  eric-log-shipper:
+    nodeSelector: {} #Deprecated
+
+  eric-log-transformer:
+    # Number of replicas for eric-log-transformer. This parameter is applicable to CCDM Standard and CCDM Large system configurations ONLY. Please, do not include this parameter for CCDM Small system configurations.
+    # Value of this parameter is result of a dimensioning exercise.
+
+    #replicaCount: {{log_transformer_replicas}}
+    nodeSelector:
+      logtransformer: {} #Deprecated
+      hooklauncher: {} #Deprecated
+    egress:
+      syslog:
+        ##FOR CLEARTEXT, REMOVE COMMENT
+        #tls:
+        #  enabled: false
+        ##Only it is needed to be modified in case of the Certificates have been modified by customer. Remove comment and assign new certificate names
+        ##certificates:
+        ##  asymmetricKeyCertificateName: eric-log-transformer-client-certificate
+        ##  trustedCertificateListName: eric-log-transformer-cacerts
+        enabled: false
+        remoteHosts:
+          - host:
+            port:
+        ## Remove # characters to enable inclusion rule.
+        ## If this inclusion rule is enabled, only the log events with facility field set to "security/authorization messages" will be sent to syslog receiver.
+        ##inclusions:
+        ##  - field: "[facility]"
+        ##    value: "security/authorization messages"
+
+  eric-odca-diagnostic-data-collector:
+    nodeSelector:
+      interval: {} #Deprecated
+      manual: {} #Deprecated
+      hooklauncher: {} #Deprecated
+
+  eric-fh-alarm-handler:
+    nodeSelector: {} #Deprecated
+
+  eric-cm-mediator:
+    nodeSelector:
+      eric-cm-mediator: {} #Deprecated
+      eric-cm-mediator-notifier: {} #Deprecated
+      eric-cm-key-init: {} #Deprecated
+      hooklauncher: {} #Deprecated
+
+  eric-sec-access-mgmt:
+    service:
+      ipv6:
+        enabled: false
+    nodeSelector:
+      iam: {} #Deprecated
+      sipoauth2: {} #Deprecated
+      preupgrade: {} #Deprecated
+      accountManager: {} #Deprecated
+      hooklauncher: {} #Deprecated
+      shh15prerollbackjob: {} #Deprecated
+      shh15postrollbackjob: {} #Deprecated
+  eric-sec-sip-tls:
+    nodeSelector: {} #Deprecated
+
+  eric-sec-key-management:
+    nodeSelector:
+      kms: {} #Deprecated
+      bootstrapJob: {} #Deprecated
+      hooklauncher: {} #Deprecated
+
+  eric-lm-combined-server:
+    # Following parameters have been deprecated, check Day0 Parameters Description for more information
+    #licenseServerClient:
+    #  licenseServer:
+    #    thrift:
+    #      host: {{nels.network.local}}
+    #licenseServerIpAddresses:
+    #  ip1:
+    #  ip2:
+    nodeSelector:
+      licenseConsumerHandler: {} #Deprecated
+      licenseServerClient: {} #Deprecated
+      hooklauncher: {} #Deprecated
+
+  eric-data-object-storage-mn:
+    affinity:
+      podAntiAffinity: "hard" #default is hard
+    persistentVolumeClaim:
+      storageClassName: network-block
+
+  eric-probe-virtual-tap-broker:
+    timeorder:
+      enabled: false #default is false
+    replicaCount: 4
+
+# eric-udr-release
+eric-udr:
+#  FOR EGRESS DSCP MARKING, REMOVE COMMENT AND ADD DESIRED DSCP VALUE
+#  global:
+#    envoy:
+#      egress:
+#        5g-traffic:
+#          dscp: {{5g-traffic_dscp_value}}
+#        4g-traffic:
+#          dscp: {{4g-traffic_dscp_value}}
+#        system-monitor:
+#          dscp: {{system-monitor_dscp_value}}
+#        kvdb:
+#          dscp: {{kvdb_dscp_value}}
+  # eric-udr-message-bus-kf:
+  eric-data-message-bus-kf:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+
+  eric-udr-prov-sync-fe:
+      maxReplica: 4 #{10|100|100} #small-system | std-system values | large system values. Value is result of a dimensioning exercise
+      minReplica: 2 #{2|2|2} #small-system | std-system values | large system values. Value is result of a dimensioning exercise
+
+  eric-udr-backuprestore:
+    persistence:
+      storageClass: network-block
+
+  eric-udr-ldap-balancer:
+    deploy:
+      minReplica: 7 #{2|6|6} #{small-system value|standard-system value|large-system value}
+      maxReplica: 7 #{2|6|6} #{small-system value|standard-system value|large-system value}
+
+  eric-udr-ldapfe:
+    service:
+      minReplica: 2 #{2}
+      maxReplica: 4 #{10|100|100} #{small-system value|standard-system value|large-system value}
+
+  eric-udr-nudrsvc:
+    minReplica: 3 #{2}
+    maxReplica: 9 #{10|100|100} #{small-system value|standard-system value|large-system value}
+
+  eric-udr-provisioningfe:
+    minReplica: 2 #{2}
+    maxReplica: 7 #{10|100|100} #{small-system value|standard-system value|large-system value}
+
+  eric-udr-rest-notifchecker:
+    minReplica: 2 #{2}
+    maxReplica: 4 #{10|100|100} #{small-system value|standard-system value|large-system value}
+
+  eric-udr-rest-notifsender:
+    minReplica: 2 #{2}
+    maxReplica: 4 #{10|100|100} #{small-system value|standard-system value|large-system value}
+
+  eric-udr-soap-notifchecker:
+    minReplica: 2 #{2}
+    maxReplica: 4 #{10|100|100} #{small-system value|standard-system value|large-system value}
+
+  eric-udr-soap-notifsender:
+    minReplica: 2 #{2}
+    maxReplica: 4 #{10|100|100} #{small-system value|standard-system value|large-system value}
+
+  eric-udr-notificationsubscription:
+    minReplica: 2 #{2}
+    maxReplica: 4 #{10|100|100} #{small-system value|standard-system value|large-system value}
+    app:
+      periodicMaintenance:
+        # app.periodicMaintenance.cleanupSchedule -- Cron expression for execution of cleanup of deleted + expired entries. Daily at 01:00 AM by default. Fields: second minute hour day-of-the-month month day-of-the-week *=any ?=no specific value ,=value list separator
+        cleanupSchedule: "0 0 1 * * ?"
+        # app.periodicMaintenance.timeDeletedHoursBeforeEntryCleanup -- Time in hours that a notification subscription entry must have been deleted before it is eligible for permanent removal. 24 h by default
+        timeDeletedHoursBeforeEntryCleanup: 24
+  eric-udr-gudrestfe:
+    minReplica: 2 #{2}
+    maxReplica: 8 #{10|100|100} #{small-system value|standard-system value|large-system value}
+    # Set to "true" to enable ngud gudrestfe virtual service, see section "REST-based Ud Interface Configuration" in CCDM CPI for detail.
+    istio:
+      virtualservice:
+        enabled: true
+
+eric-data-kvdb-ag:
+  persistence:
+    data:
+      persistentVolumeClaim:
+        storageClassName: network-block
+    gwsender:
+      persistentVolumeClaim:
+        storageClassName: network-block
+    backup:
+      persistentVolumeClaim:
+        storageClassName: network-block
+  multiSite:
+    locator:
+      localHost: ccdm1-intersite.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org
+  replicaCount:
+    server: 1 #{4}
+  podPriority:
+    locator:
+      priorityClassName: kvdbprioclass
+    server:
+      priorityClassName: kvdbprioclass
+################################################################################
+# eric-ccdm-service-mesh
+################################################################################
+eric-udm-mesh-integration:
+  eric-ingressgw-udr-traffic:
+#  FOR INGRESS DSCP MARKING, REMOVE COMMENT AND ADD DESIRED DSCP VALUE
+#  NOTE: Only remove the comment in front of "dscpDualStack: true" line in case of running on a dual-stack kubernetes cluster. Value must be always set to true
+#    dscpDualStack: true
+#    ports:
+#      http2-clear:
+#        dscp: {{dscp_value}}
+#      https-mtls:
+#        dscp: {{dscp_value}}
+    replicaCount: 1 #{2|12|18} #{small-system value|standard-system value|large-system value}
+    externalTrafficPolicy: "Local"
+    service:
+      annotations:
+        addressPoolName: ccdm-5g-traffic
+        # If defined due to addressPoolName is shared by more than one eric-ingressgw deployment,
+        # set externalTrafficPolicy to Cluster
+        sharedVIPLabel: ccdm-5g-traffic
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-eda-provisioning:
+#  FOR INGRESS DSCP MARKING, REMOVE COMMENT AND ADD DESIRED DSCP VALUE
+#  NOTE: Only remove the comment in front of "dscpDualStack: true" line in case of running on a dual-stack kubernetes cluster. Value must be always set to true
+#    dscpDualStack: true
+#    ports:
+#      http2-clear:
+#        dscp: {{dscp_value}}
+#      https-mtls:
+#        dscp: {{dscp_value}}
+    replicaCount: 1 #{2|6|6} #{small-system value|standard-system value|large-system value}
+    externalTrafficPolicy: "Local"
+    service:
+      annotations:
+        addressPoolName: ccdm-5g-prov
+        # If defined due to addressPoolName is shared by more than one eric-ingressgw deployment,
+        # set externalTrafficPolicy to Cluster
+        sharedVIPLabel: ccdm-5g-prov
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-udr-ldap-provisioning:
+#  FOR INGRESS DSCP MARKING, REMOVE COMMENT AND ADD DESIRED DSCP VALUE
+#  NOTE: Only remove the comment in front of "dscpDualStack: true" line in case of running on a dual-stack kubernetes cluster. Value must be always set to true
+#    dscpDualStack: true
+#    ports:
+#      tcp-ldap:
+#        dscp: {{dscp_value}}
+#      tls-ldap:
+#        dscp: {{dscp_value}}
+    replicaCount: 1 #{2|8|8} #{small-system value|standard-system value|large-system value}
+    externalTrafficPolicy: "Local"
+    service:
+      annotations:
+        addressPoolName: ccdm-4g-prov
+        # If defined due to addressPoolName is shared by more than one eric-ingressgw deployment,
+        # set externalTrafficPolicy to Cluster
+        sharedVIPLabel: ccdm-4g-prov
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-udr-ldap-traffic:
+#  FOR INGRESS DSCP MARKING, REMOVE COMMENT AND ADD DESIRED DSCP VALUE
+#  NOTE: Only remove the comment in front of "dscpDualStack: true" line in case of running on a dual-stack kubernetes cluster. Value must be always set to true
+#    dscpDualStack: true
+#    ports:
+#      tcp-ldap:
+#        dscp: {{dscp_value}}
+#      tls-ldap:
+#        dscp: {{dscp_value}}
+    replicaCount: 1 #{2|12|12} #{small-system value|standard-system value|large-system value}
+    externalTrafficPolicy: "Local"
+    service:
+      annotations:
+        addressPoolName: ccdm-4g-traffic
+        # If defined due to addressPoolName is shared by more than one eric-ingressgw deployment,
+        # set externalTrafficPolicy to Cluster
+        sharedVIPLabel: ccdm-4g-traffic
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-udr-intersite:
+#  FOR INGRESS DSCP MARKING, REMOVE COMMENT AND ADD DESIRED DSCP VALUE
+#  NOTE: Only remove the comment in front of "dscpDualStack: true" line in case of running on a dual-stack kubernetes cluster. Value must be always set to true
+#    dscpDualStack: true
+#    ports:
+#      http2-clear:
+#        dscp: {{dscp_value}}
+#      https-mtls:
+#        dscp: {{dscp_value}}
+#      tcp-kvdb-loc:
+#        dscp: {{dscp_value}}
+#      tcp-kvdb-recv:
+#        dscp: {{dscp_value}}
+#      tcp-zookeeper:
+#        dscp: {{dscp_value}}
+#      tcp-ldap-proxy:
+#        dscp: {{dscp_value}}
+#      tls-ldap-proxy:
+#        dscp: {{dscp_value}}
+    replicaCount: 1 #{2|10|12} #{small-system value|standard-system value|large-system value}
+    externalTrafficPolicy: "Local"
+    service:
+      annotations:
+        addressPoolName: ccdm-intersite
+        # If defined due to addressPoolName is shared by more than one eric-ingressgw deployment,
+        # set externalTrafficPolicy to Cluster
+        sharedVIPLabel: ccdm-intersite
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"

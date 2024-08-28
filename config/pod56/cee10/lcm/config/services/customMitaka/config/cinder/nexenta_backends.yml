@@ -1,0 +1,31 @@
+#######################################################################################
+##  Configuration file for generic cinder backends in CEE                             #
+#######################################################################################
+##
+## Under the top 'backends' key, the used generic backends grouped together, where the
+## name of the cinder backends are the keys, and below them there are the cinder
+## parameters.
+##
+## This file should be referred from services.yaml, from cinder-volume service
+## component's plugins section, e.g.:
+##
+## plugins:
+##   ## the plugin name should be "backends" in case of generic backends!
+##   - name: backends
+##     pluginConfig:
+##       filename: config/cinder/nexenta_backends.yml
+---
+#backends:
+#
+#  nexentanfs-1:
+#    volume_backend_name: nexentanfs-1
+#    volume_driver: cinder.volume.drivers.nexenta.ns5.nfs.NexentaNfsDriver
+#    nexenta_password: <PWD>
+#    nas_mount_options: vers=3,minorversion=0,timeo=100,nolock
+#    nas_host: 192.168.17.10
+#    nexenta_user: admin
+#    nexenta_rest_port: 8443
+#    nexenta_rest_connect_timeout: 10
+#    nexenta_rest_address: 10.33.199.172,10.33.199.173
+#    nas_share_path: CEE_neXt_HA_POOL/cinder
+...

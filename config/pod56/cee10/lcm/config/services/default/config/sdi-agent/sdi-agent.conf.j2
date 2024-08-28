@@ -1,0 +1,9 @@
+LOG_DIR={{ sdi_agent_log_dir }}
+MAX_LOG_FILE_SIZE_MB={{ sdi_agent_max_log_size_mb }}
+POD_IPADDR=<TO.BE.FILLED>
+INTERFACE={{ sdi_agent_interface[0] }}
+NPAGENT_OPTIONS="-frequency={{ sdi_agent_frequency }} -log_dir={{ sdi_agent_log_dir }} -log_file_size={{ sdi_agent_max_log_size_mb }}"
+AGENT_CERTIFICATE={{ container_config_directory }}/agent.crt
+AGENT_KEY={{ container_config_directory }}/agent.key
+TLS_SDIM_HOSTNAME=<TO.BE.FILLED>
+SDIM_CA_CERTIFICATES={{ Cert_dir }}{{ sdim_cert[0][0] }}

@@ -1,0 +1,17 @@
+nodeInfo: site.yaml
+siteGlobal: ../site-global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: eda/2.14/values.yaml.jinja2
+  target: values.yaml
+- template: eda/2.14/instantiate.json.jinja2
+  target: instantiate.json
+- template: common/network-policy/eric-pm-server-allow.yaml.jinja2
+  target: network-policy/eric-pm-server-allow.yaml
+- template: common/network-policy/eric-data-search-engine-allow.yaml.jinja2
+  target: network-policy/eric-data-search-engine-allow.yaml
+- template: common/snmp-config.json.jinja2
+  target: snmp-config.json

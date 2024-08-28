@@ -1,0 +1,310 @@
+#
+# Configuration file with NIC assignment info
+#
+---
+portProfiles: # ! ChangeMe : Depends on HW type !
+  # c02/c03
+  - name: DELL_R630_type1
+    ports:
+      - name: control0
+        aggregator: control
+        busAddress: "0000:01:00.0"
+        pciDeviceName: NIC.Integrated.1-1-1
+        #busAddress: "0000:01:00.2"
+        #pciDeviceName: NIC.Integrated.1-3-1
+        lldp:
+          adminStatus: disabled
+      - name: control1
+        aggregator: control
+        busAddress: "0000:01:00.2"
+        pciDeviceName: NIC.Integrated.1-3-1
+        #busAddress: "0000:01:00.3"
+        #pciDeviceName: NIC.Integrated.1-4-1
+        lldp:
+          adminStatus: disabled
+      - name: data0
+        aggregator: traffic
+        busAddress: "0000:81:00.0"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: data1
+        aggregator: traffic
+        busAddress: "0000:81:00.1"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: storage0
+        aggregator: storage
+        busAddress: "0000:04:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: storage1
+        aggregator: storage
+        busAddress: "0000:04:00.1"
+        lldp:
+          adminStatus: disabled
+
+  # c01
+  - name: DELL_R630_type2
+    ports:
+      - name: control0
+        aggregator: control
+        busAddress: "0000:01:00.0"
+        pciDeviceName: NIC.Integrated.1-1-1
+        #busAddress: "0000:07:00.0"
+        #pciDeviceName: NIC.Integrated.1-3-1
+        lldp:
+          adminStatus: disabled
+      - name: control1
+        aggregator: control
+        busAddress: "0000:08:00.0"
+        pciDeviceName: NIC.Integrated.1-3-1
+        #busAddress: "0000:07:00.1"
+        #pciDeviceName: NIC.Integrated.1-4-1
+        lldp:
+          adminStatus: disabled
+      - name: data0
+        aggregator: traffic
+        busAddress: "0000:81:00.0"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: data1
+        aggregator: traffic
+        busAddress: "0000:81:00.1"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: storage0
+        aggregator: storage
+        busAddress: "0000:04:00.0"
+        #busAddress: "0000:03:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: storage1
+        aggregator: storage
+        busAddress: "0000:04:00.1"
+        #busAddress: "0000:03:00.1"
+        lldp:
+          adminStatus: disabled
+
+  - name: DELL_R640
+    ports:
+      - name: control0
+        aggregator: control
+        busAddress: "0000:19:00.0"
+        pciDeviceName: NIC.Integrated.1-1-1
+        lldp:
+          adminStatus: disabled
+      - name: control1
+        aggregator: control
+        busAddress: "0000:1b:00.0"
+        pciDeviceName: NIC.Integrated.1-3-1
+        lldp:
+          adminStatus: disabled
+      - name: data0
+        aggregator: traffic
+        busAddress: "0000:3b:00.0"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: data1
+        aggregator: traffic
+        busAddress: "0000:3b:00.1"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: storage0
+        aggregator: storage
+        busAddress: "0000:d8:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: storage1
+        aggregator: storage
+        busAddress: "0000:d8:00.1"
+        lldp:
+          adminStatus: disabled
+
+
+  - name: DELL_R740_PASSTHROUGH
+    ports:
+      - name: control0
+        aggregator: control
+        busAddress: "0000:18:00.0"
+        pciDeviceName: NIC.Integrated.1-1-1
+        lldp:
+          adminStatus: disabled
+      - name: control1
+        aggregator: control
+        busAddress: "0000:1a:00.0"
+        pciDeviceName: NIC.Integrated.1-3-1
+        lldp:
+          adminStatus: disabled
+      - name: data0
+        aggregator: traffic
+        busAddress: "0000:5e:00.0"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: data1
+        aggregator: traffic
+        busAddress: "0000:5e:00.1"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: storage0
+        aggregator: storage
+        busAddress: "0000:af:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: storage1
+        aggregator: storage
+        busAddress: "0000:af:00.1"
+        lldp:
+          adminStatus: disabled
+      - name: pt0
+        busAddress: "0000:3b:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: pt1
+        busAddress: "0000:3b:00.1"
+        lldp:
+          adminStatus: disabled
+      - name: pt2
+        busAddress: "0000:d8:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: pt3
+        busAddress: "0000:d8:00.1"
+        lldp:
+          adminStatus: disabled
+
+  - name: DELL_R740_PASSTHROUGH_TYPE2
+    ports:
+      - name: control0
+        aggregator: control
+        busAddress: "0000:18:00.0"
+        pciDeviceName: NIC.Integrated.1-1-1
+        lldp:
+          adminStatus: disabled
+      - name: control1
+        aggregator: control
+        busAddress: "0000:19:00.0"
+        pciDeviceName: NIC.Integrated.1-3-1
+        lldp:
+          adminStatus: disabled
+      - name: data0
+        aggregator: traffic
+        busAddress: "0000:5e:00.0"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: data1
+        aggregator: traffic
+        busAddress: "0000:5e:00.1"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: storage0
+        aggregator: storage
+        busAddress: "0000:af:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: storage1
+        aggregator: storage
+        busAddress: "0000:af:00.1"
+        lldp:
+          adminStatus: disabled
+      - name: pt0
+        busAddress: "0000:3b:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: pt1
+        busAddress: "0000:3b:00.1"
+        lldp:
+          adminStatus: disabled
+      - name: pt2
+        busAddress: "0000:d8:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: pt3
+        busAddress: "0000:d8:00.1"
+        lldp:
+          adminStatus: disabled
+
+  - name: DELL_R740_VXSDS
+    ports:
+      - name: control0
+        aggregator: control
+        busAddress: "0000:18:00.0"
+        pciDeviceName: NIC.Integrated.1-1-1
+        lldp:
+          adminStatus: disabled
+      - name: control1
+        aggregator: control
+        busAddress: "0000:1a:00.0"
+        #busAddress: "0000:19:00.0"
+        pciDeviceName: NIC.Integrated.1-3-1
+        lldp:
+          adminStatus: disabled
+      - name: data0
+        aggregator: traffic
+        busAddress: "0000:5e:00.0"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: data1
+        aggregator: traffic
+        busAddress: "0000:5e:00.1"
+        driver: vfio-pci
+        lldp:
+          adminStatus: disabled
+      - name: storage0
+        aggregator: storage
+        busAddress: "0000:af:00.0"
+        lldp:
+          adminStatus: disabled
+      - name: storage1
+        aggregator: storage
+        busAddress: "0000:af:00.1"
+        lldp:
+          adminStatus: disabled
+
+  - name: VIRTUAL_LCM
+    virtualPorts:
+    - name: lcm
+      aggregator: control
+      busAddress: "0000:01:00.0"
+      networkInterface: br_lcm_ctrl
+    - name: control
+      aggregator: control
+      busAddress: "0000:02:00.0"
+      networkInterface: br_cee_ctrl
+    - name: oobm
+      aggregator: control
+      busAddress: "0000:03:00.0"
+      networkInterface: br_oobm_ctrl
+    - name: data
+      aggregator: traffic
+      busAddress: "0000:04:00.0"
+      networkInterface: br_lcm_om
+    - name: gluster
+      aggregator: storage
+      busAddress: "0000:05:00.0"
+      networkInterface: br_gluster
+  - name: VIRTUAL_SERVICEASSURANCE
+    virtualPorts:
+    - name: lcm
+      aggregator: control
+      busAddress: "0000:01:00.0"
+      networkInterface: br_lcm_ctrl
+    - name: control
+      aggregator: control
+      busAddress: "0000:02:00.0"
+      networkInterface: br_cee_ctrl
+    - name: data
+      aggregator: traffic
+      busAddress: "0000:03:00.0"
+      networkInterface: br_cee_om
+...

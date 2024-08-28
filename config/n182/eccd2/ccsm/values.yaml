@@ -1,0 +1,1461 @@
+# External values file
+# Please set up the values regarding to deployment which you want to deploy
+# Please remove the double curly brackets {{}} surrounding the final value to set it right
+
+
+global:
+  coredumps:
+    enabled: true
+
+  # DSCP marking value in CCSM
+  dscpMarking:
+    dscpDualStack: false
+    egressDscpSBI: 0
+    ingressDscpRepliesSBI: 0
+    ingressDscpRepliesSoapIMSEPC: 0
+
+  licensing:
+    sites:
+    - hostname: "nelsaas-vnf1-thrift.sero.gic.ericsson.se"
+      ip: ""
+      priority: 10
+
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: "CCSM"
+          customerId: "946060"
+          swltId: "STA-CCSM-40"
+
+  ## CCSM FSGROUP CONFIGURATION
+  #  The next configuration defines the global fsGroup, if different configuration is needed change on purpose.
+  #
+  #  NOTE:
+  #  - The default value 10000 for global.fsGroup.manual will be used when no other value provided.
+  #  - The global.fsGroup.namespace will be only evaluated if global.fsGroup.manual is not set or it
+  #    takes the values false or 0.
+  # fsGroup:
+    # manual: 10000
+    # namespace: true
+
+  # Determines if enable the internal mTLS communication
+  # Enable set it "on" / Disable set it "off"
+  internalMtls:
+    enabled: "on"
+
+  ## CCSM EGREES GATEWAY CONFIGURATION for NRF Agent
+  #  The next configuration defines the global egrees Gateway
+  #  default configuration, if different configuration is needed,
+  #  uncomment and change on purpose.
+  #
+  #  NOTE:
+  #  - When mtls profile is selected, it enables the egrees automatically and
+  #    the endpoint host and port must be updated on purpose.
+  #  - When cleartext profile is selected, it disables egress so enpoints will
+  #    be ignored.
+  istio:
+    # Egrees: Update the endpoint host and port on purpose
+    egress:
+      endpoints:
+        eric-ccsm-sbi-traffic-mtls:
+          host: "*.5gc.mnc081.mcc240.3gppnetwork.org"
+          ports:
+            - port: 443
+              name: https-port-for-mTLS-origination
+              protocol: HTTP2
+              mode: mTLS
+
+  # Determines if enable the Sencondary Network Provider (SENP)
+  # Enable set it "true" / Disable set it "false"
+  secondaryNetwork:
+    enabled: false
+
+  map:
+    #Total number of stacks to be deployed, regardless if they are shared/dedicated. Max stacks number is 4
+    mapStacksNumber: 2
+
+  ## Valid values: {{eMBB|mIoT}}
+  networkType: eMBB
+
+  # Service Mesh and CCSM NFs global settings
+  nodeSelector: {}
+  #  ericsson-5gc-se/vnf: ccsm
+
+  # Determines if the nrfagent is going to be deployed or not
+  # This information is required by the microservices that communicate
+  # with the nrfagent so that they create the internal certificates or not
+  # Enable set it "true" / Disable set it "false"
+  nrfagent:
+    enabled: true
+
+  ## CCSM profiles selection
+  # Enable only one profile per group
+  # Size:
+  # - small-system  (Small Size Systems -Enterprise & Telco)
+  # - std-system (Standard System - Telco)
+  # Security in the outgoing/incoming traffic:
+  # - mtls (mTLS)
+  # - cleartext (Clear Text)
+  # IP Stack version:
+  # - ipv4
+  # - ipv6
+  profiles:
+    small-system:
+      enabled: false
+    std-system:
+      enabled: true
+    cleartext:
+      enabled: false
+    mtls:
+      enabled: true
+    ipv4:
+      enabled: true
+    ipv6:
+      enabled: false
+
+  ##
+  #  Note:
+  #  When EO/EVNFM is used to deploy the CNF, there is no need to provide
+  #  pullSecret and registry.url parameters since EVNFM will override them
+  #  to use EVNFM Docker registry.
+  pullSecret: null
+  registry:
+    url: null
+    imagePullPolicy: IfNotPresent
+
+  # CCSM Security DR-124 - Pod Security Policies (PSP) and Security Context Constraints (SCC).
+  security:
+    policyBinding:
+      ## create indicate whether needs to auto-create the rolebinding
+      ## for the clusterRole used for pod security policy.
+      create: false
+    policyReferenceMap:
+      ## the clusterRole name defined for pod security policy.
+      default-restricted-security-policy: default-restricted-security-policy
+      plc-privileged-for-swprobes-ccsm: plc-privileged-for-swprobes-ccsm
+      plc-privileged-for-sctp-ccsm: plc-privileged-for-sctp-ccsm
+      plc-e393f1841dfc4cbcca713b5a97eb83: plc-e393f1841dfc4cbcca713b5a97eb83
+      plc-29c4b823c87a16cad810082eb11106: plc-29c4b823c87a16cad810082eb11106
+      plc-9c20871f9bf62c7b09fd0c684ac651: plc-9c20871f9bf62c7b09fd0c684ac651
+      plc-dd66cc53d8554f93ad34971900932e: plc-dd66cc53d8554f93ad34971900932e
+      plc-59d0cf1dcc793a78b6ce30bfbe6553: plc-59d0cf1dcc793a78b6ce30bfbe6553
+      plc-38dc0a0ee2b2564ef10039d2c6c0e0: plc-38dc0a0ee2b2564ef10039d2c6c0e0
+      plc-privileged-for-swprobe: plc-privileged-for-swprobe
+      plc-privileged-for-istio: plc-privileged-for-istio
+      plc-eric-tm-sctp: plc-eric-tm-sctp
+
+  timezone: CET
+
+  # Determines if enable the injection of vTAP agent sidecar for SW PROBE function
+  # Enable set it "true" / Disable set it "false"
+  vtapagent:
+    enabled: true
+
+## SERVICE MESH SPECIFIC SETTINGS
+#  The next configuration defines the Service Mesh default configuration,
+#  if different configuration is needed, uncomment and change on purpose.
+#
+#  NOTE:
+#    Two values between double curly brackets {{mtls|cleartext}} default values
+#    Do not change the targetPort
+#    Disable eric-ingressgw-<NF>-traffic if no NF will be installed
+eric-ccsm-service-mesh:
+  eric-ingressgw-ausf-traffic:
+    enabled: true
+    service:
+      type: LoadBalancer
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      annotations:
+        addressPoolName: ccsm-ausf-5g-sig
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-udm-traffic:
+    enabled: true
+    service:
+      type: LoadBalancer
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      annotations:
+        addressPoolName: ccsm-udm-5g-sig
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-eir-traffic:
+    enabled: true
+    service:
+      type: LoadBalancer
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      annotations:
+        addressPoolName: ccsm-eir-5g-sig
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-epc-soap-traffic:
+    enabled: false
+    service:
+      type: LoadBalancer
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      annotations:
+        addressPoolName: ccsm-oam
+        sharedVIPLabel: ccsm-oam
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-hss-epc-traffic:
+    enabled: true
+    service:
+      type: LoadBalancer
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      annotations:
+        addressPoolName: ccsm-hss-epc-http-sig
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+  eric-ingressgw-ims-soap-traffic:
+    enabled: false
+    service:
+      type: LoadBalancer
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      annotations:
+        addressPoolName: ccsm-oam
+        sharedVIPLabel: ccsm-oam
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+
+# SENP nVIP subChart that belongs to service mesh helm chart
+eric-tm-senp-nvip:
+  config:
+    # Namespace of the SENP Infra (CLC SNIA) installation on the cluster
+    nsmNamespace: eric-clc-snia
+
+#
+# Overwrite the CCSM specific settings
+#
+
+# Overwrite the AUSF Helm values here
+eric-ccsm-ausf:
+  enabled: true
+  eric-ausf-capacity:
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 20
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-ausf-cmjobloader:
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-ausf-engine:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+
+eric-ccsm-autonrf:
+  udrHandling:
+    # Seconds to delay UDM deregistration when UDR is not available, to wait to get some new UDRs from NRF.
+    nrfWaitingTime: 0
+  tolerations: []
+  #  - key: node-role.kubernetes.io/control-plane
+  #    effect: NoSchedule
+  #    operator: Exists
+
+eric-ccsm-cmagent:
+  tolerations: []
+  #  - key: node-role.kubernetes.io/control-plane
+  #    effect: NoSchedule
+  #    operator: Exists
+
+eric-ccsm-cmreconciler:
+  tolerations: []
+  #  - key: node-role.kubernetes.io/control-plane
+  #    effect: NoSchedule
+  #    operator: Exists
+
+eric-ccsm-cmvalidator:
+  tolerations: []
+  #  - key: node-role.kubernetes.io/control-plane
+  #    effect: NoSchedule
+  #    operator: Exists
+
+eric-ccsm-datainjector:
+  dscpMarking:
+    egressDscpNoSBI: 0
+  hssHandling:
+    failover:
+      errorHttpServiceUnavailableAsFailNhssUecm: "off"
+  scpHandling:
+    failover:
+      errorHttpServiceUnavailableAsFailNudmUecm: "off"
+      errorHttpServiceUnavailableAsFailNudmSdm: "off"
+      errorHttpServiceUnavailableAsFailNamfMtLoc: "off"
+      errorHttpServiceUnavailableAsFailNamfEvts: "off"
+  udrHandling:
+    failover:
+      errorHttpServiceUnavailableAsFailNudrDr: "off"
+      errorHttpServiceUnavailableAsFailNcudrGudDr: "off"
+  nfHandling:
+    failover:
+      errorHttpServiceUnavailableAsFailNudmUecm: "off"
+      errorHttpServiceUnavailableAsFailNamfLcs: "off"
+      errorHttpServiceUnavailableAsFailNamfEvts: "off"
+
+# Overwrite the EIR Helm values here
+eric-ccsm-eir:
+  enabled: true
+  eric-eir-capacity:
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 20
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-eir-cmagent:
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-eir-diametereireic:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-eir-eireic:
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 4
+  eric-eir-gsmadbhandler:
+    persistentVolumeClaim:
+      storageClassName: network-block
+  eric-eir-httpnotifier:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-eir-infocollector:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+    persistentVolumeClaim:
+      storageClassName: network-block
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-eir-infocollectorunsucc:
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 20
+    persistentVolumeClaim:
+      storageClassName: network-block
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-eir-mapeireic:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 50
+  eric-eir-s13diameter:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+
+# Overwrite the HSS-EPC Helm values here
+eric-ccsm-hssepc:
+  enabled: true
+  eric-data-key-value-database-rd:
+    tolerations:
+      kvdbOperator: []
+      #  - key: node-role.kubernetes.io/control-plane
+      #    effect: NoSchedule
+      #    operator: Exists
+  eric-hss-rdoperand:
+    tolerations:
+      node: []
+      #  - key: node-role.kubernetes.io/control-plane
+      #    effect: NoSchedule
+      #    operator: Exists
+  eric-hssepc-capacity:
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 20
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssepc-cmagent:
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssepc-cmvalidator:
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssepc-mttadsinfo:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-mtuesrvcccap:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-mtstnsrget:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-mtstnsrput:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-mtlocation:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-pcscfrestoration:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-iratsndereg:
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 3
+  eric-hssepc-s6aauthentication:
+    autoscaling:
+      minReplicas: 4
+      maxReplicas: 4
+  eric-hssepc-s6acancellocation:
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 4
+  eric-hssepc-s6adeletesubscriber:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-hssepc-s6adiameter:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssepc-s6ainsertsubscriber:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-hssepc-s6anotify:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-hssepc-s6apurge:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-hssepc-s6aupdatelocation:
+    autoscaling:
+      minReplicas: 4
+      maxReplicas: 5
+  eric-hssepc-soap:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-hssepc-s6aprovnotification:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-hssepc-swxdiameter:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssepc-swxsarreg:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-swxsardereg:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-swxsarpgw:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-swxmar:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-swxrtr:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-swxprovnotification:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssepc-swxsdmunsub:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+
+# Overwrite the HSS-IMS Helm values here.
+eric-ccsm-hssims:
+  enabled: false
+  eric-hssims-capacity:
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 20
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssims-cmagent:
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssims-cmvalidator:
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssims-shudrrepodata:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrimsi:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrimspublicidentity:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrimsuserstate:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrcharginginformation:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrscscfname:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrmsisdns:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrtadsinformation:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrlocationinfo:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudrstnsr:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shudruesrvcccapability:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shpur:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shsnr:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-soap:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shprovnotification:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shpnr:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-shdiameter:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssims-cxdiameter:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-hssims-cxlir:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxuar:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxmar:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxsarreg:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxsardereg:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxsarunreg:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxsarauth:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxsarnoassign:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxprovnotifrtr:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxrtr:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxprovnotifppr:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-hssims-cxppr:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+
+eric-ccsm-lmagent:
+  tolerations: []
+  #  - key: node-role.kubernetes.io/control-plane
+  #    effect: NoSchedule
+  #    operator: Exists
+
+# Overwrite smsengine Helm values here
+eric-ccsm-smsengine:
+  autoscaling:
+    minReplicas: 2
+    maxReplicas: 94
+  tolerations: []
+  #  - key: node-role.kubernetes.io/control-plane
+  #    effect: NoSchedule
+  #    operator: Exists
+
+eric-ccsm-sracmagent:
+  tolerations: []
+  #  - key: node-role.kubernetes.io/control-plane
+  #    effect: NoSchedule
+  #    operator: Exists
+
+# Overwrite the UDM Helm values here
+eric-ccsm-udm:
+  enabled: true
+  global:
+    ## Specific values for Auto-provisioning error handling. Not documented in Day-0 of standard releases.
+    #flexibleErrorHandling:
+    #  autoprovUeauTrigger:
+    #    status: 403
+    #    cause: "AUTHENTICATION_REJECTED"
+    #  autoprovSdmTrigger:
+    #    status: 404
+    #    cause: "DATA_NOT_FOUND"
+    ##
+    hsmconfig:
+      hsminstall: false
+      hagroup: HA_PED_ST3
+      server:
+        # define HSM server with endpoint (IP) and serialnum
+        - endpoint: 10.198.28.25
+          serialnum: "1485999395022"
+        - endpoint: 10.198.28.26
+          serialnum: "1531778547595"
+  eric-udm-amfeenotifications:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 48
+  eric-udm-amfeesubscriptions:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 48
+  eric-udm-authconf:
+    appArmorProfile:
+      type:
+      localhostProfile:
+  eric-udm-autoprovisioning:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 10
+  eric-udm-blackhole:
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 2
+  eric-udm-cancelepclocation:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-capacity:
+    autoscaling:
+      minReplicas: 1
+      maxReplicas: 20
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-udm-cmagent:
+    tolerations: []
+    #  - key: node-role.kubernetes.io/control-plane
+    #    effect: NoSchedule
+    #    operator: Exists
+  eric-udm-eapauth:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+    appArmorProfile:
+      type:
+      localhostProfile:
+  eric-udm-eapprimeauth:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+    appArmorProfile:
+      type:
+      localhostProfile:
+  eric-udm-epsauth:
+    autoscaling:
+      minReplicas: 4
+      maxReplicas: 4
+    appArmorProfile:
+      type:
+      localhostProfile:
+  eric-udm-gbaauth:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+    appArmorProfile:
+      type:
+      localhostProfile:
+  eric-udm-imsauth:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+    appArmorProfile:
+      type:
+      localhostProfile:
+  eric-udm-iratamflocation:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-iratamfdereg:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-iratsndereg:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-iwk5g2g:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-mtsmsdeliverystatus:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 186
+  eric-udm-mtsmsreadystatus:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 186
+  eric-udm-mtsmsroutinginfo:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 186
+  eric-udm-mtsmswaitingdata:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 94
+  eric-udm-mtueinfo:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-mtlocation:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-pcscfrestnotif:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-pcscfrestoration:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-sdmamdata:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-sdmimplicitunsub:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-sdmmultipledataset:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-sdmnotif:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-sdmnssai:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-sdmsmdata:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 3
+  eric-udm-sdmsmfselect:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-sdmsmsdata:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 40
+  eric-udm-sdmsmsmngdata:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 40
+  eric-udm-sdmsubscriptions:
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 4
+  eric-udm-sdmuectxtsmf:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-sdmuectxtsmsf:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 40
+  eric-udm-ueauth:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 3
+    appArmorProfile:
+      type:
+      localhostProfile:
+  eric-udm-uecmamfderegnotifier:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-uecmamfget:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-uecmamfregupdate:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-uecmreg:
+    autoscaling:
+      minReplicas: 3
+      maxReplicas: 4
+  eric-udm-uecmsmfderegistration:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 2
+  eric-udm-uecmsmfregistration:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 3
+  eric-udm-uecmsmsfdereg:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 40
+  eric-udm-uecmsmsfregget:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-uecmsmsfregistration:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 40
+  eric-udm-ueshcm:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-umtsauth:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 94
+    appArmorProfile:
+      type:
+      localhostProfile:
+  eric-udm-eesubscribe:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+    subscription:
+      durationTime: "31536000"
+  eric-udm-eeunsubscribe:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 10
+  eric-udm-eesubsidchangenotif:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-eeamfingressnotif:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-eeegressnotif-reach-for-sms:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-eeegressnotif-roaming-status:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-eeegressnotif-supi-pei-indiv:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+  eric-udm-eeegressnotif-supi-pei-anyue:
+    autoscaling:
+      minReplicas: 2
+      maxReplicas: 20
+
+
+# Diameter Networking related settings
+eric-stm-diameter:
+  replicaCount: 2
+  secondaryNetwork:
+    sctp:
+      enabled: false
+  configuration:
+    mh:
+      enabled: false
+  service:
+    loadBalancerIP: ""
+    annotations:
+      addressPoolNameDiameterOverTCP: "ccsm-dia-sig"
+      addressPoolNameDiameterOverSCTP: "ccsm-dia-sig"
+      sharedVIPLabelDiameterOverSCTP: "dia-sig"
+      sharedVIPLabelDiameterOverTCP: "dia-sig"
+    diameter:
+      ports:
+        tcp:
+          - port:  3868
+            targetPort:  3868
+        sctp:
+          - port:  3868
+            targetPort:  3868
+# Mapproxy settings
+eric-ccsm-mapproxy:
+  global:
+    # This global configuration applies to all eric-ccsm-mapproxy instances
+    map:
+      secondaryNetwork:
+        enabled: false
+      mh:
+        enabled: false
+      configuration:
+        ss7:
+          signalingNetwork:
+            networkStandard: "itu"
+          m3ua:
+            asProfile:
+              - dupu-behavior: "dpc-omitted"
+                dupu-handling: "no-dupu-handling"
+                id: 1
+                interval-for-mtp-status-ind: 8
+                notify-behavior: "resume-after-aspac-ack"
+                timer-divert: 10
+                timer-notify: 0
+                timer-scon: 75
+                timer-tr: 100
+            abatementThresholdLevel1: 150
+            abatementThresholdLevel2: 400
+            abatementThresholdLevel3: 650
+            burstSize: 0
+            checkDpcStatusInIpNetwork: "not-check-opc-status"
+            congestionProcForRemoteSgps: "use-both-daud-and-tscon"
+            forbidMessageFromUnknownDpc: "not-check-opc"
+            handleIncomDataMsgWithoutAs: "discard-msg"
+            internalCongestionLevel1: 250
+            internalCongestionLevel2: 500
+            internalCongestionLevel3: 750
+            loadsharingAlgorithm: "basic"
+            maxNumberOfBurstsWithoutProgress: 0
+            modifiedSlsRotation: "no-sls-rotation"
+            retransmitBufferSize: 1024
+            supportDynamicRegistrOfAsp: "dynamic-identif-only"
+            timerBurst: 10
+            timerBurstJittering: 0
+            timerCongAudit: 60000
+            timerInitConf: 100
+            timerReinit: 100
+            timerRetransmit: 5
+            remoteSpProfile:
+              - assoc-establishment-attempts: 4
+                attempts-of-dauds: 5
+                drst-support: "rfc-4666-compliant"
+                heartbeat-procedure: "hb-off"
+                id: 1
+                max-num-of-affected-dpcs-in-daud: 0
+                ntfy-support: "rfc-4666-compliant"
+                timer-ack: 60
+                timer-assoc: 20
+                timer-audit: 300
+                timer-deactivation: 0
+                timer-hb: 300
+                timer-rec: 100
+                timer42: 8
+                tmt-support: "rfc-4666-compliant"
+          tcapEit:
+            timerDialogue: 30000
+
+  # Overwrite the Mapproxy Helm values here
+  eric-ccsm-mapproxy-1:
+    configuration:
+      secondaryNetwork:
+        # SCTP Endpoints IP addresses
+        eric-ccsm-mapproxy-1-vip-a: 10.10.10.10
+        eric-ccsm-mapproxy-1-vip-b: 10.10.10.20
+    nodeSelector:
+      Deployment: {}
+      #  set-of-workers: mapproxy_ccsm
+    # Networking related settings
+    service:
+      loadBalancerIP: ""
+      annotations:
+        addressPoolName: map-sig
+      sctp:
+        # The list of ports for traffic
+        # default is the list with one port 2905
+        port:
+          - 2905 # default value
+
+  eric-ccsm-mapproxy-2:
+    configuration:
+      secondaryNetwork:
+        # SCTP Endpoints IP addresses
+        eric-ccsm-mapproxy-2-vip-a: 10.10.20.10
+        eric-ccsm-mapproxy-2-vip-b: 10.10.20.20
+    nodeSelector:
+      Deployment: {}
+      #  set-of-workers: mapproxy_ccsm
+    # Networking related settings
+    service:
+      loadBalancerIP: ""
+      annotations:
+        addressPoolName: map-sig-2
+      sctp:
+        # The list of ports for traffic
+        # default is the list with one port 2905
+        port:
+          - 2905 # default value
+
+  eric-ccsm-mapproxy-3:
+    configuration:
+      secondaryNetwork:
+        # SCTP Endpoints IP addresses
+        eric-ccsm-mapproxy-3-vip-a: 10.10.30.10
+        eric-ccsm-mapproxy-3-vip-b: 10.10.30.20
+    nodeSelector:
+      Deployment: {}
+      #  set-of-workers: mapproxy_ccsm
+    # Networking related settings
+    service:
+      loadBalancerIP: ""
+      annotations:
+        addressPoolName: map-sig-3
+      sctp:
+        # The list of ports for traffic
+        # default is the list with one port 2905
+        port:
+          - 2905 # default value
+
+  eric-ccsm-mapproxy-4:
+    configuration:
+      secondaryNetwork:
+        # SCTP Endpoints IP addresses
+        eric-ccsm-mapproxy-4-vip-a: 10.10.40.10
+        eric-ccsm-mapproxy-4-vip-b: 10.10.40.20
+    nodeSelector:
+      Deployment: {}
+      #  set-of-workers: mapproxy_ccsm
+    # Networking related settings
+    service:
+      loadBalancerIP: ""
+      annotations:
+        addressPoolName: map-sig-4
+      sctp:
+        # The list of ports for traffic
+        # default is the list with one port 2905
+        port:
+          - 2905 # default value
+
+# Overwrite the ADP Generic Services Helm values here
+eric-ccsm-adp:
+  eric-probe-virtual-tap-broker:
+    # Indicate whether to switch on the PVTB NBI encryption by DTLS
+    dtls:
+      enabled: false
+  eric-cm-yang-provider:
+    enableCliCommandAuditLogs: true
+    externalTls:
+      netconf:
+        enabled: false
+    service:
+      annotations:
+        addressPoolName: "ccsm-oam"
+        sharedVIPLabel: "ccsm-oam"
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+      loadBalancerIP: ""
+      type: LoadBalancer
+      cmNbiPorts:
+        dscp: 0
+  eric-cnom-server:
+    fqdn: cnom.ccsm1.n182.vpod2.seli.gic.ericsson.se
+    legalNotice: >
+      IF YOU ARE NOT AN AUTHORIZED USER, PLEASE EXIT IMMEDIATELY
+
+
+      This system processes personal information. Handle personal information
+      with care.  Misuse, including unauthorized access, is grounds for legal
+      action.  Version: 1.0, Date: October 27, 2020.
+  eric-ctrl-bro:
+    persistence:
+      persistentVolumeClaim:
+        size: 2Gi
+        storageClassName: network-block
+    egress:
+      backupStorageSvr:
+        dscp: 0
+  eric-data-coordinator-zk:
+    persistence:
+      persistentVolumeClaim:
+        size: 10Gi
+        storageClassName: network-block
+  eric-data-distributed-coordinator-ed:
+    persistence:
+      brAgent:
+        backupVolume:
+          storageClassName: network-block
+      persistentVolumeClaim:
+        size: 2Gi
+        storageClassName: network-block
+  eric-data-document-database-pg:
+    persistentVolumeClaim:
+      size: 8Gi
+      storageClassName: network-block
+  eric-data-document-database-pg-ah:
+    persistentVolumeClaim:
+      size: 4Gi
+      storageClassName: network-block
+  eric-data-document-database-pg-lm:
+    persistentVolumeClaim:
+      size: 4Gi
+      storageClassName: network-block
+  eric-data-message-bus-kf:
+    persistence:
+      persistentVolumeClaim:
+        size: 10Gi
+        storageClassName: network-block
+    tolerations:
+      messagebuskf: []
+      #  - key: node-role.kubernetes.io/control-plane
+      #    effect: NoSchedule
+      #    operator: Exists
+  eric-data-object-storage-mn:
+    persistentVolumeClaim:
+      storageClassName: network-block
+    affinity:
+      ##
+      # Set 'soft' when number of available workers less than 4.
+      # Set 'hard' when number of available workers is 4 or more.
+      podAntiAffinity: "hard"
+  eric-data-search-engine:
+    persistence:
+      backup:
+        persistentVolumeClaim:
+          size: 16Mi
+          storageClassName: network-block
+      data:
+        persistentVolumeClaim:
+          size: 100Gi
+          storageClassName: network-block
+      master:
+        persistentVolumeClaim:
+          size: 64Mi
+          storageClassName: network-block
+  eric-fh-snmp-alarm-provider:
+    service:
+      annotations:
+        addressPoolName: "ccsm-oam"
+        sharedVIPLabel: "ccsm-oam"
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+      loadBalancerIP: ""
+      type: LoadBalancer
+      snmpPort:
+        dscp: 0
+    sourceIdentifierType: 1
+    sourceIdentifier: "10.221.125.17"
+  eric-lm-combined-server:
+    licenseConsumerHandler:
+    licenseServerClient:
+      licenseServer:
+        thrift:
+          # host - This parameter will be deprecated. Use global.licensing.sites.hostname instead
+          host: 
+          port: 9095
+    licenseServerIpAddresses:
+      # licenseServerIpAddresses.ip1 - This parameter will be deprecated. Use global.licensing.sites.ip instead
+      ip1:
+      # licenseServerIpAddresses.ip2 - This parameter will be deprecated. Use global.licensing.sites.ip instead
+      ip2:
+    features:
+      alarmHandling:
+        enabled: true
+    egress:
+      licenseServer:
+        dscp: 0
+  eric-lm-unique-object-reporter:
+    uoi:
+      # hostname - This parameter will be deprecated. Use global.licensing.sites.hostname instead
+      hostname: "nelsaas-vnf1-thrift.sero.gic.ericsson.se"
+      # ip - This parameter will be deprecated. Use global.licensing.sites.ip instead
+      ip:
+      port: 8060
+    egress:
+      uorSvr:
+        dscp: 0
+  eric-log-transformer:
+    egress:
+      syslog:
+        enabled: false
+        defaultFacility: 1
+        defaultSeverity: 5
+        tls:
+          enabled: true
+        certificates:
+          asymmetricKeyCertificateName: log-syslog-client
+          trustedCertificateListName: log-syslog-client
+        remoteHosts: []
+        inclusions: []
+        exclusions: []
+        filter: ""
+    networkPolicy:
+      egress: {}
+        #- cidr: 172.17.0.0/32
+        #  ports:
+        #  - protocol: TCP
+        #    port: 1234
+        #  - protocol: UDP
+        #    port: 2345
+  eric-pm-bulk-reporter:
+    env:
+      nodeName: n182-vpod2-ccsm1
+    persistentVolumeClaim:
+      size: 500Mi
+      storageClassName: network-block
+    service:
+      annotations:
+        addressPoolName: "ccsm-oam"
+        sharedVIPLabel: "ccsm-oam"
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+      loadBalancerIP: ""
+      type: LoadBalancer
+      pmBulksftpPort:
+        dscp: 0
+  eric-pm-server:
+    server:
+      extraArgs:
+        storage.tsdb.retention.size: 75GB
+      persistentVolume:
+        size: 80Gi
+        storageClass: network-block
+    rbac:
+      appMonitoring:
+        enabled: true
+        federation:
+          jobOverride: true
+          jobConfiguration: |
+            - job_name: 'federate-victoria'
+              scrape_interval: 1m
+              honor_labels: true
+              metrics_path: '/select/0/prometheus/federate'
+              params:
+                'match[]':
+                  - '{job="kubernetes-nodes",namespace="ccsm"}'
+                  - '{job="kubernetes-nodes-cadvisor",namespace="ccsm"}'
+              static_configs:
+                - targets:
+                  - 'eric-victoria-metrics-cluster-vmselect.monitoring:8481'
+  eric-sec-admin-user-management:
+    notices:
+      legal: "IF YOU ARE NOT AN AUTHORIZED USER, PLEASE EXIT IMMEDIATELY"
+      privacy: >
+        This system processes personal information. Handle personal information
+        with care.  Misuse, including unauthorized access, is grounds for legal
+        action. Version: 1.0, Date: October 27, 2020.
+  eric-sec-ldap-server:
+    persistentVolumeClaim:
+      storageClassName: network-block
+  eric-si-application-sys-info-handler:
+    asih:
+      ##
+      # It is the main OaM identifier of Application and it is used to support
+      # correlation among different functionalities visible to the Operator
+      # like logs, metrics, alarms, CLI prompt just to mention some.
+      # Format: Must contains 1..32 printable ASCII characters that contains only
+      #   lowercase alphanumeric characters, '-' or '.', starts and ends with
+      #   an alphanumeric character.
+      applicationId: "n182-vpod2-ccsm1"
+    tolerations:
+      eric-si-application-sys-info-handler: []
+      #  - key: node-role.kubernetes.io/control-plane
+      #    effect: NoSchedule
+      #    operator: Exists
+  eric-tm-ingress-controller-cr:
+    service:
+      annotations:
+        addressPoolName: "ccsm-oam"
+        sharedVIPLabel: "ccsm-oam"
+        #cloudProviderLB:
+          ##list of cloud provider annotations. Example AWS annotation
+          #service.beta.kubernetes.io/aws-load-balancer-type: "external"
+
+# Overwrite networkPolicy enabling here
+networkPolicy:
+  enabled: true
+
+# Overwrite the NRF-Agent Helm values here
+eric-ccsm-nrfagent:
+  global:
+    nrfagent:
+      preferredNFType: "UDM"
+    tapagent:
+      enabled: true
+      egress_exclude_ips: "10.96.0.0/12,192.168.0.0/16"
+
+# Overwrite the CCSM SENP CO Helm values here
+eric-ccsm-senpco:
+  # DAY0 Parameters
+  configuration:
+    common:
+      eric-ccsm-trench:
+        ip_family: "ipv4"
+
+      # Attractor A
+      eric-ccsm-attr-a:
+        replicas: 2
+        networkAttachment:
+          attach_name: br-data-1821
+          namespace: default
+        # more gateways can be added for each attractor in the array
+        # any additional gateway added must to be included below
+        # in the gateways section of the configuration with its
+        # day0 parameters.
+        gateways: [eric-ccsm-gw-1, eric-ccsm-gw-3]
+
+      # Attractor B
+      eric-ccsm-attr-b:
+        replicas: 2
+        networkAttachment:
+          attach_name: br-data-1822
+          namespace: default
+        # more gateways can be added for each attractor in the array
+        # any additional gateway added must to be included below
+        # in the gateways section of the configuration with its
+        # day0 parameters.
+        gateways: [eric-ccsm-gw-2, eric-ccsm-gw-4]
+
+      #gateways definition
+      gateways:
+        eric-ccsm-gw-1:
+            address: 10.143.248.98
+            localAsn: "8171"
+            remoteAsn: "4248830031"
+            holdTime: 3s
+        eric-ccsm-gw-2:
+            address: 10.143.248.99
+            localAsn: "8172"
+            remoteAsn: "4248830032"
+            holdTime: 3s
+        eric-ccsm-gw-3:
+            address: 10.143.249.98
+            localAsn: "8173"
+            remoteAsn: "4248830033"
+            holdTime: 3s
+        eric-ccsm-gw-4:
+            address: 10.143.249.99
+            localAsn: "8174"
+            remoteAsn: "4248830034"
+            holdTime: 3s
+
+    diameter:
+      enabled: false
+      # VIPs for SENP CO
+      eric-ccsm-dia-vip-a: 10.15.10.10/32
+      eric-ccsm-dia-vip-b: 10.15.10.20/32
+
+    mapproxy:
+      enabled: false
+      # VIPs for SENP CO
+      eric-ccsm-mapproxy-1-vip-a: 10.10.10.10/32
+      eric-ccsm-mapproxy-1-vip-b: 10.10.10.20/32
+      eric-ccsm-mapproxy-2-vip-a: 10.10.20.10/32
+      eric-ccsm-mapproxy-2-vip-b: 10.10.20.20/32
+      eric-ccsm-mapproxy-3-vip-a: 10.10.30.10/32
+      eric-ccsm-mapproxy-3-vip-b: 10.10.30.20/32
+      eric-ccsm-mapproxy-4-vip-a: 10.10.40.10/32
+      eric-ccsm-mapproxy-4-vip-b: 10.10.40.20/32

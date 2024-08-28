@@ -1,0 +1,37 @@
+---
+vxsds:
+  clusters:
+  - name: vxsds_managed_openstack
+    ceeManaged: full
+
+    password: Ericsson123@
+    gatewayUser: admin
+    gatewayAdminPassword: Ericsson123@
+    gatewayPort: 4443
+    gatewayBePorts:
+      ssl: 4445
+      http: 81
+    frontendNetworks: ['sio-fel-ipv4','sio-fer-ipv4']
+    backendNetworks: ['sio-bel-ipv4','sio-ber-ipv4']
+    managementNetwork: cee-ipv4
+    snmp:
+      enabled: true
+
+    users:
+    - name: cinder
+      pwd: Ericsson123@
+      role: FrontendConfig
+    - name: admin
+      pwd: Ericsson123@
+      role: FrontendConfig
+    protectionDomains:
+    - name: protection_domain1
+      pools:
+        - name: pool1
+          zeroPadding: enabled
+          # define sparePercentage: 34 when three SDSs used
+          sparePercentage: 34
+          volumeTypes:
+            - name: vxsds_type1
+              provisioningType: thin
+...

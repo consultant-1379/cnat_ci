@@ -1,0 +1,169 @@
+heat_template_version: 2017-09-01
+
+description: >
+
+parameters:
+  prefix:
+    type: string
+  create_sriov_flat_left:
+    type: boolean
+    default: false
+  create_sriov_flat_right:
+    type: boolean
+    default: false
+  sriov_flat_name_left:
+    type: string
+    default: ''
+  sriov_flat_name_right:
+    type: string
+    default: ''
+  dummy_subnet_left:
+    type: string
+    default: ''
+  dummy_subnet_right:
+    type: string
+    default: ''
+  virtio_networks:
+    type: json
+    default: {}
+  sriov_networks:
+    type: json
+    default: {}
+  macvlan_parent_networks:
+    type: json
+    default: {}
+  phynet_virtio:
+    type: string
+    default: ''
+  phynet_sriov_left:
+    type: string
+    default: ''
+  phynet_sriov_right: 
+    type: string
+    default: ''
+  l2gw_dcgw_id:
+    type: string
+    default: ''
+  l2gw_sriov_left_id:
+    type: string
+    default: ''
+  l2gw_sriov_right_id:
+    type: string
+    default: ''
+  target_cloud_system:
+    type: string
+    description: target cloud system such as cee_nfvi, openstack etc.
+    default: 'cee_nfvi'
+    constraints:
+      - allowed_values:  [ "cee_nfvi", "openstack" ]
+
+
+conditions:
+
+  create_sriov_flat_left: { get_param: create_sriov_flat_left }
+  create_sriov_flat_right: { get_param: create_sriov_flat_right }
+
+
+resources:
+
+  virtio_net_resource_group:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count:
+        yaql:
+          expression: $.data.len()
+          data: { get_param: virtio_networks }
+      resource_def:
+        type: Resources/HotFiles/virtio-net.yaml
+        properties:
+          index: "%index%"
+          prefix: { get_param: prefix }
+          networks: { get_param: virtio_networks }
+          phynet_virtio: { get_param: phynet_virtio }
+          l2gw_dcgw_id: { get_param: l2gw_dcgw_id }
+          target_cloud_system: { get_param: target_cloud_system }
+
+  sriov_net_resource_group:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count:
+        yaql:
+          expression: $.data.len()
+          data: { get_param: sriov_networks }
+      resource_def:
+        type: Resources/HotFiles/sriov-net.yaml
+        properties:
+          index: "%index%"
+          prefix: { get_param: prefix }
+          networks: { get_param: sriov_networks }
+          phynet_virtio: { get_param: phynet_virtio }
+          phynet_sriov_left: { get_param: phynet_sriov_left }
+          phynet_sriov_right: { get_param: phynet_sriov_right }
+          l2gw_dcgw_id: { get_param: l2gw_dcgw_id }
+          l2gw_sriov_left_id: { get_param: l2gw_sriov_left_id }
+          l2gw_sriov_right_id: { get_param: l2gw_sriov_right_id }
+          target_cloud_system: { get_param: target_cloud_system }
+
+  macvlan_parent_net_resource_group:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count:
+        yaql:
+          expression: $.data.len()
+          data: { get_param: macvlan_parent_networks }
+      resource_def:
+        type: Resources/HotFiles/macvlan-parent-net.yaml
+        properties:
+          index: "%index%"
+          prefix: { get_param: prefix }
+          networks: { get_param: macvlan_parent_networks }
+
+  sriov_flat_net_left:
+    condition: create_sriov_flat_left
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: sriov_flat_name_left }
+      value_specs:
+        "provider:network_type": flat
+        "provider:physical_network": {get_param: phynet_sriov_left }
+
+  sriov_flat_subnet_left:
+    condition: create_sriov_flat_left
+    type: OS::Neutron::Subnet
+    properties:
+      name: 
+        str_replace:
+          template: "<net_name>_subnet"
+          params:
+            "<net_name>": { get_param: sriov_flat_name_left }
+      cidr: { get_param: dummy_subnet_left }
+      enable_dhcp: false
+      gateway_ip: null
+      network: { get_resource: sriov_flat_net_left }
+
+
+  sriov_flat_net_right:
+    condition: create_sriov_flat_right
+    type: OS::Neutron::Net
+    properties:
+      name: { get_param: sriov_flat_name_right }
+      value_specs:
+        "provider:network_type": flat
+        "provider:physical_network": { get_param: phynet_sriov_right }
+
+  sriov_flat_subnet_right:
+    condition: create_sriov_flat_right
+    type: OS::Neutron::Subnet
+    properties:
+      name: 
+        str_replace:
+          template: "<net_name>_subnet"
+          params:
+            "<net_name>": { get_param: sriov_flat_name_right }
+      cidr: { get_param: dummy_subnet_right }
+      enable_dhcp: false
+      gateway_ip: null
+      network: { get_resource: sriov_flat_net_right }
+
+
+outputs:

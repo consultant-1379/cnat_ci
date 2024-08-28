@@ -1,0 +1,118 @@
+#jinja2: lstrip_blocks: True
+{# We need to change this to redirect (301) when PKI for e2e tls is ready #}
+{%- set external_tls_bind_info = 'ssl crt /etc/haproxy/haproxy.pem' if kolla_enable_tls_external|bool else '' %}
+{%- set internal_tls_bind_info = 'ssl crt /etc/haproxy/haproxy-internal.pem' if kolla_enable_tls_internal|bool else '' %}
+{%- if (kolla_enable_tls_external|bool) and (CEE_ext_TLS_haproxy_frontend_options is defined) %}
+    {%- set external_tls_bind_info = external_tls_bind_info + ' ' + CEE_ext_TLS_haproxy_frontend_options %}
+{% endif %}
+{%- if (kolla_enable_tls_internal|bool) and (CEE_int_TLS_haproxy_frontend_options is defined) %}
+    {%- set internal_tls_bind_info = internal_tls_bind_info + ' ' + CEE_int_TLS_haproxy_frontend_options %}
+{% endif %}
+{%- macro frontend_macro(service_name, service_port, service_mode, external,
+                         haproxy_backend, default_backend) %}
+frontend {{ service_name }}_front
+    {% if service_mode == 'redirect' %}
+    mode http
+    {% else %}
+    mode {{ service_mode }}
+    {% endif %}
+    {% if service_mode == 'http' %}
+    {# Delete any pre-populated XFP header #}
+    http-request del-header X-Forwarded-Proto
+    {% endif %}
+    {% set tls_option = '' %}
+    {% if external|bool %}
+        {% set vip_address = kolla_external_fqdn %}
+        {% if service_mode == 'http' %}
+            {% set tls_option = external_tls_bind_info %}
+    {# Replace the XFP header for external https requests #}
+    http-request set-header X-Forwarded-Proto https if { ssl_fc }
+        {% endif %}
+    {% else %}
+        {% set vip_address = kolla_internal_fqdn %}
+        {% if service_mode == 'http' %}
+            {% set tls_option = internal_tls_bind_info %}
+    {# Replace the XFP header for internal https requests #}
+    http-request set-header X-Forwarded-Proto https if { ssl_fc }
+        {% endif %}
+    {% endif %}
+    {{ "bind %s:%s %s"|e|format(vip_address, service_port, tls_option)|trim() }}
+    {# Redirect mode sets a redirect scheme instead of a backend #}
+    {% if service_mode == 'redirect' %}
+    redirect scheme https code 301 if !{ ssl_fc }
+    {% else %}
+    {% endif %}
+
+{# acl for different backends #}
+{% for backend_name, backend_service in haproxy_backend.items() %}
+    {% for acl_rule in backend_service.acl_rules %}
+    acl is_{{ backend_name }} {{ acl_rule }}
+    {% endfor %}
+    use_backend {{ backend_name }}_backend if is_{{ backend_name }}
+
+{% endfor %}
+    default_backend {{ default_backend }}
+{% endmacro %}
+
+{%- macro backend_macro(service_name, listen_port, service_mode, host_group,
+                        extra_options, vip_backend, sticky_sessions) %}
+backend {{ service_name }}_backend
+
+        {% for http_option in extra_options %}
+    {{ http_option }}
+        {% endfor %}
+
+    {% if service_mode == 'redirect' %}
+    mode http
+    {% else %}
+    mode {{ service_mode }}
+    {% endif %}
+        {% if vip_backend %}
+    server lcm_vip {{ portal_haproxy_config_backend_vip }}:{{ listen_port }} {{ haproxy_health_check }}
+        {% else %}
+        {% for host in groups[host_group] | d([]) %}
+            {% set host_name = hostvars[host]['hostname'] %}
+            {% set host_ip = 'api' | kolla_address(host) %}
+    server {{ host_name }} {{ host_ip }}:{{ listen_port }} {% if sticky_sessions %}cookie {{ host_name }}{% endif %} {{ haproxy_health_check }}
+        {% endfor %}
+        {% endif %}
+
+{% endmacro %}
+
+{%- set haproxy_frontend = service.haproxy_frontend|default({}) %}
+{%- set haproxy_backend = service.haproxy_backend|default({}) %}
+{%- for haproxy_name, haproxy_service in haproxy_frontend.items() %}
+    {# External defaults to false #}
+    {% set external = haproxy_service.external|default(false)|bool %}
+    {# Skip anything that is external when the external vip is not enabled #}
+
+    {# Here we define variables and their defaults #}
+    {# services can be listening on a different port than haproxy #}
+    {% set listen_port = haproxy_service.listen_port %}
+    {# Mode defaults to http #}
+    {% set mode = haproxy_service.mode|default('http') %}
+    {# Use the parent host group but allow it to be overridden #}
+    {% set host_group = haproxy_service.host_group|default(service.group) %}
+    {# Additional options can be defined in config, and are additive to the global extras #}
+{{ frontend_macro(haproxy_name, haproxy_service.port, mode, external,
+                  haproxy_backend, haproxy_service.default_backend) }}
+{%- endfor -%}
+
+{%- for haproxy_name, haproxy_service in haproxy_backend.items() %}
+    {# External defaults to false #}
+    {% set external = haproxy_service.external|default(false)|bool %}
+    {# Skip anything that is external when the external vip is not enabled #}
+
+    {# Here we define variables and their defaults #}
+    {# services can be listening on a different port than haproxy #}
+    {% set listen_port = haproxy_service.listen_port %}
+    {# Mode defaults to http #}
+    {% set mode = haproxy_service.mode|default('http') %}
+    {# Use the parent host group but allow it to be overridden #}
+    {% set host_group = haproxy_service.host_group|default(service.group) %}
+    {# Additional options can be defined in config, and are additive to the global extras #}
+{{ backend_macro(haproxy_name, listen_port, mode, host_group,
+                 haproxy_service.extra_options,
+                 haproxy_service.vip_backend,
+                 haproxy_service.sticky_sessions) }}
+{%- endfor -%}

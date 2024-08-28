@@ -1,0 +1,157 @@
+vnflcm:
+  vnfInstanceName: vpod2-pcc1
+  vnfProductName: PCC
+  #csar-file: /proj/pccc_builds/images/PCC/PCC1.31-EP1-R60C91_T-153640/PCC_CXP9041577_1-R60C91.csar
+  vnfSoftwareVersion: CXP9041577_1.R60C
+  #vnfdId: 835fd181-3a18-4bed-a1bd-fd11b8488ed0 # workaround if same R-state in EVNFM
+  values-file: values.yaml
+  instantiate-file: instantiate.json
+  namespace: pcc
+  clusterName: n182-eccd2
+access-info:
+  oam: pcc1-n182-vpod2.seli.gic.ericsson.se
+  amf-oam: amf1-n182-vpod2.seli.gic.ericsson.se
+  ldap-admin:
+    user: sysadmin
+    pass: c3lzQWRtMW5ARGF5MA==
+  users:
+  - user: pcc-admin
+    pass: RG01R0NAUzBsdXQhb24=
+    pass-init: cGNjLWFkbWlu
+pipeline:
+- module: create-namespace
+- module: run-k8s-command
+  name: Create docker registry secret
+  cmd: create secret docker-registry regcred --docker-server=registry01.eoaas.n182.vpod1.seli.gic.ericsson.se --docker-username=vnfm-user --docker-password=DefaultP12345!
+- module: create-k8s-secret
+  name: eric-pc-controller-ldap-admin-creds
+  sources:
+  - type: literal
+    key: adminuser
+    value: sysadmin
+  - type: literal
+    key: passwd
+    value: sysAdm1n@Day0
+  - type: literal
+    key: adminpasswd
+    value: $6$fzLPYlRZCpweJMJC$AiNfP0WYE3npY8Za6GxMFoGj75TOl.TS6tmnnky2Bv5wY0Ek8RIoJlr9pyj0LF3wMMaNsNTUH4jp2lIHviJGS0
+- module: create-k8s-secret
+  name: eric-pc-controller-snmp-alarm-provider-config
+  sources:
+  - type: file
+    key: config.json
+    file: snmp-config.json
+- module: instantiate
+  timeout: 600
+- module: verify-pod-running
+  ignore-not-running:
+  - eric-data-search-engine-curator
+  timeout: 900
+- module: run-k8s-command
+  cmd: create ingress eric-data-search-engine --rule="pcc-eric-data-search-engine-pcc1.ingress.node182-cluster2.seli.gic.ericsson.se/*=eric-data-search-engine:9200"
+- module: run-k8s-command
+  name: Upload SMF certificates to first sm controller
+  cmd: |
+    cp {file1} -c controller {pod}:/tmp/smf-sbi-server.pem
+    cp {file2} -c controller {pod}:/tmp/smf-sbi-client.pem
+    cp {file3} -c controller {pod}:/tmp/
+  inline-files:
+    file1: ../certificates/pcc1/pcc1-smf-sbi-server.pem
+    file2: ../certificates/pcc1/pcc1-smf-sbi-client.pem
+    file3: ../../../certs/RootCA/ca.crt
+  inline-intermediate-values:
+    pod: get pod -l app.kubernetes.io/name=eric-pc-sm-controller -o jsonpath='{.items[0].metadata.name}'
+- module: run-k8s-command
+  name: Upload SMF certificates to second sm controller
+  cmd: |
+    cp {file1} -c controller {pod}:/tmp/smf-sbi-server.pem
+    cp {file2} -c controller {pod}:/tmp/smf-sbi-client.pem
+    cp {file3} -c controller {pod}:/tmp/
+  inline-files:
+    file1: ../certificates/pcc1/pcc1-smf-sbi-server.pem
+    file2: ../certificates/pcc1/pcc1-smf-sbi-client.pem
+    file3: ../../../certs/RootCA/ca.crt
+  inline-intermediate-values:
+    pod: get pod -l app.kubernetes.io/name=eric-pc-sm-controller -o jsonpath='{.items[1].metadata.name}'
+- module: sleep
+  duration: 30
+- module: run-k8s-command
+  name: Upload AMF certificates
+  cmd: |
+    cp {file1} -c eric-pc-mm-controller {pod}:/tmp/amf-sbi-client.p12
+    cp {file2} -c eric-pc-mm-controller {pod}:/tmp/amf-sbi-server.p12
+    cp {file3} -c eric-pc-mm-controller {pod}:/tmp/
+  inline-files:
+    file1: ../certificates/pcc1/pcc1-amf-sbi-client.p12
+    file2: ../certificates/pcc1/pcc1-amf-sbi-server.p12
+    file3: ../../../certs/RootCA/ca.crt
+  inline-intermediate-values:
+    pod: get pod -l app.kubernetes.io/name=eric-pc-mm-controller -l eric-pc-mm-controller-role=active
+      -o jsonpath='{.items[0].metadata.name}'
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: create ingress eric-pm-server --rule="eric-pm-server-pcc1.ingress.node182-cluster2.seli.gic.ericsson.se/*=eric-pm-server:9090"
+- module: verify-pod-ready
+  check-interval: 30
+  deployments:
+  - eric-cm-yang-provider
+  - eric-pc-mm-controller
+- module: sleep
+  duration: 30
+- module: load-cmyp-user-config
+  file: user-config.txt
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: change-initial-password
+- module: load-cmyp-app-config
+  file: pc-mm-external-certificates.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: pc-mm-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 60
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: pc-sm-external-certificates.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: load-cmyp-app-config
+  file: vpngw-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: pc-sm-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: verify-pod-ready
+  check-interval: 30
+  deployments:
+  - eric-pc-sm-smf-pgw-session
+- module: sleep
+  duration: 120
+- module: load-cmyp-app-config
+  file: ddc-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10

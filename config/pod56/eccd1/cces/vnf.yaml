@@ -1,0 +1,154 @@
+vnflcm:
+  vnfInstanceName: pod56-cces1
+  vnfProductName: CCES
+  vnfSoftwareVersion: 1.9.3-4
+  instantiate-file: instantiate.json
+  values-file: values.yaml
+  evnfmName: pod56
+access-info:
+  oam: 10.130.34.246
+  ldap-admin:
+    user: sysadmin
+    pass: UGEkJHcwcmQ0TERBUA==
+  users:
+  - user: ccesoam
+    pass: VHNAZG01Z2NAYjF1ZXM=
+    pass-init: Q2hhbmdlbWVAMXN0
+  - user: ccessec
+    pass: VHNAZG01Z2NAYjF1ZXM=
+    pass-init: Q2hhbmdlbWVAMXN0
+pipeline:
+- module: create-namespace
+- module: create-k8s-secret
+  name: eric-sec-ldap-server-creds
+  sources:
+  - type: literal
+    key: adminuser
+    value: sysadmin
+  - type: literal
+    key: passwd
+    value: keycloak
+  - type: literal
+    key: adminpasswd
+    value: $6$tMyqIzGUW4jHtsGw$3tGshIwt6O4CpC/Vm5frHWE40QprbxFQi4Eg.XT7Xk31u8DGG0IO2/70TaT2rLhTRhMdRONBGF2TvmegMcqQm0
+- module: create-k8s-secret
+  name: snmp-alarm-provider-config
+  sources:
+  - type: file
+    key: config.json
+    file: snmp-config.json
+- module: create-k8s-secret
+  name: eric-data-distributed-coordinator-creds
+  sources:
+  - type: literal
+    key: etcdpasswd
+    value: admin
+- module: create-k8s-secret
+  name: eric-sec-access-mgmt-creds
+  sources:
+  - type: literal
+    key: kcadminid
+    value: admin
+  - type: literal
+    key: kcpasswd
+    value: admin
+- module: create-k8s-secret
+  name: eric-data-object-storage-mn-creds
+  sources:
+  - type: literal
+    key: accesskey
+    value: adminaccess
+  - type: literal
+    key: secretkey
+    value: adminsecret
+- module: instantiate
+- module: verify-pod-running
+  ignore-not-running:
+  - eric-data-search-engine-curator
+- module: run-k8s-command
+  name: Allow Grafana to access pm server
+  cmd: |
+    apply -f {file1}
+  inline-files:
+    file1: network-policy/allow-pm-server.yaml
+- module: verify-pod-ready
+  check-interval: 5
+  deployments:
+  - eric-cm-yang-provider
+- module: load-cmyp-user-config
+  file: user-config.xml
+  proto: netconf
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: change-initial-password
+- module: load-cmyp-app-config
+  file: external-certificates.xml
+  user-id: 1
+  proto: netconf
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: nef-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: nef-diameter-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: nrfagent-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: ddc-config.xml
+  user-id: 0
+  proto: netconf
+- module: sleep
+  duration: 60
+- module: provision-nef
+  host: prov.cces.pod56-eccd1.seln.ete.ericsson.se
+  trustca: ../../../certs/TeamBluesRootCA.crt
+  client-cert: certs/cces-prov-client.crt
+  client-key: certs/cces-prov-client.key
+  prov-info:
+  - api-path: Provisioning/generic/entity/v2
+    data-file: nef-provisioning/1_ServiceProvider.xml
+    method: POST
+    headers:
+      Content-Type: application/xml
+      Accept: application/xml
+  - api-path: Provisioning/generic/entity/v2
+    data-file: nef-provisioning/2_ServiceProviderServiceSubscription.xml
+    method: POST
+    headers:
+      Content-Type: application/xml
+      Accept: application/xml
+  - api-path: Provisioning/generic/entity/v2
+    data-file: nef-provisioning/3_Application.xml
+    method: POST
+    headers:
+      Content-Type: application/xml
+      Accept: application/xml
+  - api-path: Provisioning/generic/entity/v2
+    data-file: nef-provisioning/4_ApplicationServiceSubscription.xml
+    method: POST
+    headers:
+      Content-Type: application/xml
+      Accept: application/xml
+  - api-path: Provisioning/qos/v1/information/QI_001
+    data-file: nef-provisioning/5_QoS_information.json
+    method: PUT
+    headers:
+      Content-Type: application/json
+  - api-path: Provisioning/qos/v1/information/QI_002
+    data-file: nef-provisioning/6_QoS_information.json
+    method: PUT
+    headers:
+      Content-Type: application/json

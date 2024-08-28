@@ -1,0 +1,88 @@
+---
+serviceComponentFlavors:
+  - name: default_systemd
+    controlGroup: system
+    manager: systemd
+    properties:
+      {}
+    customProperties:
+      {}
+  - name: default_container
+    controlGroup: container
+    manager: docker
+    properties:
+      {}
+  - name: confined_container
+    controlGroup: container
+    manager: docker
+    properties:
+      ulimits:
+        nofile:
+          soft: 4096
+          hard: 4096
+
+## nova computes flavor
+  - name: nova_compute_r640
+    controlGroup: container
+    manager: docker
+    customProperties:
+      novaSharedCpus: ''
+      novaDedicatedCpus: '4-39,44-79'
+  - name: nova_compute_r740
+    controlGroup: container
+    manager: docker
+    customProperties:
+      ## Assign shared CPUs to be consumed by OpenStack Nova in the compute hosts.
+      novaSharedCpus: ''
+      ## Assign dedicated CPUs to be consumed by OpenStack Nova in the compute hosts.
+      novaDedicatedCpus: '4-47,52-95'
+  - name: nova_compute_r740_vxsds
+    controlGroup: container
+    manager: docker
+    customProperties:
+      ## Assign shared CPUs to be consumed by OpenStack Nova in the compute hosts.
+      novaSharedCpus: ''
+      ## Assign dedicated CPUs to be consumed by OpenStack Nova in the compute hosts.
+      novaDedicatedCpus: '8-39,48-79'
+
+## css flavor
+  - name: css_r630
+    controlGroup: css
+    manager: systemd
+    customProperties:
+      ovs_pmd: '2,3'
+      ovs_pmd_ht: '26,27'
+      ovs_nonpmd: '0'
+  - name: css_r640
+    controlGroup: css
+    manager: systemd
+    customProperties:
+      ovs_pmd: '2,3'
+      ovs_pmd_ht: '42,43'
+      ovs_nonpmd: '0'
+  - name: css_r740
+    controlGroup: css
+    manager: systemd
+    customProperties:
+      ovs_pmd: '2,3'
+      ovs_pmd_ht: '50,51'
+      ovs_nonpmd: '0'
+  - name: css_r740_vxsds
+    controlGroup: css
+    manager: systemd
+    customProperties:
+      ovs_pmd: '2,3'
+      ovs_pmd_ht: '42,43'
+      ovs_nonpmd: '0'
+
+
+# ovs flavor
+  - name: ovs
+    controlGroup: ovs
+    manager: systemd
+  - name: apparmor
+    controlGroup: system
+    manager: systemd
+    customProperties:
+      apparmor_mode: complain
+...

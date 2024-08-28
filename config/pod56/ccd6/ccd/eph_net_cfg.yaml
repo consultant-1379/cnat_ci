@@ -1,0 +1,96 @@
+interfaces:
+  # physical interfaces
+  - name: ens3
+    type: ethernet
+    state: up
+    ipv4:
+      enabled: true
+      dhcp: false
+      address:
+         -  ip:
+              ip-from-net:
+                value: 172.31.252.3
+            prefix-length:
+              prefix-from-net:
+                value: 24
+    ipv6:
+      enabled: false
+  - name: ens4
+    state: up
+    type: ethernet
+    mtu: 9000
+
+  - name: bond_data
+    state: up
+    type: bond
+    mtu: 9000
+    link-aggregation:
+      mode: active-backup
+      options:
+        miimon: "100"
+#        lacp_rate: "1"
+#        xmit_hash_policy: "layer3+4"
+      slaves:
+        - interface-name:
+            value: ens4
+
+  - name: ccd_int
+    type: vlan
+    state: up
+#   description: Internal Kubernetes network
+    vlan:
+      base-iface:
+        interface-name:
+          value: bond_data
+      id:
+        vlan-from-net:
+          value: 1103
+    ipv4:
+      enabled: true
+      address:
+         -  ip:
+              ip-from-net:
+                value: 10.0.10.3
+            prefix-length:
+              prefix-from-net:
+                value: 24
+      dhcp: false
+    ipv6:
+      enabled: false
+      dhcp: false
+    mtu: 9000
+  - name: ccd_oam
+    type: vlan
+    state: up
+#   description: External O&M network
+    vlan:
+      base-iface:
+        interface-name:
+          value: bond_data
+      id:
+        vlan-from-net:
+          value: 1102
+    ipv4:
+      enabled: true
+      address:
+         -  ip:
+              ip-from-net:
+                value: 214.13.236.133
+            prefix-length:
+              prefix-from-net:
+                value: 26
+      dhcp: false
+    ipv6:
+      enabled: false
+      dhcp: false
+    mtu: 1500
+
+routes:
+  config:
+    - destination: 0.0.0.0/0
+      next-hop-address:
+        gateway-from-net:
+          value: 214.13.236.129
+      table-id: 254
+      next-hop-interface: ccd_oam
+

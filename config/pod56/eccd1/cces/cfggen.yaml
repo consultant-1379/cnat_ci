@@ -1,0 +1,38 @@
+nodeInfo: site.yaml
+siteGlobal: ../site-global.yaml
+# targetDir: .
+# jsonschema: cces/jsonschema.yaml
+# jsonschemaGlobal: common/global-jsonschema.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+
+files:
+- template: cces/1.9/values.yaml.jinja2
+  target: values.yaml
+- template: common/instantiate.json.jinja2
+  target: instantiate.json
+- template: common/snmp-config.json.jinja2
+  target: snmp-config.json
+- template: common/user-config.xml.jinja2
+  target: user-config.xml
+- template: cces/1.9/nef-config.xml.jinja2
+  target: nef-config.xml
+- template: cces/1.9/nef-diameter-config.xml.jinja2
+  target: nef-diameter-config.xml
+- template: cces/1.9/nrfagent-config.xml.jinja2
+  target: nrfagent-config.xml
+- template: cces/1.9/ddc-config.xml.jinja2
+  target: ddc-config.xml
+- template: cces/1.9/nef-provisioning/1_ServiceProvider.xml.jinja2
+  target: nef-provisioning/1_ServiceProvider.xml
+- template: cces/1.9/nef-provisioning/2_ServiceProviderServiceSubscription.xml.jinja2
+  target: nef-provisioning/2_ServiceProviderServiceSubscription.xml
+- template: cces/1.9/nef-provisioning/3_Application.xml.jinja2
+  target: nef-provisioning/3_Application.xml
+- template: cces/1.9/nef-provisioning/4_ApplicationServiceSubscription.xml.jinja2
+  target: nef-provisioning/4_ApplicationServiceSubscription.xml
+- template: cces/1.9/nef-provisioning/5_QoS_information.json.jinja2
+  target: nef-provisioning/5_QoS_information.json
+- template: cces/1.9/nef-provisioning/6_QoS_information.json.jinja2
+  target: nef-provisioning/6_QoS_information.json

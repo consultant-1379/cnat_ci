@@ -1,0 +1,384 @@
+openstack:
+  #auth_url: https://<Keystone Public URL>/v3
+  auth_url: https://pcccpod056-os-ext-vip.seln.ete.ericsson.se:5000/v3
+  password: PeyOQ0cJjfdsDC84Q6e6c7TPngppatfyl7hAzfCl
+  tenant: admin
+  user: admin
+  identity_api_version: 3
+  domain: default
+  quotas:
+    compute: {cores: -1, ram: -1, instances: -1, server_groups: -1, server_group_members: -1}
+    network: {port: -1,  subnet: -1, network: -1}
+    volume: {gigabytes: -1, volumes: -1}
+
+cloud:
+  openstack_version: victoria
+  target_cloud_system: cee
+
+zones:
+  HA1:
+    compute_hosts:
+    - compute-16.pod56.cee.tld
+    - compute-17.pod56.cee.tld
+    - compute-18.pod56.cee.tld
+    name: MGMT
+    meta:
+      type: management
+  HA2:
+    compute_hosts:
+    - compute-8.pod56.cee.tld
+    - compute-9.pod56.cee.tld
+    - compute-10.pod56.cee.tld
+    - compute-11.pod56.cee.tld
+    - compute-12.pod56.cee.tld
+    - compute-13.pod56.cee.tld
+    - compute-14.pod56.cee.tld
+    - compute-15.pod56.cee.tld
+    meta:
+      type: standard1
+    name: STD1
+  HA3:
+    compute_hosts:
+    - compute-4.pod56.cee.tld
+    - compute-5.pod56.cee.tld
+    - compute-6.pod56.cee.tld
+    meta:
+      type: standard2
+    name: STD2
+  HA5:
+    compute_hosts:
+    - compute-7.pod56.cee.tld
+    name: HT
+    meta:
+      type: high-throughput
+
+flavors:
+  ccd1_control_plane:
+    name: MGMT_12vcpu_16384MBmem_0GBdisk
+    vcpus: 12
+    mem: 16384
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'aggregate_instance_extra_specs:type': 'management'
+  ccd1_director:
+    name: MGMT_2vcpu_8192MBmem_0GBdisk
+    vcpus: 2
+    mem: 8192
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'aggregate_instance_extra_specs:type': 'management'
+  ccd1_worker_1a:
+    name: STD1_72vcpu_327680MBmem_0GBdisk
+    vcpus: 72
+    mem: 327680
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'hw:numa_nodes': '2'
+      'aggregate_instance_extra_specs:type': 'standard1'
+      'hw:vif_multiqueue_enabled': 'true'
+  ccd1_worker_1b:
+    name: STD2_88vcpu_163840MBmem_0GBdisk
+    vcpus: 88
+    mem: 163840
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'hw:numa_nodes': '2'
+      'aggregate_instance_extra_specs:type': 'standard2'
+      'hw:vif_multiqueue_enabled': 'true'
+  ccd1_worker_2:
+    name: HT_44vcpu_81920MBmem_0GBdisk
+    vcpus: 44
+    mem: 81920
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'aggregate_instance_extra_specs:type': 'high-throughput'
+
+  ccd2_director_and_master:
+    name: MGMT_2vcpu_4096MBmem_0GBdisk
+    vcpus: 2
+    mem: 4096
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'aggregate_instance_extra_specs:type': 'management'
+
+  ccd2_master:
+    name: MGMT_4vcpu_6144MBmem_0GBdisk
+    vcpus: 4
+    mem: 6144
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'aggregate_instance_extra_specs:type': 'management'
+
+  ccd2_worker:
+    name: MGMT_12vcpu_20480MBmem_0GBdisk
+    vcpus: 12
+    mem: 20480
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'aggregate_instance_extra_specs:type': 'management'
+
+  ccd4_worker:
+    name: MGMT_8vcpu_20480MBmem_0GBdisk
+    vcpus: 8
+    mem: 20480
+    disk: 0
+    meta:
+      'hw:cpu_policy': 'dedicated'
+      'hw:mem_page_size': '1048576'
+      'hw:watchdog_action': 'reset'
+      'aggregate_instance_extra_specs:type': 'management'
+
+images:
+  comutils01:
+    name: bionic-server-cloudimg-amd64
+    file: /home/eyanpho/bionic-server-cloudimg-amd64.qcow2
+  test_cirros:
+    name: cirros-0.4.0-x86_64-disk
+    file: /home/eyanpho/cirros-0.4.0-x86_64-disk.qcow2
+    store_format: qcow2
+  ccd_director:
+    name: eccd-2.22.0-000974-2107d748-director-image
+    file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.9/CCD/CXP9036305-2.22.0-000974-2107d748/images/eccd-2.22.0-000974-2107d748-director-image.qcow2
+    ## image disk format in openstack, range: raw, qcow2
+    store_format: raw
+    # vbi_enabled: true
+    ## since ccd 2.21.0, volume_size changed from 10 to 16
+    # volume_size: 16
+  ccd_node:
+    name: eccd-2.22.0-000974-2107d748-node-image
+    file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.9/CCD/CXP9036305-2.22.0-000974-2107d748/images/eccd-2.22.0-000974-2107d748-node-image.qcow2
+    ## image disk format in openstack, range: raw, qcow2
+    store_format: raw
+    # vbi_enabled: true
+    ## since ccd 2.21.0, volume_size changed from 10 to 16
+    # volume_size: 16
+    ## enable multiple queue
+    properties: hw_vif_multiqueue_enabled=true
+  ccd_node_with_scsi:
+    name: eccd-2.22.0-000974-2107d748-node-image-scsi
+    file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.9/CCD/CXP9036305-2.22.0-000974-2107d748/images/eccd-2.22.0-000974-2107d748-node-image.qcow2
+    ## image disk format in openstack, range: raw, qcow2
+    store_format: raw
+    # vbi_enabled: true
+    ## since ccd 2.21.0, volume_size changed from 10 to 16
+    # volume_size: 16
+    ## enable multiple queue
+    properties: hw_vif_multiqueue_enabled=true,hw_scsi_model=virtio-scsi,hw_disk_bus=scsi
+networks:
+  EXT_SRIOV-FLAT-1:
+   physical_network: sriov_left
+   network_type: flat
+   name: sriov-flat-left
+   cidr: 172.16.111.0/24
+   enable_dhcp: false
+  EXT_SRIOV-FLAT-2:
+   physical_network: sriov_right
+   network_type: flat
+   name: sriov-flat-right
+   cidr: 172.16.112.0/24
+   enable_dhcp: false
+
+  SAPC_OAM:
+   physical_network: default
+   network_type: vlan
+   segmentation_id: 3008
+   name: sapc-oam
+   cidr: 25.51.4.128/28
+   gateway_ip: 25.51.4.142
+
+  SAPC_TRAFFIC0:
+   physical_network: default
+   network_type: vlan
+   segmentation_id: 3007
+   name: sapc-traffic0
+   cidr: 25.51.0.144/28
+   gateway_ip: 25.51.0.158
+
+
+vnfs:
+  ccd2-cluster:
+    version: 2.22.0
+    vnf_id: pod56-eccd2
+    vnf_type: eccd
+    day0_parameters:
+      director_external_vip: 10.130.34.93
+    day1_parameters:
+      cluster_type: management
+      # custom parameters for director user auth
+      director_username: eccd
+      director_password_hash: '$6$fo65Z8lKE5MVe4/M$reyC9CRUE.kigkORJZEsX/C/q9RR7fQvkgDjrsTP5AtyQr56A9ZDrRLHIUY8Qu.AJ3eWcYkaBTTCvo2jah/rI0'
+      # ssh key file can be specified here or CLI option, CLI option will overwrite this
+      director_ssh_keyfile: ~/.ssh/ccd_director_rsa.key
+      enable_worker_name_resolution: true
+      disable_ssh_hostkey_checking: true
+      add_ccd_ingress_ip_static_route: true
+      create_additional_ingress:
+      - namespace: monitoring
+        service: eric-victoria-metrics-alert-server
+        host: monitoring-eric-victoria-metrics-alert-server.ingress.pod56-eccd2.seln.ete.ericsson.se
+        port: '8880'
+        ssl: false
+      - namespace: monitoring
+        service: eric-victoria-metrics-cluster-vmselect
+        host: monitoring-eric-victoria-metrics-cluster-vmselect.ingress.pod56-eccd2.seln.ete.ericsson.se
+        port: '8481'
+        ssl: false
+      - namespace: monitoring
+        service: eric-pm-pushgateway
+        host: monitoring-eric-pm-pushgateway.ingress.pod56-eccd2.seln.ete.ericsson.se
+        port: '9091'
+        ssl: false
+      # install grafana
+      enable_grafana: true
+      grafana_image: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.7/grafana
+      grafana_configmaps: lab/grafana
+      grafana_registry_url: container-registry.ingress.pod56-eccd2.seln.ete.ericsson.se
+      grafana_registry_password: 'c0ntainerReg!stry'
+      grafana_ingress_host: grafana.ingress.pod56-eccd2.seln.ete.ericsson.se
+
+    deployment_stack:
+    - stack: network
+      hot_file:
+        template_file: 5gc_sa_net_hot/5gc_sa_net.yaml
+        env_file: lab/pod56/eccd2/eccd/env-eccd-net.yaml
+    - stack: vnf
+      hot_file:
+        template_file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.9/CCD/CXP9036305-2.22.0-000974-2107d748/templates/eccd.yaml
+        env_file: lab/pod56/eccd2/eccd/env-eccd.yaml
+      params:
+        worker_max_batch_size: 4
+      timeout: 90
+
+  ccd1-cluster:
+    version: 2.22.0
+    vnf_id: pod56-eccd1
+    vnf_type: eccd
+    day0_parameters:
+      director_external_vip: 10.130.34.85
+    day1_parameters:
+      cluster_type: traffic
+      # custom parameters for director user auth
+      director_username: eccd
+      director_password_hash: '$6$fo65Z8lKE5MVe4/M$reyC9CRUE.kigkORJZEsX/C/q9RR7fQvkgDjrsTP5AtyQr56A9ZDrRLHIUY8Qu.AJ3eWcYkaBTTCvo2jah/rI0'
+      # ssh key file can be specified here or CLI option, CLI option will overwrite this
+      director_ssh_keyfile: ~/.ssh/ccd_director_rsa.key
+      enable_worker_name_resolution: true
+      disable_ssh_hostkey_checking: true
+      add_ccd_ingress_ip_static_route: true
+      allow_ccd_app_to_ht_workers:
+      - app: kube-multus-ds-amd64
+        toleration_key: "high-throughput"
+      - app: kucero
+        toleration_key: "high-throughput"
+      create_additional_ingress:
+      - namespace: monitoring
+        service: eric-victoria-metrics-alert-server
+        host: monitoring-eric-victoria-metrics-alert-server.ingress.pod56-eccd1.seln.ete.ericsson.se
+        port: '8880'
+        ssl: false
+      - namespace: monitoring
+        service: eric-victoria-metrics-cluster-vmselect
+        host: monitoring-eric-victoria-metrics-cluster-vmselect.ingress.pod56-eccd1.seln.ete.ericsson.se
+        port: '8481'
+        ssl: false
+      - namespace: monitoring
+        service: eric-pm-pushgateway
+        host: monitoring-eric-pm-pushgateway.ingress.pod56-eccd1.seln.ete.ericsson.se
+        port: '9091'
+        ssl: false
+      # install grafana
+      enable_grafana: true
+      grafana_image: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.7/grafana
+      grafana_configmaps: lab/grafana
+      grafana_registry_url: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+      grafana_registry_password: 'c0ntainerReg!stry'
+      grafana_ingress_host: grafana.ingress.pod56-eccd1.seln.ete.ericsson.se
+    deployment_stack:
+    - stack: network
+      hot_file:
+        template_file: 5gc_sa_net_hot/5gc_sa_net.yaml
+        env_file: lab/pod56/eccd1/eccd/env-eccd-net.yaml
+    - stack: vnf
+      hot_file:
+        template_file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.9/CCD/CXP9036305-2.22.0-000974-2107d748/templates/eccd.yaml
+        env_file: lab/pod56/eccd1/eccd/env-eccd.yaml
+      params:
+        worker_max_batch_size: 8
+      timeout: 120
+
+  ccd4-cluster:
+    version: 2.22.0
+    vnf_id: pod56-eccd4
+    vnf_type: eccd
+    day0_parameters:
+      director_external_vip: 10.130.34.181
+    day1_parameters:
+      cluster_type: management
+      # custom parameters for director user auth
+      director_username: eccd
+      director_password_hash: '$6$fo65Z8lKE5MVe4/M$reyC9CRUE.kigkORJZEsX/C/q9RR7fQvkgDjrsTP5AtyQr56A9ZDrRLHIUY8Qu.AJ3eWcYkaBTTCvo2jah/rI0'
+      # ssh key file can be specified here or CLI option, CLI option will overwrite this
+      director_ssh_keyfile: ~/.ssh/ccd_director_rsa.key
+      enable_worker_name_resolution: true
+      disable_ssh_hostkey_checking: true
+      add_ccd_ingress_ip_static_route: true
+      create_additional_ingress:
+      - namespace: monitoring
+        service: eric-victoria-metrics-alert-server
+        host: monitoring-eric-victoria-metrics-alert-server.ingress.pod56-eccd4.seln.ete.ericsson.se
+        port: '8880'
+        ssl: false
+      - namespace: monitoring
+        service: eric-victoria-metrics-cluster-vmselect
+        host: monitoring-eric-victoria-metrics-cluster-vmselect.ingress.pod56-eccd4.seln.ete.ericsson.se
+        port: '8481'
+        ssl: false
+      - namespace: monitoring
+        service: eric-pm-pushgateway
+        host: monitoring-eric-pm-pushgateway.ingress.pod56-eccd4.seln.ete.ericsson.se
+        port: '9091'
+        ssl: false
+      # install grafana
+      enable_grafana: false
+      grafana_image: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.7/grafana
+      grafana_configmaps: lab/grafana
+      grafana_registry_url: container-registry.ingress.pod56-eccd4.seln.ete.ericsson.se
+      grafana_registry_password: 'c0ntainerReg!stry'
+      grafana_ingress_host: grafana.ingress.pod56-eccd4.seln.ete.ericsson.se
+
+    deployment_stack:
+    - stack: network
+      hot_file:
+        template_file: 5gc_sa_net_hot/5gc_sa_net.yaml
+        env_file: lab/pod56/eccd4/eccd/env-eccd-net.yaml
+    - stack: vnf
+      hot_file:
+        template_file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.9/CCD/CXP9036305-2.22.0-000974-2107d748/templates/eccd.yaml
+        env_file: lab/pod56/eccd4/eccd/env-eccd.yaml
+      params:
+        worker_max_batch_size: 4
+      timeout: 90

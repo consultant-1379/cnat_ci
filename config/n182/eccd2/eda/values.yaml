@@ -1,0 +1,140 @@
+global:
+  timezone: CET
+  domainName: seli.gic.ericsson.se
+  clusterName: eda1-n182-vpod2
+  ericsson:
+    licensing:
+      licenseDomains:
+        - productType: EDA
+          customerId: 946060
+          swltId: STA-EDA-20
+  licensing:
+    sites:
+      - hostname: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+  activation:
+    service:
+      prov:
+        annotations:
+          metallb.universe.tf/allow-shared-ip: eda-oam
+          metallb.universe.tf/address-pool: eda-oam
+      oam:
+        annotations:
+          metallb.universe.tf/allow-shared-ip: eda-oam
+          metallb.universe.tf/address-pool: eda-oam
+      notif:
+        annotations:
+          metallb.universe.tf/allow-shared-ip: eda-oam
+  kubeApi:
+    port: 6443
+
+
+eric-tm-ingress-controller-cr:
+  service:
+    annotations:
+      sharedVIPLabel: eda-oam
+  annotations:
+    metallb.universe.tf/address-pool: eda-oam
+  replicaCount:
+    envoy: 2
+
+eric-data-wide-column-database-cd:
+  persistence:
+    dataVolume:
+      persistentVolumeClaim:
+        size: 2G
+        storageClassName: network-block
+
+eric-act-activation-engine:
+  statefulset:
+    storageClass: network-block
+  initContainers:
+    eric-act-hss-validator:
+      imageName: hss-validator-image
+      tag: 1.29.102
+  config:
+    groupId: "eda-groupId"
+
+eric-cloud-native-base:
+  eric-data-document-database-pg:
+    persistentVolumeClaim:
+      storageClassName: network-block
+
+  eric-data-search-engine:
+    persistence:
+      data:
+        persistentVolumeClaim:
+          storageClassName: network-block
+      master:
+        persistentVolumeClaim:
+          storageClassName: network-block
+
+  eric-data-message-bus-kf:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+        size: 2G
+
+  eric-data-coordinator-zk:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+
+  eric-data-distributed-coordinator-ed:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+
+  eric-ctrl-bro:
+    persistence:
+      persistentVolumeClaim:
+        storageClassName: network-block
+
+  eric-pm-server:
+    server:
+      persistentVolume:
+        storageClass: network-block
+
+  eric-fh-snmp-alarm-provider:
+    service:
+      annotations:
+        sharedVIPLabel: eda-oam
+        addressPoolName: eda-oam
+    sourceIdentifierType: 1
+    sourceIdentifier: "10.228.194.170"
+
+  eric-si-application-sys-info-handler:
+    asih:
+      applicationId: n182-vpod2-eda1
+
+eric-act-aaa:
+  misc:
+    replicaCount: 1
+
+eric-act-activation-orchestrator:
+  aoe:
+    misc:
+      replicaCount: 2
+
+eric-act-inbound-async:
+  misc:
+    replicaCount: 1
+
+eric-act-inbound-interfaces:
+  misc:
+    replicaCount: 1
+
+eric-act-inbound-mml:
+  misc:
+    replicaCount: 1
+
+eric-act-proclog-cassandra-stasher:
+  misc:
+    proclog_stasher:
+      replicaCount: 1
+
+eric-act-rest-provisioning:
+  misc:
+    replicaCount: 1
+
+eric-act-web-server:
+  replicaCount: 1

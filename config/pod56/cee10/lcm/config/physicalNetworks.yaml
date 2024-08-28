@@ -1,0 +1,57 @@
+#######################################################################################
+##  Configuration file with the physical networking information                       #
+#######################################################################################
+## The physical network definitons will in case of OpenStack deployments be propagated to
+## OpenStack configuration files (ml2_conf.ini, openvswitch_agent.ini) Physical networks
+## must be configured for passthrough devices if such ones are supposed to be available
+## in an OpenStack deployment. Physical networks can also optionally be used for
+## OVS interfaces (br-prv). If no physical network is explicitly configured for OVS, the
+## default physical network is used.
+## Available options are:
+##  - name: The name of the physical network can contain alphanumeric characters,
+##  underscores ("_"), and hyphens ("-"). This is the name that will be used by Neutron.
+##  - mtu: Optional. The MTU of the physical network. The value must be between 1 and 9000.
+##  - networkType: Optional. List of network type(s) that are allowed to be used on the specific
+##  physical network. Value "vlan" is included by default, if not specified otherwise. The value
+##  must be in list format. Possible values are: "flat", "vlan".
+##  - vlanRange: Optional. The value must be in the following format: 'range_start:range_end'.
+##  If specified, "vlan" must be included as a networkType. Used e.g. by Neutron as range
+## to pick VLAN IDs from.
+##  - vniRange: Optional. The value must be in the following format: 'vnirange_start:vnirange_end'.
+##  If specified, "vxlan" must be included as a networkType. Used e.g. by Neutron as range
+##  vlan and vxlan both cannot be present at the same time.
+##
+## Example configuration:
+## physicalNetworks:
+##   - name: PHY0
+##     mtu: 2140
+##      networkType:
+##        - flat
+##        - vlan
+##      vlanRange: '100:150'
+## ##To add vxlan range follow the below template
+##   - name: PHY1
+##     mtu: 2140
+##      networkType:
+##        - vxlan
+##      vniRange: '1:1000'
+---
+physicalNetworks:
+  - name: default
+    mtu: 2140
+    networkType:
+      - vlan
+    vlanRange: '1901:1999'
+  - name: sriov_left
+    mtu: 2140
+    networkType:
+      - flat
+      - vlan
+    trusted: true
+  - name: sriov_right
+    mtu: 2140
+    networkType:
+      - flat
+      - vlan
+    trusted: true
+...

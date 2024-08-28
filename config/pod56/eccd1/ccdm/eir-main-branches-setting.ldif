@@ -1,0 +1,53 @@
+# version: 1.0.0
+
+################################################################################
+#
+#   Description:
+#	This file includes the definition of the container data levels distribution that
+#   offers UDR for EIR.
+#
+#  Instructions:
+#  - Value "<root_DN>" ,root Distinguished Name, must be updated with the value
+#    that is correct for the particular installation according to the operator
+#    requirements; e.g.: "dc=operator,dc=com"
+#  - The entry "serv=equipmentcheck" must be created if it has not been created
+#    previously
+#  - Optional: Comment those non-used branches. (e.g no connection to GSMA DB -> ou=IMEIlog not used)
+#
+#################################################################################
+
+#Define the service associated to EIR
+dn: serv=equipmentcheck,ou=servCommonData,dc=operator,dc=com
+objectclass: top
+objectclass: CUDBService
+serv: equipmentcheck
+
+#Define the branch Search Order
+dn: ou=searchorder,serv=equipmentcheck,ou=servCommonData,dc=operator,dc=com
+objectclass: top
+objectclass: organizationalunit
+ou: searchorder
+
+#Define the branch IMEIdata
+dn: ou=IMEIdata,serv=equipmentcheck,ou=servCommonData,dc=operator,dc=com
+objectclass: top
+objectclass: organizationalunit
+ou: IMEIdata
+
+#Define the branch IMEIlog
+dn: ou=IMEIlog,serv=equipmentcheck,ou=servCommonData,dc=operator,dc=com
+objectclass: top
+objectclass: organizationalunit
+ou: IMEIlog
+
+#Define the branch IMSIdata
+dn: ou=IMSIdata,serv=equipmentcheck,ou=servCommonData,dc=operator,dc=com
+objectclass: top
+objectclass: organizationalunit
+ou: IMSIdata
+
+#Define the branch TACdata
+dn: ou=TACdata,serv=equipmentcheck,ou=servCommonData,dc=operator,dc=com
+objectclass: top
+objectclass: organizationalunit
+ou: TACdata

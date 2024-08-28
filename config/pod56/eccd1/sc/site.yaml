@@ -1,0 +1,49 @@
+nodeName: pod56-sc1
+nodeType: SC
+instance: ""
+
+vnflcm:
+  clusterName: pod56-eccd1
+  namespace: sc
+  InstantiateVnfRequest:
+    applicationTimeOut: 3000
+    skipVerification: "true"
+
+users:
+  day1:
+  - username: tsadm
+    password: tsadm
+    groups: [ system-admin system-security-admin sc-admin bsf-admin bsf-security-admin scp-admin scp-security-admin sc-security-admin sc-read-only]
+
+license:
+  customerId: '946060'
+  swltId: STA-SC-8
+snmp:
+  agentEngineId: 8000137001C0A88A9FD5C92D86
+  heartbeatInterval: 600
+ddc:
+  remotePath: /home/tsuser/ddc/eccd1/pod56-sc1
+# replicaCount:
+#   eric-bsf-worker: 4
+#   eric-scp-worker: 4
+#   eric-sepp-worker: 4
+sc:
+  bsf:
+    enabled: false
+    instanceId: f8b5465c-43e8-463e-8f16-425346a1c1d1
+    host: bsf1.pod56
+    ip: 5.8.6.11
+    diameter:
+      ip: 5.8.6.12
+  scp:
+    enabled: false
+    instanceId: f8b5465c-43e8-463e-8f16-534350a1c1d1
+    host: scp1.pod56
+    ip: 5.8.6.15
+    smfSbiNotifyHost: smf1-notif.pod56
+    pcfSbiHost: ccpc1-5g-traffic.site1-cluster1
+    pcfSbiPort: 443
+  sepp:
+    enabled: false
+cnom:
+  fqdn: cnom.sc.pod56-eccd1.seln.ete.ericsson.se

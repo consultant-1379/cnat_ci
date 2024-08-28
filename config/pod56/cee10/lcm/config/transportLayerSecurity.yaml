@@ -1,0 +1,47 @@
+#######################################################################################
+##  Configuration file with CEE TLS information                                   #
+#######################################################################################
+##
+---
+transportLayerSecurity:
+  - name: openstack_internal_tls
+    minVersion: TLSv1.2
+    ciphersuites: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+    certificateFilename: os_int.crt
+    caCertificateFilename: cacert_int.pem
+  - name: openstack_external_tls
+    minVersion: TLSv1.2
+    ciphersuites: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+    certificateFilename: os_ext.crt
+    caCertificateFilename: cacert_ext.pem
+  - name: glance_internal_tls
+    minVersion: TLSv1.2
+    ciphersuites: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+    certificateFilename: os_int.crt
+    caCertificateFilename: cacert_int.pem
+  - name: infra_internal_tls
+    minVersion: TLSv1.2
+    ciphersuites: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+    certificateFilename: lcm_int.crt
+    caCertificateFilename: cacert_int.pem
+  - name: infra_external_tls
+    minVersion: TLSv1.2
+    ciphersuites: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+    certificateFilename: lcm_ext.crt
+    caCertificateFilename: cacert_ext.pem
+  - name: serviceassurance_internal_tls
+    minVersion: TLSv1.2
+    ciphersuites: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+    certificateFilename: mon_int.crt
+    caCertificateFilename: cacert_int.pem
+  - name: serviceassurance_external_tls
+    minVersion: TLSv1.2
+    ciphersuites: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+    certificateFilename: mon_ext.crt
+    caCertificateFilename: cacert_ext.pem
+  - name: internal_pki_tls
+    minVersion: TLSv1.2
+    ciphersuites: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384
+    certificateFilename: auto
+    caCertificateFilename: auto
+...

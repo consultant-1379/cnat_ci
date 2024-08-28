@@ -1,0 +1,43 @@
+#######################################################################################
+## Configuration file of the Cloud Execution Environment                              #
+#######################################################################################
+## - name shall be filled with the System name. An example value shall
+##   be: testDC
+## - ntpConfig.servers shall list one or more external NTP server IPs that
+##   shall be used for time synchronization.
+## - dnsConfig.externalDnsServers shall list one or more external DNS server
+##   IPs that shall be used as external DNS servers.
+---
+version: R3A
+name: pod56
+
+ntpConfig:
+  ## IP addresses of the upstream external NTP servers. Four NTP servers are recommended.
+  servers:
+    - 10.221.19.12
+    - 10.221.19.13
+  ## Inside the CEE infra cluster one NTP server is elected master when NTP orphan mode starts.
+  ## The stratum of this CEE NTP server must be configured. It is an integer less than 16.
+  ## Set it to N+2, where N is the highest stratum among all the configured external NTP servers.
+  orphanModeStratum: 9
+
+dnsConfig:
+  internalDomain: pod56.cee.tld
+  externalDnsServers:
+  - 10.221.16.4
+  - 10.221.16.6
+  search:
+  - ericsson.se
+
+timezone: Europe/Stockholm
+
+legaltext:
+  local: "Attention! Unauthorized local access is strictly prohibited!\n"
+  remote: "\nAttention! Unauthorized remote access is strictly prohibited!\n\n"
+
+hostCredentials:
+  hostUsername: ceeinfra
+  hostPassword: r00tme
+  grubUsername: grubuser
+  grubPassword: GrUbUs#R321
+...

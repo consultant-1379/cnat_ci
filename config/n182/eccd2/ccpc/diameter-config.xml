@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="101" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <diameter xmlns="urn:rdns:com:ericsson:oammodel:ericsson-diameter-adp">
+                <transport>
+                  <node>
+                    <id>HostServer</id>
+                    <origin-realm>ericsson.se</origin-realm>
+                    <origin-host>ccpc1-4g-traffic.site1-cluster2.ericsson.se</origin-host>
+                    <product-name>CCPC</product-name>
+                  </node>
+                </transport>
+            </diameter>
+        </config>
+    </edit-config>
+</rpc>

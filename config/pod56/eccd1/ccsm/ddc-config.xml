@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="1">
+  <edit-config>
+    <target><running/></target>
+    <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <!--Configuration of the diagnostic data collection functionality.-->
+      <diagnostic-data-collection xmlns="urn:rdns:com:ericsson:oammodel:ericsson-data-collector-adp">
+        <!--Properties of a DDB to be collected. Type is list.
+        OPTIONAL.-->
+        <collector-profile>
+          <!--Profile ID. Type is string. Pattern is'[a-zA-Z0-9]+'.
+          It is MANDATORY and used as list key.-->
+          <profile-id>defaultProfileForCollectionActionWhenTrOrCsr</profile-id>
+          <!--Indicates that a profile is user created.-->
+          <profile-type>action-profile</profile-type>
+          <!--List of data types to be collected. Values that can be used are "logs", "metrics" and files.
+          At least one list element is MANDATORY.-->
+          <data-to-collect>logs</data-to-collect>
+          <data-to-collect>metrics</data-to-collect>
+          <data-to-collect>files</data-to-collect>
+          <data-to-collect>software-information</data-to-collect>
+          <!--List of targets for log export. Possible values are "sftp" and "object-storage".
+          At least one element is MANDATORY.-->
+          <export-ddb-to>sftp</export-ddb-to>
+          <!--List of Log Planes from where the Log Records shall be collected. Supported log planes are listed in the CPI.
+          At least one list item is MANDATORY when data-to-collect="logs".-->
+          <log-plane>adp-app-logs*</log-plane>
+          <log-plane>adp-app-debug-logs*</log-plane>
+          <log-plane>adp-app-asi-logs*</log-plane>
+          <log-plane>adp-app-audit-logs*</log-plane>
+          <!--List of types of files to be collected. Supported types are listed in the CPI.
+          At least one list item is MANDATORY when data-to-collect="files".-->
+          <files-to-collect>coredumps</files-to-collect>
+          <!--A reference to a defined SFTP server (/diagnostic-data-collection/sftp-server/name).
+          MANDATORY when export-ddb-to="sftp".-->
+          <sftp>sftpServerForDDC</sftp>
+          <!--When a DDB is created, it will contain data about the previous period of 'collection-window' minutes.
+          If this is greater than the collection-interval, some data might be contained in multiple report files.
+          The system MAY NOT support huge collection windows.
+          Type is uint32. Default value is 15.
+          OPTIONAL.-->
+          <collection-window>300</collection-window>
+        </collector-profile>
+        <collector-profile>
+          <profile-id>defaultProfileForPeriodicTriggerDDC</profile-id>
+          <profile-type>action-profile</profile-type>
+          <data-to-collect>logs</data-to-collect>
+          <data-to-collect>metrics</data-to-collect>
+          <data-to-collect>software-information</data-to-collect>
+          <export-ddb-to>sftp</export-ddb-to>
+          <log-plane>adp-app-logs*</log-plane>
+          <log-plane>adp-app-debug-logs*</log-plane>
+          <log-plane>adp-app-asi-logs*</log-plane>
+          <log-plane>adp-app-audit-logs*</log-plane>
+          <sftp>sftpServerForDDC</sftp>
+          <collection-window>15</collection-window>
+        </collector-profile>
+        <collector-profile>
+          <profile-id>defaultProfileForPeriodicalLogExport</profile-id>
+          <profile-type>collection-profile</profile-type>
+          <data-to-collect>logs</data-to-collect>
+          <data-to-collect>metrics</data-to-collect>
+          <data-to-collect>software-information</data-to-collect>
+          <export-ddb-to>sftp</export-ddb-to>
+          <log-plane>adp-app-logs*</log-plane>
+          <sftp>sftpServerForDDC</sftp>
+          <collection-window>15</collection-window>
+        </collector-profile>
+        <collector-profile>
+          <profile-id>defaultProfileForPeriodicalSecurityLogExport</profile-id>
+          <profile-type>collection-profile</profile-type>
+          <data-to-collect>logs</data-to-collect>
+          <data-to-collect>software-information</data-to-collect>
+          <export-ddb-to>sftp</export-ddb-to>
+          <log-plane>adp-app-security-logs*</log-plane>
+          <sftp>sftpServerForDDC</sftp>
+          <collection-window>15</collection-window>
+        </collector-profile>
+        <!--List of SFTP servers the SFTP client is to initiate connections to in parallel.
+        There is no need for multiple sftp-servers, as redundancy is handled by multiple endpoints.
+        MANDATORY when /diagnostic-data-collection/collector-profile/sftp is set.-->
+        <sftp-server>
+          <!--An arbitrary name for the SFTP server. Type is string.
+          It is MANDATORY and used as list key.-->
+          <name>sftpServerForDDC</name>
+          <!--Container for the list of SFTP endpoints.
+          MANDATORY.-->
+          <endpoints>
+            <!--A user-ordered list of endpoints that the SFTP client may attempt to connect to (one at a time)
+            switching to the next in case the connection failed. Each endpoint has its own security configuration.
+            At least one element is MANDATORY.-->
+            <endpoint>
+              <!--Endpoint name. Type is string.
+              It is MANDATORY and used as list key.-->
+              <name>sftpServerForDDC</name>
+              <!--The IP address or hostname of the endpoint. Type is
+              MANDATORY.-->
+              <remote-address>10.130.34.217</remote-address>
+              <!--The IP port for this endpoint.
+              OPTIONAL.-->
+              <remote-port>22</remote-port>
+              <!--Specifies the location or path where the file(s) will be stored. Type is string.
+              OPTIONAL.-->
+              <remote-path>ddc/eccd1/pod56-ccsm1</remote-path>
+              <!--The credentials used by the client to authenticate to the SSH server.
+              Either a password or a public-key container must be configured.
+              MANDATORY.-->
+              <client-identity>
+                <!--Username for the SFTP server. Type is string.
+                MANDATORY.-->
+                <username>tsuser</username>
+                <!--Password for the SFTP server.
+                Needed when password-based authentication is used instead of the one based on keys. Type is string.-->
+                <password>dHNwYXNz</password>
+                <!--A locally-defined or referenced asymmetric key pair to be used for client authentication.
+                Needed when key-based authentication is used instead of the one based on passwords.-->
+                <!--<public-key>-->
+                  <!--Container to hold the local key definition.
+                  MANDATORY.-->
+                  <!--<local-definition>-->
+                    <!--Identifies the key's algorithm."; reference "RFC CCCC: Common YANG Data Types for Cryptography.
+                    Possible values are "rsa2048", "rsa3072", "rsa4096", "rsa7680", "rsa15360",
+                    "secp192r1", "secp224r1", "secp256r1", "secp384r1", "secp521r1", "x25519", "x448".
+                    MANDATORY.-->
+                    <!--<algorithm>{PUBLIC_KEY_ALGORITHM}</algorithm>-->
+                    <!--Identifies the public key format.
+                    MANDATORY.-->
+                    <!--<public-key-format>ct:ssh-public-key-format</public-key-format>-->
+                    <!--The binary value (base64 encoded) of the public key.
+                    The interpretation of the value is defined by 'public-key-format' field.
+                    MANDATORY.-->
+                    <!--<public-key>{PUBLIC_KEY}</public-key>-->
+                    <!--Identifies the private key  format. Possible values are "ct:rsa-private-key-format", "ct:ec-private-key-format", "ct:one-asymmetric-key-format", "ct:encrypted-one-asymmetric-key-format".
+                    MANDATORY.-->
+                    <!--<private-key-format>{PRIVATE_KEY_FORMAT}</private-key-format>-->
+                    <!--The binary value of the private key (base64 encoded). The key's value is interpreted by the 'private-key-format' field.
+                    MANDATORY.-->
+                    <!--<private-key>{PRIVATE_KEY}</private-key>-->
+                  <!--</local-definition>-->
+                <!--</public-key>-->
+              </client-identity>
+              <!--Specifies how the SSH client can authenticate SSH servers.
+              MANDATORY.-->
+              <server-authentication>
+                <!--Indicates that the client can authenticate servers using the configured SSH host keys.
+                MANDATORY.-->
+                <ssh-host-keys>
+                  <!--Container to hold the local key definition.
+                  MANDATORY.-->
+                  <local-definition>
+                    <!--A list of SSH host keys used by the SSH client to authenticate SSH server host keys.
+                    A server host key is authenticated if it is an exact match to a configured SSH host key.
+                    Type is binary (base64 encoded public key data for this host key.)
+                    MANDATORY.-->
+                    <host-key>MTAuMTMzLjUzLjYgZWNkc2Etc2hhMi1uaXN0cDI1NiBBQUFBRTJWalpITmhMWE5vWVRJdGJtbHpkSEF5TlRZQUFBQUlibWx6ZEhBeU5UWUFBQUJCQklmRXBXZDljRmhMWmVRRjVud0kwSXRyWHdoWmQ0L3NtNUY0WDI4WXNjd3ZKODN1YnJUU2xyYWJVR2RjL3k4VGM5RFZzN1RLZUFxODQ5TzdiNmdjY2k4PQo=</host-key>
+                  </local-definition>
+                </ssh-host-keys>
+              </server-authentication>
+            </endpoint>
+          </endpoints>
+        </sftp-server>
+        <!--Configuration and state data for a periodic data-collector.
+        It is OPTIONAL (default values shall be used).-->
+        <data-collector>
+          <!--Reference to a user profile identified by /diagnostic-data-collection/collector-profile/profile-id.
+          OPTIONAL.-->
+          <profile>defaultProfileForPeriodicalLogExport</profile>
+          <!--At the end of each collection-interval a DDB is created and exported. Expressed in minutes. Default value is 10.
+          OPTIONAL.-->
+          <collection-interval>10</collection-interval>
+          <!--Administrative state of the data collector. Possible values are "locked" and "unlocked".
+          Default value is "locked".
+          OPTIONAL.-->
+          <administrative-state>unlocked</administrative-state>
+        </data-collector>
+      </diagnostic-data-collection>
+    </config>
+  </edit-config>
+</rpc>

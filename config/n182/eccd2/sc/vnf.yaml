@@ -1,0 +1,112 @@
+vnflcm:
+  vnfInstanceName: vpod2-sc1
+  vnfProductName: Signaling_Controller
+  vnfSoftwareVersion: 1.13.0+4
+  values-file: values.yaml
+  instantiate-file: instantiate.json
+  clusterName: n182-eccd2
+  namespace: sc
+access-info:
+  oam: bsf1-n182-vpod2.seli.gic.ericsson.se
+  ldap-admin:
+    user: sysadmin
+    pass: c3lzQWRtMW5ARGF5MA==
+  users:
+  - user: sc-admin
+    pass: RG01R0NAUzBsdXQhb24=
+    pass-init: Q2hhbmdlbWVAMXN0
+pipeline:
+- module: create-namespace
+- module: create-k8s-resource
+  file: day0_secrets/bsf-db-secret.yaml
+- module: create-k8s-resource
+  file: day0_secrets/wcdbcd-admin-secret.yaml
+- module: create-k8s-resource
+  file: day0_secrets/wcdbcd-day0-secret.yaml
+- module: create-k8s-configmap
+  name: eric-sc-tap-config
+  sources:
+  - file: day0_configmaps/tap_config.json
+- module: create-k8s-secret
+  name: eric-sec-ldap-server-creds
+  sources:
+  - type: literal
+    key: adminuser
+    value: sysadmin
+  - type: literal
+    key: passwd
+    value: sysAdm1n@Day0
+  - type: literal
+    key: adminpasswd
+    value: $6$fzLPYlRZCpweJMJC$AiNfP0WYE3npY8Za6GxMFoGj75TOl.TS6tmnnky2Bv5wY0Ek8RIoJlr9pyj0LF3wMMaNsNTUH4jp2lIHviJGS0
+- module: create-k8s-secret
+  name: sftp-server-config
+  sources:
+  - type: file
+    key: sftpConfig.json
+    file: day0_secrets/sftpConfig.json
+- module: create-k8s-secret
+  name: snmp-alarm-provider-config
+  sources:
+  - type: file
+    key: config.json
+    file: snmp-config.json
+- module: instantiate
+- module: verify-pod-running
+  ignore-not-running:
+  - eric-data-search-engine-curator
+- module: run-k8s-command
+  name: Create networkpolicy to allow accessing eric-pm-server and eric-data-search-engine
+  cmd: |
+    apply -f {file1}
+    apply -f {file2}
+  inline-files:
+    file1: network-policy/eric-pm-server-allow.yaml
+    file2: network-policy/eric-data-search-engine-allow.yaml
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: create ingress eric-pm-server --rule="eric-pm-server-bsf1.ingress.node182-cluster2.seli.gic.ericsson.se/*=eric-pm-server:9090"
+- module: verify-pod-ready
+  check-interval: 5
+  deployments:
+  - eric-cm-yang-provider
+- module: load-cmyp-user-config
+  file: user-config.txt
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: change-initial-password
+- module: load-cmyp-app-config
+  file: external-certificates-bsf.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: bsf-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: ddc-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: load-cmyp-app-config
+  name: Database initialize
+  user-id: 0
+  commands: |-
+    bsf-function nf-instance bsf1 bsf-service serviceName1 binding-database initialize-db datacenter { name datacenter1 }
+    end
+# this needed for fivegc configuration. No need right now.
+# - module: run-external-script
+#   script-path: /lab/pccc_utils/scripts/sputils
+#   args: horseKeeper -k n182-vpod2 -n sc1 --patch-grafana-ds --cnf-max-buckets 262143 --fivegc-cnfs-healthcheck

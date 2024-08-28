@@ -1,0 +1,796 @@
+#
+# Configuration file with the disk allocation assignment
+#
+---
+diskAssignments:
+  - name: controller-disks # R630
+    drives:
+      - name: disk1
+        type: local
+        #id: /dev/disk/by-path/pci-0000:02:00.0-scsi-0:2:0:0
+        id: /dev/sda
+        labelType: gpt
+        bootable: true
+        partitions:
+          - name: btrfs
+            size: 16GiB
+          - name: gluster_pv_1
+            size: 100GiB
+          - name: lvm_pv_1
+            size: max
+    volumeGroups:
+      - name: system
+        physicalVolumes:
+          - type: partition
+            partname: lvm_pv_1
+#-----------------------------------------
+#  Specify full disk:
+#          - type: drive
+#            name: disk1
+#-----------------------------------------
+        logicalVolumes:
+          - name: log
+            size: 10GiB
+          - name: crash
+            size: 30GiB
+          - name: mysql
+            size: 50GiB
+            #size: 10%
+          - name: rabbitmq
+            size: 5GiB
+           ## To be updated based on the largest image x no. of boot from volume requests - check dimensioning guide for details
+          - name: cinder_volume
+            size: 200GiB
+         # - name: infra
+         #   ## To be updated if additional infra VMs are added like network hosts and CSC hosts, default considers only one infra VM which is the infra host.
+         #   size: 250GiB
+#        #    size: <TO.BE.FILLED>
+          - name: docker
+            size: 24GiB
+          - name: nova
+            size: 300GiB
+          - name: swiftobj
+            size: 100%FREE
+      - name: gluster
+        physicalVolumes:
+          - type: partition
+            partname: gluster_pv_1
+        logicalVolumes:
+          - name: gluster
+            size: 100%
+    volumes:
+      - name: root
+        type: btrfs
+        mount: /
+        format: true
+        fstype: btrfs
+        owner:
+          name: os
+        devices:
+          - type: partition
+            partname: btrfs
+        subvolumes:
+          - name: /tmp
+            cow: false
+          - name: /home
+            cow: false
+          - name: /opt
+            cow: false
+          - name: /srv
+            cow: false
+          - name: /var
+            cow: false
+          - name: /boot/grub2/x86_64-efi
+            cow: false
+#      - name: infra
+#        type: lvm
+#        volumeGroup: system
+#        logicalVolume: infra
+#        mount: /var/lib/infra
+#        format: true
+#        fstype: ext4
+#        owner:
+#          name: infra
+      - name: log
+        type: lvm
+        volumeGroup: system
+        logicalVolume: log
+        mount: /var/log
+        format: true
+        fstype: ext4
+        owner:
+          name: rsyslog
+      - name: crash
+        type: lvm
+        volumeGroup: system
+        logicalVolume: crash
+        mount: /var/crash
+        format: true
+        fstype: ext4
+        owner:
+          name: crash
+      - name: mysql
+        type: lvm
+        volumeGroup: system
+        logicalVolume: mysql
+        mount: /var/lib/mysql
+        format: true
+        fstype: ext4
+        owner:
+          name: mariadb
+      - name: rabbitmq
+        type: lvm
+        volumeGroup: system
+        logicalVolume: rabbitmq
+        mount: /var/lib/rabbitmq
+        format: true
+        fstype: ext4
+        owner:
+          name: rabbitmq
+      - name: docker
+        type: lvm
+        volumeGroup: system
+        logicalVolume: docker
+        mount: /var/lib/docker
+        format: true
+        fstype: ext4
+        owner:
+          name: docker
+      - name: cinder_volume
+        type: lvm
+        volumeGroup: system
+        logicalVolume: cinder_volume
+        mount: /var/lib/cinder
+        format: true
+        fstype: ext4
+        owner:
+          name: cinder-volume
+      - name: nova
+        type: lvm
+        volumeGroup: system
+        logicalVolume: nova
+        mount: /var/lib/nova
+        format: true
+        fstype: ext4
+        owner:
+          name: compute
+      - name: swiftobj
+        type: lvm
+        volumeGroup: system
+        logicalVolume: swiftobj
+        mount: /var/lib/swift
+        format: true
+        fstype: ext4
+        owner:
+          name: swift
+          attributes:
+            swiftRings:
+              - account
+              - container
+              - object-0
+              - object-1
+  - name: serviceassurance-disks
+    drives:
+      - name: disk1
+        type: local
+        id: /dev/vda
+        diskBackend:
+          type: image
+          imagetype: raw
+          path: /var/lib/nova/images
+          preallocate: falloc
+          size: 110GiB
+        labelType: gpt
+        bootable: true
+        partitions:
+          - name: btrfs
+            size: 20GiB
+          - name: lvm_pv_1
+            size: max
+    volumeGroups:
+      - name: system
+        physicalVolumes:
+          - type: partition
+            partname: lvm_pv_1
+        logicalVolumes:
+          - name: log
+            size: 10GiB
+          - name: crash
+            size: 10GiB
+          - name: docker
+            size: 10GiB
+          - name: rabbitmq
+            size: 5GiB
+          - name: events
+            size: 10GiB
+          - name: pmreporter
+            size: 15GiB
+          - name: monitoring
+            size: 15GiB
+          - name: mysql
+            size: 100%FREE
+    volumes:
+      - name: root
+        type: btrfs
+        mount: /
+        format: true
+        fstype: btrfs
+        owner:
+          name: os
+        devices:
+          - type: partition
+            partname: btrfs
+        subvolumes:
+          - name: /tmp
+            cow: false
+          - name: /home
+            cow: false
+          - name: /opt
+            cow: false
+          - name: /srv
+            cow: false
+          - name: /var
+            cow: false
+          - name: /boot/grub2/x86_64-efi
+            cow: false
+      - name: docker
+        type: lvm
+        volumeGroup: system
+        logicalVolume: docker
+        mount: /var/lib/docker
+        format: true
+        fstype: ext4
+        owner:
+          name: docker
+      - name: log
+        type: lvm
+        volumeGroup: system
+        logicalVolume: log
+        mount: /var/log
+        format: true
+        fstype: ext4
+        owner:
+          name: rsyslog
+      - name: crash
+        type: lvm
+        volumeGroup: system
+        logicalVolume: crash
+        mount: /var/crash
+        format: true
+        fstype: ext4
+        owner:
+          name: crash
+      - name: rabbitmq
+        type: lvm
+        volumeGroup: system
+        logicalVolume: rabbitmq
+        mount: /var/lib/rabbitmq
+        format: true
+        fstype: ext4
+        owner:
+          name: rabbitmq
+      - name: events
+        type: lvm
+        volumeGroup: system
+        logicalVolume: events
+        mount: /var/lib/events
+        format: true
+        fstype: ext4
+        owner:
+          name: kafka
+      - name: pmreporter
+        type: lvm
+        volumeGroup: system
+        logicalVolume: pmreporter
+        mount: /var/pmreporter
+        format: true
+        fstype: ext4
+        owner:
+          name: pm_reporter
+      - name: monitoring
+        type: lvm
+        volumeGroup: system
+        logicalVolume: monitoring
+        mount: /var/lib/monitoring
+        format: true
+        fstype: ext4
+        owner:
+          name: vmetrics
+      - name: mysql
+        type: lvm
+        volumeGroup: system
+        logicalVolume: mysql
+        mount: /var/lib/mysql
+        format: true
+        fstype: ext4
+        owner:
+          name: mariadb
+  - name: compute-with-one-disk
+    drives:
+      - name: disk1
+        type: local
+        id: /dev/sda
+        labelType: gpt
+        bootable: true
+        partitions:
+          - name: btrfs
+            size: 20GiB
+          - name: lvm_pv_1
+            size: max
+    volumeGroups:
+      - name: system
+        physicalVolumes:
+          - type: partition
+            partname: lvm_pv_1
+        logicalVolumes:
+          - name: log
+            size: 10GiB
+          - name: crash
+            size: 30GiB
+          - name: docker
+            size: 7GiB
+          - name: nova
+            size: 100%FREE
+    volumes:
+      - name: root
+        type: btrfs
+        mount: /
+        format: true
+        fstype: btrfs
+        owner:
+          name: os
+        devices:
+          - type: partition
+            partname: btrfs
+        subvolumes:
+          - name: /tmp
+            cow: false
+          - name: /home
+            cow: false
+          - name: /opt
+            cow: false
+          - name: /srv
+            cow: false
+          - name: /var
+            cow: false
+          - name: /boot/grub2/x86_64-efi
+            cow: false
+      - name: docker
+        type: lvm
+        volumeGroup: system
+        logicalVolume: docker
+        mount: /var/lib/docker
+        format: true
+        fstype: ext4
+        owner:
+          name: docker
+      - name: log
+        type: lvm
+        volumeGroup: system
+        logicalVolume: log
+        mount: /var/log
+        format: true
+        fstype: ext4
+        owner:
+          name: rsyslog
+      - name: crash
+        type: lvm
+        volumeGroup: system
+        logicalVolume: crash
+        mount: /var/crash
+        format: true
+        fstype: ext4
+        owner:
+          name: crash
+      - name: nova
+        type: lvm
+        volumeGroup: system
+        logicalVolume: nova
+        mount: /var/lib/nova
+        format: true
+        fstype: ext4
+        owner:
+          name: compute
+  - name: compute-with-two-disks
+    drives:
+      - name: disk1
+        type: local
+        id: /dev/sda
+        labelType: gpt
+        bootable: true
+        partitions:
+          - name: btrfs
+            size: 20GiB
+          - name: lvm_pv_1
+            size: max
+      - name: disk2
+        type: local
+        id: /dev/sdb
+        labelType: gpt
+        bootable: false
+        partitions:
+          - name: lvm_pv_2
+            size: 100%
+    volumeGroups:
+      - name: system
+        physicalVolumes:
+          - type: partition
+            partname: lvm_pv_1
+        logicalVolumes:
+          - name: log
+            size: 30GiB
+          - name: docker
+            size: 15GiB
+          - name: crash
+            size: 100%FREE
+      - name: nova
+        physicalVolumes:
+          - type: partition
+            partname: lvm_pv_2
+        logicalVolumes:
+          - name: nova
+            size: 100%
+    volumes:
+      - name: root
+        type: btrfs
+        mount: /
+        format: true
+        fstype: btrfs
+        owner:
+          name: os
+        devices:
+          - type: partition
+            partname: btrfs
+        subvolumes:
+          - name: /tmp
+            cow: false
+          - name: /home
+            cow: false
+          - name: /opt
+            cow: false
+          - name: /srv
+            cow: false
+          - name: /var
+            cow: false
+          - name: /boot/grub2/x86_64-efi
+            cow: false
+      - name: docker
+        type: lvm
+        volumeGroup: system
+        logicalVolume: docker
+        mount: /var/lib/docker
+        format: true
+        fstype: ext4
+        owner:
+          name: docker
+      - name: log
+        type: lvm
+        volumeGroup: system
+        logicalVolume: log
+        mount: /var/log
+        format: true
+        fstype: ext4
+        owner:
+          name: rsyslog
+      - name: crash
+        type: lvm
+        volumeGroup: system
+        logicalVolume: crash
+        mount: /var/crash
+        format: true
+        fstype: ext4
+        owner:
+          name: crash
+      - name: nova
+        type: lvm
+        volumeGroup: nova
+        logicalVolume: nova
+        mount: /var/lib/nova
+        format: true
+        fstype: ext4
+        owner:
+          name: compute
+  - name: compute-with-8-disks-scaleio
+    drives:
+      - name: disk1
+        type: local
+        id: /dev/sda
+        labelType: gpt
+        bootable: true
+        partitions:
+          - name: btrfs
+            size: 20GiB
+          - name: lvm_pv_1
+            size: max
+      ## VxSDS Option 3: VxSDS SDS device on dedicated disk
+      - name: disk2
+        type: local
+        id: /dev/sdb
+        labelType: gpt
+        bootable: no
+        owner: sio:pool1
+      - name: disk3
+        type: local
+        id: /dev/sdc
+        labelType: gpt
+        bootable: no
+        owner: sio:pool1
+      - name: disk4
+        type: local
+        id: /dev/sdd
+        labelType: gpt
+        bootable: no
+        owner: sio:pool1
+      - name: disk5
+        type: local
+        id: /dev/sde
+        labelType: gpt
+        bootable: no
+        owner: sio:pool1
+      - name: disk6
+        type: local
+        id: /dev/sdf
+        labelType: gpt
+        bootable: no
+        owner: sio:pool1
+      - name: disk7
+        type: local
+        id: /dev/sdg
+        labelType: gpt
+        bootable: no
+        owner: sio:pool1
+      - name: disk8
+        type: local
+        id: /dev/sdh
+        labelType: gpt
+        bootable: no
+        owner: sio:pool1
+      - name: disk9
+        type: local
+        id: /dev/sdi
+        labelType: gpt
+        bootable: no
+        owner: sio:pool1
+
+    volumeGroups:
+      - name: system
+        physicalVolumes:
+          - type: partition
+            partname: lvm_pv_1
+        logicalVolumes:
+          - name: log
+            size: 30GiB
+          - name: crash
+            size: 15GiB
+          - name: docker
+            size: 7GiB
+          - name: nova
+            size: 100%FREE
+    volumes:
+      - name: root
+        type: btrfs
+        mount: /
+        format: true
+        fstype: btrfs
+        owner:
+          name: os
+        devices:
+          - type: partition
+            partname: btrfs
+        subvolumes:
+          - name: /tmp
+            cow: false
+          - name: /home
+            cow: false
+          - name: /opt
+            cow: false
+          - name: /srv
+            cow: false
+          - name: /var
+            cow: false
+          - name: /boot/grub2/x86_64-efi
+            cow: false
+      - name: docker
+        type: lvm
+        volumeGroup: system
+        logicalVolume: docker
+        mount: /var/lib/docker
+        format: true
+        fstype: ext4
+        owner:
+          name: docker
+      - name: log
+        type: lvm
+        volumeGroup: system
+        logicalVolume: log
+        mount: /var/log
+        format: true
+        fstype: ext4
+        owner:
+          name: rsyslog
+      - name: crash
+        type: lvm
+        volumeGroup: system
+        logicalVolume: crash
+        mount: /var/crash
+        format: true
+        fstype: ext4
+        owner:
+          name: crash
+      - name: nova
+        type: lvm
+        volumeGroup: system
+        logicalVolume: nova
+        mount: /var/lib/nova
+        format: true
+        fstype: ext4
+        owner:
+          name: compute
+  - name: lcm-disks
+    drives:
+      - name: disk1
+        type: virtual
+        diskBackend:
+          type: image
+          imagetype: raw
+          path: /var/lib/nova/images
+          preallocate: falloc
+          size: 60GiB
+        id: /dev/vda
+        labelType: gpt
+        bootable: true
+        partitions:
+          - name: btrfs
+            size: 20GiB
+          - name: lvm_pv_1
+            size: max
+      # default 100GiB
+      - name: disk2
+        type: virtual
+        diskBackend:
+          type: blockdev
+          path: '/dev/gluster/gluster'
+        id: /dev/vdb
+        bootable: false
+    volumeGroups:
+      - name: system
+        physicalVolumes:
+          - type: partition
+            partname: lvm_pv_1
+        logicalVolumes:
+          - name: log
+            size: 10GiB
+          - name: crash
+            size: 10GiB
+          - name: docker
+            size: 8GiB
+          - name: mysql
+            size: 100%FREE
+    volumes:
+      - name: root
+        type: btrfs
+        mount: /
+        format: true
+        fstype: btrfs
+        owner:
+          name: os
+        devices:
+          - type: partition
+            partname: btrfs
+        subvolumes:
+          - name: /tmp
+            cow: false
+          - name: /home
+            cow: false
+          - name: /opt
+            cow: false
+          - name: /srv
+            cow: false
+          - name: /var
+            cow: false
+          - name: /boot/grub2/x86_64-efi
+            cow: false
+      - name: log
+        type: lvm
+        volumeGroup: system
+        logicalVolume: log
+        mount: /var/log
+        format: true
+        fstype: ext4
+        owner:
+          name: rsyslog
+      - name: crash
+        type: lvm
+        volumeGroup: system
+        logicalVolume: crash
+        mount: /var/crash
+        format: true
+        fstype: ext4
+        owner:
+          name: crash
+      - name: mysql
+        type: lvm
+        volumeGroup: system
+        logicalVolume: mysql
+        mount: /var/lib/mysql
+        format: true
+        fstype: ext4
+        owner:
+          name: mariadb
+      - name: docker
+        type: lvm
+        volumeGroup: system
+        logicalVolume: docker
+        mount: /var/lib/docker
+        format: true
+        fstype: ext4
+        owner:
+          name: docker
+      - name: gluster_brick1
+        type: plain
+        disk: /dev/vdb
+        mount: /data/glusterfs/bricks
+        format: true
+        fstype: xfs
+        owner:
+          name: glusterfs
+          attributes:
+            glusterVolumes:
+              - name: infra
+              - name: cee_main
+              - name: cee_templates
+              - name: lcm_jobs
+              - name: backups
+              - name: lcm_collections
+              - name: lcm_reports
+            glusterVolumeType: replica
+            glusterVolumeOptions:
+              - performance.cache-size: 32MB
+      - name: gluster_infra
+        type: glusterfs
+        mount: /srv/www/
+        glusterOptions:
+          volumeName: infra
+          glusterHost: localhost
+      - name: gluster_cee_main
+        type: glusterfs
+        mount: /var/lib/cee/main
+        glusterOptions:
+          volumeName: cee_main
+          glusterHost: localhost
+      - name: gluster_cee_templates
+        type: glusterfs
+        mount: /opt/cee/templates
+        glusterOptions:
+          volumeName: cee_templates
+          glusterHost: localhost
+      - name: gluster_lcm_jobs
+        type: glusterfs
+        mount: /var/lib/cee/jobs
+        glusterOptions:
+          volumeName: lcm_jobs
+          glusterHost: localhost
+      - name: gluster_backups
+        type: glusterfs
+        mount: /var/lib/cee/backups
+        owner:
+          name: backups
+        glusterOptions:
+          volumeName: backups
+          glusterHost: localhost
+      - name: gluster_lcm_collections
+        type: glusterfs
+        mount: /var/lib/cee/collections
+        owner:
+          name: lcm_collections
+        glusterOptions:
+          volumeName: lcm_collections
+          glusterHost: localhost
+      - name: gluster_lcm_reports
+        type: glusterfs
+        mount: /var/lib/cee/reports
+        owner:
+          name: lcm_reports
+        glusterOptions:
+          volumeName: lcm_reports
+          glusterHost: localhost

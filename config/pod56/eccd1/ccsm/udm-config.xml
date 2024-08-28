@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+  Notice that it is a configuration template in XML format
+  compliant with NF YANG model.  This XML template provides
+  a configuration skeleton that shall be modified before
+  loading into the yang service.  Some parts of the document
+  must be deleted or added depending on the network configuration
+  where the VNF will be deployed.
+-->
+  <hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+  <capabilities>
+    <capability>urn:ietf:params:netconf:base:1.0</capability>
+  </capabilities>
+  </hello>]]>]]>
+  <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+  <rpc xmlns="urn:ietf:params:xml:ns:netconf:base:1.0" message-id="0">
+  <edit-config>
+    <target><running/></target>
+    <config xmlns:xc="urn:ietf:params:xml:ns:netconf:base:1.0">
+      <!--
+        Configuration for the UDM Network Function.
+      -->
+      <udm xmlns="urn:rdns:com:ericsson:oammodel:ericsson-udm">
+        <!--
+          States the URI of the UDM Nework Function
+          (for registering the UDM NF in the NRF NF).
+        -->
+        <udm-uri>https://udm1.pod56.5gc.mnc081.mcc240.3gppnetwork.org:443</udm-uri>
+        <!-- States the list of Home PLMNs -->
+        <home-plmn>
+          <!--
+            The default Home PLMN.
+            The length of mcc is 3 digits and mnc is 2 or 3 digits.
+          -->
+          <default-home-plmn-id>
+            <mcc>240</mcc>
+            <mnc>81</mnc>
+          </default-home-plmn-id>
+          <!--
+            Identifier of the Home PLMNs.
+            The length of mcc is 3 digits and mnc is 2 or 3 digits.
+          -->
+          <home-plmn>
+            <mcc>240</mcc>
+            <mnc>81</mnc>
+          </home-plmn>
+          <!-- <home-plmn> -->
+            <!-- <mcc>333</mcc> -->
+            <!-- <mnc>44</mnc> -->
+          <!-- </home-plmn> -->
+        </home-plmn>
+        <!-- Container roaming -->
+        <roaming>
+          <!-- States the list of Visited PLMNs -->
+          <visited-plmn>
+            <!--
+              States whether White List (allowed PLMNs) or black list (not allowed PLMNs),
+              by defult it will be a white list (true)
+            -->
+            <allowed>true</allowed>
+            <!--
+              Identifier of the Visited PLMNs.
+              The length of mcc is 3 digits and mnc is 2 or 3 digits.
+            -->
+            <visited-plmn>
+              <mcc>240</mcc>
+              <mnc>81</mnc>
+            </visited-plmn>
+            <!-- <visited-plmn> -->
+              <!-- <mcc>777</mcc> -->
+              <!-- <mnc>88</mnc> -->
+            <!-- </visited-plmn> -->
+          </visited-plmn>
+        </roaming>
+        <!-- Container nf-profile state the Network Function profile -->
+        <nf-profile>
+          <!-- NF uuid -->
+          <instance-id>841d1b7c-5103-11e9-8c09-56eccd107e28</instance-id>
+          <!--
+            NF Status: enum (registered, suspended, deregistered)
+          -->
+          <requested-status>registered</requested-status>
+          <!-- NF fqdn -->
+          <fqdn>udm1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+          <!-- States the UDM NF information -->
+          <priority>1</priority>
+          <locality>LN1</locality>
+          <udm-info>
+            <!--
+              States the list of SUPI ranges:
+              If supi-start and supi-end are not defined,
+              it will accept all SUPIs
+            -->
+            <supi-range>
+              <id>1</id>
+              <supi-start>240810000000000</supi-start>
+              <supi-end>240819999999999</supi-end>
+            </supi-range>
+            <!-- <supi-range> -->
+              <!-- <id>2</id> -->
+              <!-- <supi-start>240820000000000</supi-start> -->
+              <!-- <supi-end>240829999999999</supi-end> -->
+            <!-- </supi-range> -->
+            <!--
+              States the list of GPSI ranges:
+              If gpsi-start and gpsi-end are not defined,
+              it will accept all GPSIs
+             -->
+            <gpsi-range>
+              <id>1</id>
+              <identity-start>491720000000000</identity-start>
+              <identity-end>491729999999999</identity-end>
+            </gpsi-range>
+            <!-- <gpsi-range> -->
+              <!-- <id>2</id> -->
+              <!-- <identity-start>860820000000000</identity-start> -->
+              <!-- <identity-end>860829999999999</identity-end> -->
+            <!-- </gpsi-range> -->
+            <!-- Routing indicator -->
+            <routing-indicator>0</routing-indicator>
+          </udm-info>
+          <!--
+            List of Service containers that the VNF exposes.
+            - instance-id: Unique service instance id
+            - name: Service name
+            - scheme: http or https
+            - fqdn: Fully Qualified Domain Name
+            - ip-endpoint: IP addresse and port information of the
+              exposed service (including IPv4 and/or IPv6 address)
+            - allowed-nf-type: NFs allowed to consume the service
+          -->
+          <service>
+            <instance-id>nudm-uecm</instance-id>
+            <name>nudm-uecm</name>
+            <scheme>https</scheme>
+            <requested-status>registered</requested-status>
+            <fqdn>udm1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+              <default-notification-subscription>
+                <notification-type>data-removal-notification</notification-type>
+                <callback-uri>https://udm1.pod56.5gc.mnc081.mcc240.3gppnetwork.org:443/nudm-notifications/v2/sdm</callback-uri>
+              </default-notification-subscription>
+            <ip-endpoint>
+              <id>1</id>
+              <!--<ipv4-address>{UDM_IPv4}</ipv4-address>-->
+              <transport>tcp</transport>
+              <port>443</port>
+            </ip-endpoint>
+            <allowed-nf-type>amf</allowed-nf-type>
+            <allowed-nf-type>smf</allowed-nf-type>
+            <allowed-nf-type>smsf</allowed-nf-type>
+            <allowed-nf-type>udr</allowed-nf-type>
+          </service>
+          <service>
+            <instance-id>nudm-sdm</instance-id>
+            <name>nudm-sdm</name>
+            <scheme>https</scheme>
+            <requested-status>registered</requested-status>
+            <fqdn>udm1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+            <ip-endpoint>
+              <id>1</id>
+              <!-- <ipv4-address>{UDM_IPv4}</ipv4-address> -->
+              <transport>tcp</transport>
+              <port>443</port>
+            </ip-endpoint>
+            <allowed-nf-type>amf</allowed-nf-type>
+            <allowed-nf-type>smf</allowed-nf-type>
+            <allowed-nf-type>smsf</allowed-nf-type>
+          </service>
+          <service>
+            <instance-id>nudm-ueau</instance-id>
+            <name>nudm-ueau</name>
+            <scheme>https</scheme>
+            <requested-status>registered</requested-status>
+            <fqdn>udm1.pod56.5gc.mnc081.mcc240.3gppnetwork.org</fqdn>
+            <ip-endpoint>
+              <id>1</id>
+              <!-- <ipv4-address>{UDM_IPv4}</ipv4-address> -->
+              <transport>tcp</transport>
+              <port>443</port>
+            </ip-endpoint>
+            <allowed-nf-type>ausf</allowed-nf-type>
+          </service>
+          <!--
+            The configuration of service nudm-mt is applicable
+            when HSS supports service discovery.
+          -->
+          <!-- <service> -->
+            <!-- <instance-id>nudm-mt</instance-id> -->
+            <!-- <name>nudm-mt</name> -->
+            <!-- <scheme>https</scheme> -->
+            <!-- <requested-status>registered</requested-status> -->
+            <!-- <fqdn>{UDM_FQDN}</fqdn> -->
+            <!-- <ip-endpoint> -->
+              <!-- <id>1</id> -->
+              <!-- <ipv4-address>{UDM_IPv4}</ipv4-address> -->
+              <!-- <transport>tcp</transport> -->
+              <!-- <port>{UDM_PORT}</port> -->
+            <!-- </ip-endpoint> -->
+            <!-- <allowed-nf-type>hss</allowed-nf-type> -->
+          <!-- </service> -->
+        </nf-profile>
+      </udm>
+    </config>
+  </edit-config>
+  </rpc>
+  <close-session/>

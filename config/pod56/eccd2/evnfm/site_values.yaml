@@ -1,0 +1,188 @@
+##Version: 2.16.0-156
+global:
+  createClusterRoles: true
+  hosts:
+    gas: oss.evnfm.pod56-eccd2.seln.ete.ericsson.se
+    gr: ''
+    iam: iam.evnfm.pod56-eccd2.seln.ete.ericsson.se
+    vnfm: eo-nbi.evnfm.pod56-eccd2.seln.ete.ericsson.se
+  ingressClass: oss_iccr
+  registry:
+    password: admin123
+    url: container-registry.ingress.pod56-eccd2.seln.ete.ericsson.se
+    username: admin
+  serviceMesh:
+    enabled: false
+  meshConfig:
+    enableTracing: false
+    defaultConfig:
+      tracing:
+        sampling: 10
+  proxy:
+    tracer: zipkin
+  tracer:
+    zipkin:
+      address: ''
+  support:
+    ipv6:
+      enabled: false
+  timezone: CET
+  ericsson:
+    licensing:
+      licenseDomains:
+      - customerId: '946060'
+        productType: Ericsson_Orchestrator
+        swltId: STA-EVNFM-3
+      nelsConfiguration:
+        primary:
+          hostname: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+tags:
+  eoCm: false
+  eoEvnfm: true
+  eoVmvnfm: false
+eric-cloud-native-base:
+  eric-ctrl-bro:
+    persistence:
+      persistentVolumeClaim:
+        size: 562Gi
+    sftp:
+      password: 'Dm5GC@S0lut!on'
+      username: 'sftp-user'
+  eric-data-search-engine:
+    autoSetRequiredWorkerNodeSysctl: false
+    service:
+      network:
+        protocol:
+          IPv6: false
+  eric-sec-access-mgmt:
+    accountManager:
+      enabled: true
+      inactivityThreshold: 9999
+    replicaCount: 2
+    ingress:
+      hostname: iam.evnfm.pod56-eccd2.seln.ete.ericsson.se
+  eric-tm-ingress-controller-cr:
+    enabled: true
+    service:
+      loadBalancerIP: 10.130.34.245
+      annotations:
+        cloudProviderLB: {}
+      externalTrafficPolicy: Cluster
+    resources:
+      envoy:
+        limits:
+          memory: 2Gi
+      contour:
+        limits:
+          memory: 1Gi
+  eric-log-transformer:
+    egress:
+      syslog:
+        enabled: false
+        tls:
+          enabled: true
+        remoteHosts: []
+  eric-data-object-storage-mn:
+    persistentVolumeClaim:
+      size: 10Gi
+  eric-fh-snmp-alarm-provider:
+    sendAlarm: false
+  eric-lm-combined-server:
+    licenseServerClient:
+      licenseServer:
+        thrift:
+          host: nelsaas-vnf1-thrift.sero.gic.ericsson.se
+geo-redundancy:
+  enabled: false
+eric-oss-common-base:
+  service-mesh-ingress-gateway:
+    service:
+      loadBalancerIP: ''
+  sessionTokens:
+    maxSessionDurationSecs: 36000
+    maxIdleTimeSecs: 1800
+  eric-gr-bur-orchestrator:
+    credentials:
+      username: ''
+      password: ''
+    gr:
+      bro:
+        autoDelete:
+          backupsLimit: 10
+      sftp:
+        url: ''
+        username: ''
+        password: ''
+      cluster:
+        role: ''
+        secondary_hostnames: ''
+      registry:
+        secondarySiteContainerRegistryHostname: ''
+  system-user:
+    credentials:
+      username: vnfm
+      password: Dm5GC@S0lut!on
+  gas:
+    defaultUser:
+      username: vnfm
+      password: Dm5GC@S0lut!on
+  eric-eo-usermgmt:
+    replicaCount: 2
+  eric-eo-usermgmt-ui:
+    replicaCount: 2
+eric-oss-function-orchestration-common:
+  eric-eo-evnfm-nbi:
+    eric-evnfm-rbac:
+      defaultUser:
+        username: vnfm
+        password: Dm5GC@S0lut!on
+  eric-am-onboarding-service:
+    onboarding:
+      skipCertificateValidation: true
+    userSecret: container-credentials
+    container:
+      registry:
+        enabled: true
+    resources:
+      limits:
+        memory: 32Gi
+eric-eo-evnfm:
+  services:
+    onboarding:
+      enabled: true
+  eric-am-common-wfs:
+    userSecret: container-credentials
+    helm:
+      url: ''
+    dockerRegistry:
+      secret: null
+  eric-lcm-container-registry:
+    enabled: true
+    highAvailability: false
+    ingress:
+      hostname: docker-registry.evnfm.pod56-eccd2.seln.ete.ericsson.se
+    persistence:
+      persistentVolumeClaim:
+        size: 450Gi
+    resources:
+      registry:
+        limits:
+          memory: 16Gi
+  eric-global-lcm-container-registry:
+    hostname: ''
+    username: ''
+    password: ''
+  eric-lcm-helm-chart-registry:
+    ingress:
+      enabled: true
+      hostname: helm-registry.evnfm.pod56-eccd2.seln.ete.ericsson.se
+    env:
+      secret:
+        BASIC_AUTH_USER: vnfm
+        BASIC_AUTH_PASS: Dm5GC@S0lut!on
+  eric-vnfm-orchestrator-service:
+    oss:
+      topology:
+        secretName: null
+    smallstack:
+      application: true

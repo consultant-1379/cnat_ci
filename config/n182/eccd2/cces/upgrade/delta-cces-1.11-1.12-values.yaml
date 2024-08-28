@@ -1,0 +1,210 @@
+eric-adp-5g-udm:
+  eric-tm-ingress-controller-cr:
+    resources:
+      envoy:
+        limits:
+          memory: "600Mi"
+        requests:
+          memory: "500Mi"
+  eric-odca-diagnostic-data-collector:
+    resources:
+      diagnostic-data-collector:
+        requests:
+          cpu: 900m
+          memory: 1000Mi
+        limits:
+          cpu: 1200m
+          memory: 1200Mi
+      diagnostic-data-collector-manual:
+        requests:
+          cpu: 900m
+          memory: 1000Mi
+        limits:
+          cpu: 1200m
+          memory: 1200Mi
+  eric-pm-server:
+    resources:
+      eric-pm-server:
+        requests:
+          cpu: 1500m
+        limits:
+          cpu: 3
+    rbac:
+      appMonitoring:
+        enabled: true
+        federation:
+          jobOverride: true
+          jobConfiguration: |
+            - job_name: 'federate-victoria'
+              scrape_interval: 1m
+              honor_labels: true
+              metrics_path: '/select/0/prometheus/federate'
+              params:
+                'match[]':
+                  - '{job="kubernetes-nodes",namespace="cces"}'
+                  - '{job="kubernetes-nodes-cadvisor",namespace="cces"}'
+              static_configs:
+                - targets:
+                  - 'eric-victoria-metrics-cluster-vmselect.monitoring:8481'
+  eric-fh-snmp-alarm-provider:
+    service:
+      secretName: ""
+  eric-log-transformer:
+#    searchengine:
+#      exclusion:
+#      - logplane: "eric-cces-transactionlog"
+#        rules:
+#          - field: "[metadata][groups]"
+#            contains: "Success"
+    resources:
+      logtransformer:
+        requests:
+          cpu: 2000m
+          memory: 8Gi
+        limits:
+          cpu: 2000m
+  eric-data-search-engine:
+    resources:
+      ingest:
+        requests:
+          memory: 4Gi
+        limits:
+          memory: 4Gi
+      data:
+        requests:
+          cpu: 3500m
+          memory: 6Gi
+        limits:
+          cpu: 3500m
+          memory: 6Gi
+    replicaCount:
+      data: 2
+      ingest: 1
+    jvmHeap:
+      data: 3072m
+      ingest: 2048m
+  eric-probe-virtual-tap-broker:
+    dtls:
+      enabled: true
+
+global:
+  # Disable classic AC
+  eric-apigm:
+    eric-apigm-apicomposition:
+      enabled: false
+
+  cces:
+    log:
+      transaction:
+        # Indicates transaction log should be supported or not. values: true/false
+        enabled: false
+        # direct: - direct streaming to the Log Aggregator. Only support the value: direct
+        streamingMethod: direct
+
+eric-cces-commonsvc:
+  eric-cces-common-entity:
+    replicaCount: 2 # default(4)
+    minReplicas: 2 # default(4)
+    maxReplicas: 3 # default(5)
+    resources:
+      ces:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 750m
+          memory: 1Gi
+  eric-data-wide-column-database-cd:
+    targetCassandraVersion: 3
+    resources:
+      cassandra:
+        jvm:
+          initialMemoryAllocationPercentage: 50
+          largeMemoryAllocationMaxPercentage: 50
+    cassandra:
+      jvmOptions:
+        set:
+          - "-Djdk.tls.acknowledgeCloseNotify=true"
+          - "-XX:MaxDirectMemorySize=1500M"
+          - "-XX:+PrintSafepointStatistics"
+          - "-XX:PrintSafepointStatisticsCount=1"
+          - "-XX:+SafepointTimeout"
+          - "-XX:SafepointTimeoutDelay=1000"
+          - "-Xmn768M"
+
+eric-nef:
+  eric-nef-afsessionwithqos:
+    resources:
+      qos:
+        requests:
+          cpu: 800m
+        limits:
+          cpu: 1200m
+  eric-nef-bdtpnegotiation:
+    resources:
+      bdt:
+        requests:
+          cpu: 400m
+        limits:
+          cpu: 600m
+  eric-nef-trafficinfluence:
+    resources:
+      trafficinfluence:
+        requests:
+          cpu: 700m
+        limits:
+          cpu: 1050m
+  eric-nef-chargeableparty:
+    resources:
+      cp:
+        requests:
+          cpu: 700m
+        limits:
+          cpu: 1050m
+  eric-nef-eventexposure:
+    resources:
+      monte:
+        requests:
+          cpu: 850m
+        limits:
+          cpu: 1275m
+    #scefIdMapping:
+    # List of scefId and numericalScefId in Event Exposure, numericalScefId is the internal index of scefId. The numericalScefId of the first site must be set to 0.
+    # The numericalScefId of the other sites must be set in Geo-Red.
+    #- scefId: "scefId.ericsson.se"
+    #  numericalScefId: 0
+    #- scefId: "scefId1.ericsson.se"
+    #  numericalScefId: 1
+    #- scefId: "scefId2.ericsson.se"
+    #  numericalScefId: 2
+  eric-nef-nidd:
+    resources:
+      nidd:
+        requests:
+          cpu: 1500m
+        limits:
+          cpu: 2250m
+  eric-nef-devicetriggering:
+    resources:
+      devicetriggering:
+        requests:
+          cpu: 600m
+        limits:
+          cpu: 900m
+
+eric-apigm:
+  eric-apigm-api-proxy:
+    resources:
+      api-proxy:
+        requests:
+          memory: 5Gi
+        limits:
+          memory: 5Gi
+        jvm:
+          largeMemoryAllocationMaxPercentage: 56
+          initialMemoryAllocationPercentage: 56
+    log:
+      transaction:
+        # This is leave null on purpose to allow global parameter to take effect
+        # If global parameter not set, and service parameter is null, transaction log will not enabled
+        enabled:

@@ -1,0 +1,3 @@
+{
+    "policies": [ "dbr_on_attach_select_policy" ]
+}

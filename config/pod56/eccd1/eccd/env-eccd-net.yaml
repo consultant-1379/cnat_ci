@@ -1,0 +1,163 @@
+parameters:
+
+  target_cloud_system: openstack
+
+  prefix: pod56-eccd1                                               # Name prefix of the network and subnet
+  phynet_virtio: default
+  phynet_sriov_left: sriov_left
+  phynet_sriov_right: sriov_right
+
+  macvlan_parent_networks:
+  - name: macvlan-parent-1
+    cidr: 172.32.3.0/24
+
+  virtio_networks:
+  - name: ccd-oam
+    vlan: 3011
+    cidr: 10.130.34.80/29
+    enable_dhcp: false
+    gateway: 10.130.34.86
+    allocation_pools: { start: 10.130.34.81, end: 10.130.34.85 }
+    routes: []
+
+  - name: ecfe-signaling
+    vlan: 3802
+    cidr: 11.1.2.0/24
+    enable_dhcp: false
+    gateway: 11.1.2.254
+    allocation_pools: { start: 11.1.2.1, end: 11.1.2.99 }
+    routes: []
+
+  - name: ecfe-oam
+    vlan: 3020
+    cidr: 11.1.20.0/24
+    enable_dhcp: false
+    gateway: 11.1.20.254
+    allocation_pools: { start: 11.1.20.1, end: 11.1.20.99 }
+    routes: []
+
+  - name: ecfe-intersite
+    vlan: 3818
+    cidr: 11.1.18.0/24
+    enable_dhcp: false
+    gateway: 11.1.18.254
+    allocation_pools: { start: 11.1.18.1, end: 11.1.18.99 }
+    routes:
+    - { destination: 5.8.6.65/32, nexthop: 11.1.18.254 } # CCDM Remote Site intersite VIP
+    - { destination: 5.8.6.66/32, nexthop: 11.1.18.254 } # CCDM Remote Site UDR LDAP VIP
+    - { destination: 11.1.43.0/24, nexthop: 11.1.18.254 } # CCDM Remote Site intersite link network
+
+  - name: pc-mm-oam
+    vlan: 3023
+    cidr: 10.36.240.0/24
+    enable_dhcp: false
+    gateway: 10.36.240.254
+    allocation_pools: { start: 10.36.240.1, end: 10.36.240.99 }
+    routes: []
+
+  - name: pc-mm-ran-1
+    vlan: 3829
+    cidr: 11.1.29.0/24
+    enable_dhcp: false
+    gateway: 11.1.29.254
+    allocation_pools: { start: 11.1.29.1, end: 11.1.29.99 }
+    routes: []
+
+  - name: pc-mm-ran-2
+    is_internal: false
+    vlan: 3879
+    cidr: 11.1.79.0/24
+    enable_dhcp: false
+    gateway: 11.1.79.254
+    allocation_pools: { start: 11.1.79.1, end: 11.1.79.99 }
+    routes: []
+
+  - name: pc-mm-signaling-1
+    vlan: 3877
+    cidr: 11.1.77.0/24
+    enable_dhcp: false
+    gateway: 11.1.77.254
+    allocation_pools: { start: 11.1.77.1, end: 11.1.77.99 }
+    routes: []
+
+  - name: pc-mm-signaling-2
+    vlan: 3906
+    cidr: 11.2.6.0/24
+    enable_dhcp: false
+    gateway: 11.2.6.254
+    allocation_pools: { start: 11.2.6.1, end: 11.2.6.99 }
+    routes: []
+
+  - name: pc-mm-media
+    is_internal: false
+    vlan: 3826
+    cidr: 11.1.26.0/24
+    enable_dhcp: false
+    gateway: 11.1.26.254
+    allocation_pools: { start: 11.1.26.1, end: 11.1.26.99 }
+    routes: []
+
+  - name: pc-sm-media
+    vlan: 3801
+    cidr: 11.1.1.0/24
+    enable_dhcp: false
+    gateway: 11.1.1.254
+    allocation_pools: { start: 11.1.1.1, end: 11.1.1.99 }
+    routes: []
+
+  - name: pc-sm-signaling
+    vlan: 3852
+    cidr: 11.1.52.0/24
+    enable_dhcp: false
+    gateway: 11.1.52.254
+    allocation_pools: { start: 11.1.52.1, end: 11.1.52.99 }
+    routes: []
+
+  - name: pc-sm-intra
+    vlan: 3400
+    cidr: 172.31.0.0/24
+    enable_dhcp: false
+    gateway: null
+    allocation_pools: { start: 172.31.0.1, end: 172.31.0.254 }
+    routes: []
+
+  sriov_networks:
+  - name: pc-up-media
+    vlan: 3901
+    cidr: 11.2.1.0/24
+    enable_dhcp: false
+    gateway: 11.2.1.254
+    allocation_pools: { start: 11.2.1.1, end: 11.2.1.99 }
+    routes: []
+
+  - name: pc-up-ran
+    vlan: 3804
+    cidr: 11.1.4.0/24
+    enable_dhcp: false
+    gateway: 11.1.4.254
+    allocation_pools: { start: 11.1.4.1, end: 11.1.4.99 }
+    routes: []
+
+  - name: pc-up-signaling
+    vlan: 3827
+    cidr: 11.1.27.0/24
+    enable_dhcp: false
+    gateway: 11.1.27.254
+    allocation_pools: { start: 11.1.27.1, end: 11.1.27.99 }
+    routes: []
+
+  - name: pc-up-open1
+    vlan: 3805
+    cidr: 11.1.5.0/24
+    enable_dhcp: false
+    gateway: 11.1.5.254
+    allocation_pools: { start: 11.1.5.1, end: 11.1.5.99 }
+    routes: []
+
+  - name: pc-up-intra
+    vlan: 3500
+    cidr: 172.31.100.0/24
+    enable_dhcp: false
+    gateway: null
+    allocation_pools: { start: 172.31.100.1, end: 172.31.100.254 }
+    routes: []

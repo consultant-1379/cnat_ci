@@ -1,0 +1,19 @@
+#
+# Configuration file with CEE region information for Keystone
+#
+---
+regions:
+  - name: CEERegion
+    cluster:
+      - name: openstack
+        serviceComponent:
+          - all
+      - name: serviceassurance
+        serviceComponent:
+          - all
+  - name: LCMRegion
+    cluster:
+      - name: lcm
+        serviceComponent:
+          - all
+...

@@ -1,0 +1,348 @@
+autowizard false
+config
+
+epg node feature-activation epc-5g
+epg node feature-activation smf-5gc
+epg node feature-activation integrated-traffic-capture
+epg pgw feature-activation n7-preliminary-features
+epg node node-type gw-c
+epg node uetrace publish-interval 5
+epg node long-node-id-allowed
+
+epg sgw node vpod2-pcc1-sgwc
+epg sgw interface s5s8-c logical-interface sgwc_s5s8_c
+epg sgw interface sx logical-interface sgwc_sxa
+epg sgw interface sx co-located-upf
+epg sgw interface s4s11-c logical-interface sgwc_s11_c
+epg sgw user-plane node-name sgwu1
+ pfcp-address 172.18.46.1
+ s1s4s12-u network-instance ran
+ s11-u network-instance media_cn
+ s5s8-u network-instance media_cn
+epg sgw user-plane-pool pool internal-sgwu1-pool
+ node-name sgwu1
+epg sgw user-plane-selection default-pool internal-sgwu1-pool
+epg pgw node vpod2-pcc1-smf
+epg pgw home-plmn 24081
+epg pgw snssai slice-service-type 1
+epg pgw snssai slice-differentiator 000002
+epg pgw pdp-context signaling session-creation-rate 400
+epg pgw shared-ip-pool internet-pool
+ address 26.0.0.0/10
+ !
+ ipv6-address fd26:1::/44
+ ipv6-address fd26:1:10::/44
+ ipv6-address fd26:1:20::/44
+ ipv6-address fd26:1:30::/44
+ !
+!
+epg pgw shared-ip-pool ims-pool
+ address 26.64.0.0/10
+ !
+ ipv6-address fd26:1:200::/44
+ ipv6-address fd26:1:210::/44
+ ipv6-address fd26:1:220::/44
+ ipv6-address fd26:1:230::/44
+ !
+!
+epg pgw ipv6-router-advertisement maximum-interval 21600
+epg pgw ipv6-router-advertisement minimum-interval 16200
+epg pgw ipv6-router-advertisement maximum-initial-interval 10
+epg pgw ipv6-router-advertisement maximum-initial-advertisements 3
+epg pgw ipv6-router-advertisement link-local-interface-identifier ::1
+epg pgw ipv6-router-advertisement reachable-time 0
+epg pgw ipv6-router-advertisement retransmission-timer 0
+epg pgw ipv6-router-advertisement router-lifetime 21840
+epg pgw ipv6-router-advertisement current-hop-limit 64
+epg pgw apn internet
+ network-instance toext_open_1
+ routing-instance toext_open_1
+ user-profile-selection gx-profile default gx-1
+ user-profile-selection n7-profile default n7-1
+ user-profile-selection local-policy-control-profile default lpc_profile1
+ user-profile-selection policy-charging-rule-scope default pc_ruleScope1
+ pdp-context creation    unblocked
+ pdp-context pdp-type ipv4v6
+ pdp-context address-allocation shared-ip-pool
+ pdp-context limit  10000000
+epg pgw apn ims
+ network-instance toext_open_1
+ routing-instance toext_open_1
+ user-profile-selection gx-profile default gx-1
+ user-profile-selection n7-profile default n7-1
+ user-profile-selection local-policy-control-profile default lpc_profile1
+ user-profile-selection policy-charging-rule-scope default pc_ruleScope1
+ pdp-context pdp-type ipv4v6
+ pdp-context address-allocation shared-ip-pool
+ pdp-context limit  10000000
+
+epg pgw charging characteristics default-complete-cc 0000
+epg pgw charging characteristics ignore-profile-from-serving-node
+epg pgw charging characteristics profile0
+!
+epg pgw user-plane node-name upf1
+ pfcp-address 172.18.46.1
+ s5s8-u network-instance media_cn
+ n3 network-instance ran
+ sx-u network-instance sig_cn
+ co-located
+ ip-selection-condition condition1
+  data-network              [ internet ]
+  selected-shared-ipv4-pool internet-pool
+  selected-shared-ipv6-pool internet-pool
+ !
+ ip-selection-condition condition2
+  data-network              [ ims ]
+  selected-shared-ipv4-pool ims-pool
+  selected-shared-ipv6-pool ims-pool
+ !
+!
+epg pgw user-plane-pool pool up-pool0
+ node-name upf1
+ !
+!
+epg pgw user-plane-selection default-pool up-pool0
+epg pgw user-plane-selection selection-condition condition1
+ data-network  [ internet ]
+ selected-pool up-pool0
+!
+epg pgw user-plane-selection selection-condition condition2
+ data-network  [ ims ]
+ selected-pool up-pool0
+!
+epg pgw interface sx logical-interface sxb-if
+epg pgw interface sx-u logical-interface sxb-if
+epg pgw interface s5s8-c logical-interface gn-s5s8-c
+epg pgw interface s5s8-c no-path-management
+epg pgw interface s5s8-c no-peer-restart
+epg pgw pdp-context limit 10000000
+epg pgw policy-control gx-failure-profile fp1
+ session-handling default-ccr-initial-failure-action fp1ccri
+ session-handling default-ccr-update-failure-action fp1ccru
+ session-handling connection-failure-action fp1action
+ session-handling action fp1action
+  continue reestablish
+ !
+ session-handling action fp1ccri
+  continue reestablish
+ !
+ session-handling action fp1ccru
+  continue reestablish
+ !
+!
+epg pgw policy-control n7-profile n7-1
+!
+epg pgw policy-control gx-profile gx-1
+ diameter-application-system pcrf1
+ failure-profile             fp1
+ subscription-id             imsi
+epg pgw policy-control rule-scope policy_ruleScope1
+ pcc-rule acr-unconditional
+  application  app100
+  rating-group 255
+  precedence   255
+ !
+!
+epg pgw policy-control local profile lpc_profile1
+ unconditional pcc-rule [ acr-unconditional ]
+!
+epg pgw charging-control rule-scope charging_ruleScope1
+!
+epg pgw policy-charging-rule-scope pc_ruleScope1
+ policy-control   policy_ruleScope1
+ charging-control charging_ruleScope1
+!
+epg pgw diameter realm ericsson.se
+epg pgw diameter host-name vpod2-pcc1-pgwc.ericsson.se
+epg pgw diameter number-of-hosts 2
+epg pgw diameter peer pcrf1
+ address [ 172.17.142.8 ]
+ port    3868
+ logical-interface gx-if
+!
+epg pgw diameter diameter-application-system pcrf1
+ destination-realm ericsson.se
+ application-id    pcc
+ peer pcrf1
+  priority 25
+ !
+epg pgw sbi amf logical-interface amf-service-if
+epg pgw sbi amf connection-client-profile client-profile-2
+epg pgw sbi amf notification logical-interface amf-notify-if fqdn pcc1-smf-notification.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org
+epg pgw sbi amf notification port 4040
+epg pgw sbi amf notification server-profile server-profile-1
+epg pgw sbi pcf logical-interface pcf-service-if
+epg pgw sbi pcf connection-client-profile client-profile-1
+epg pgw sbi pcf notification logical-interface pcf-notify-if fqdn pcc1-smf-notification.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org
+epg pgw sbi pcf notification port 6060
+epg pgw sbi pcf notification server-profile server-profile-1
+epg pgw sbi smf-services fqdn pcc1-smf-nsmf.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org
+epg pgw sbi smf-services register-with-no-ip-address
+epg pgw sbi smf-services service nsmf-pdusession register-with-no-ip-address
+epg pgw sbi connection-client-profile client-profile-1
+ transport-layer-security node-credential smf-sbi-client
+ transport-layer-security trust-category trust-category
+ stream-id-threshold-for-new-connection 80
+ max-concurrent-streams                 1000
+ number-of-connection                   12
+ request-timeout                        2
+ idle-timeout                           60
+ connection-down-retry-times            1
+ request-timeout-retry-times            1
+!
+epg pgw sbi connection-client-profile client-profile-2
+ transport-layer-security node-credential smf-sbi-client
+ transport-layer-security trust-category trust-category
+ stream-id-threshold-for-new-connection 80
+ max-concurrent-streams                 1000
+ number-of-connection                   12
+ request-timeout                        3
+ idle-timeout                           60
+ connection-down-retry-times            1
+ request-timeout-retry-times            1
+!
+
+epg pgw sbi udm logical-interface udm-service-if
+epg pgw sbi udm connection-client-profile client-profile-1
+epg pgw sbi udm notification logical-interface udm-notify-if fqdn pcc1-smf-notification.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org
+epg pgw sbi udm notification port 5050
+epg pgw sbi udm notification server-profile server-profile-1
+epg pgw sbi nrf logical-interface nrf-service-if
+epg pgw sbi nrf connection-client-profile client-profile-1
+epg pgw sbi nrf notification logical-interface nrf-notify-if fqdn pcc1-smf-notification.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org
+epg pgw sbi nrf notification port 7070
+epg pgw sbi nrf notification server-profile server-profile-1
+epg pgw sbi nrf service nnrf-disc
+ nfservice-instance nnrf-disc-ins1
+  priority  1
+  fqdn      ccrc1-nrf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org
+  fqdn-port 443
+ !
+!
+epg pgw sbi nrf service nnrf-nfm
+ nfservice-instance nnrf-nfm-ins1
+  priority  1
+  fqdn      ccrc1-nrf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org
+  fqdn-port 443
+ !
+!
+epg pgw sbi smf-services locality LN1
+epg pgw apn internet nrf-discovery service-npcf-smpolicycontrol discovery-parameters preferred-locality
+epg pgw apn ims nrf-discovery service-npcf-smpolicycontrol discovery-parameters preferred-locality
+epg pgw sbi pcf service-npcf-smpolicycontrol discovery-parameters preferred-locality
+epg pgw sbi udm service-nudm-sdm discovery-parameters preferred-locality
+epg pgw sbi udm service-nudm-uecm discovery-parameters preferred-locality
+epg pgw sbi smf-services logical-interface smf-service-if
+epg pgw sbi smf-services nf-instance-id d67766fc-210f-4ecf-858f-534d46a1c4d2
+epg pgw sbi smf-services server-profile server-profile-1
+epg pgw sbi smf-services service nsmf-pdusession
+ authorization allowed-nf [ AMF ]
+ fqdn pcc1-smf-nsmf.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org
+ port [ 443 ]
+!
+epg pgw sbi connection-server-profile server-profile-1
+ max-concurrent-streams   1000
+ max-pending-transactions 10000
+ transport-layer-security node-credential smf-sbi-server
+ transport-layer-security trust-category trust-category
+!
+epg node vpn-gw address 172.17.46.1
+epg node interface gom-c logical-interface gom-c-if
+
+epg pgw qos-control maximum-bit-rate-uplink 1000000000
+epg pgw qos-control maximum-bit-rate-downlink 1000000000
+epg pgw dns enabled
+epg pgw dns supervision-record-name 5gc.mnc081.mcc240.3gppnetwork.org
+epg pgw dns logical-interface dns-service-if
+
+
+epg node logical-interface dns-service-if
+ routing-instance default
+ address          172.17.142.2
+!
+epg node logical-interface amf-notify-if
+ routing-instance default
+ address          172.17.142.3
+!
+epg node logical-interface amf-service-if
+ routing-instance default
+ address          172.17.142.2
+!
+epg node logical-interface gx-if
+ routing-instance sig_cn
+ address          172.17.46.6
+ vpn-gw           true
+!
+epg node logical-interface gn-s5s8-c
+ routing-instance media_cn
+ address          172.17.14.3
+ vpn-gw           true
+!
+epg node logical-interface gom-c-if
+ routing-instance sig_cn
+ address          172.17.46.3
+ vpn-gw           true
+!
+epg node logical-interface nrf-notify-if
+ routing-instance default
+ address          172.17.142.3
+!
+epg node logical-interface nrf-service-if
+ routing-instance default
+ address          172.17.142.2
+!
+epg node logical-interface pcf-notify-if
+ routing-instance default
+ address          172.17.142.3
+!
+epg node logical-interface pcf-service-if
+ routing-instance default
+ address          172.17.142.2
+!
+epg node logical-interface smf-notify-if
+ routing-instance default
+ address          172.17.142.3
+!
+epg node logical-interface smf-service-if
+ routing-instance default
+ address          172.17.142.2
+!
+epg node logical-interface sxb-if
+ routing-instance sig_cn
+ address          172.17.46.4
+ vpn-gw           true
+!
+epg node logical-interface udm-notify-if
+ routing-instance default
+ address          172.17.142.3
+!
+epg node logical-interface udm-service-if
+ routing-instance default
+ address          172.17.142.2
+!
+epg node logical-interface sgwc_s11_c
+ routing-instance media_cn
+ address          172.17.14.1
+ vpn-gw           true
+epg node logical-interface sgwc_s5s8_c
+ routing-instance media_cn
+ address          172.17.14.2
+ vpn-gw           true
+epg node logical-interface sgwc_sxa
+ routing-instance sig_cn
+ address          172.17.46.2
+ vpn-gw           true
+!
+epg routing-instances routing-instance default
+!
+epg routing-instances routing-instance toext_open_1
+!
+epg routing-instances routing-instance sig_cn
+ vlan-id 2162
+!
+epg routing-instances routing-instance media_cn
+ vlan-id 2161
+!
+
+commit
+end

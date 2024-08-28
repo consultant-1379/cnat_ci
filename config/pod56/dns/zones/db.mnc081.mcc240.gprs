@@ -1,0 +1,13 @@
+$TTL 600
+@   IN    SOA     apa root.pcccpod56-tp01. ( 12 3H 1H 1D 300 )
+
+    IN    A       10.130.34.4
+
+    IN    NS      mnc081.mcc240.gprs.
+
+;
+
+; dummy e5
+*.LACd30e                                     IN          A     5.0.0.1
+
+internet                                     IN     A   5.0.0.1

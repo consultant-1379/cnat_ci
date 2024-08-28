@@ -1,0 +1,636 @@
+#######################################################################################
+##  Configuration file with CEE serviceComponentGroups information                    #
+#######################################################################################
+##
+## Under the serviceComponentGroups key, service component types are grouped together based on the
+## type of host these service component types are supposed to be deployed on. This
+## information is then used for assigning service components in terms of component
+## groups (service definitions) to clusters and host profiles under the clusters key.
+##
+## Attributes of the serviceComponentGroups key:
+## - name: Name of the group of service component types. This name is used as a
+## reference in the clusters.serviceDefinitions.serviceComponentGroups list (clusters.yaml).
+## - serviceComponents: List of service component types.
+## - serviceComponents.name: The name of the service component type.
+## - serviceComponents.flavor: Refers to a flavor name specified under the
+## serviceComponentFlavors key (flavors.yaml).
+## - serviceComponents.plugins (optional): List of plugins used by the certain service
+## component type.
+## - serviceComponents.plugins.name: Name of the plugin.
+## - serviceComponents.plugins.pluginConfig: Reference to a key holding
+## configurations specific to the certain plugin. Could for example be certain
+## Neutron ML2 driver(s) or Cinder plugin(s).
+## - serviceComponents.version (optional): Specifies the version of a certain
+## service component if a version different than the defaul version is supposed to be
+## used.
+---
+serviceComponentGroups:
+  - name: host_services_common
+    serviceComponents:
+      - name: apparmor
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+      - name: audit
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+      - name: cee-umm
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+  - name: host_services_chrony_server
+    serviceComponents:
+      - name: chrony-server
+        flavor: default_systemd
+        serviceComponentBackend: lcm_service_backend
+  - name: host_services_chrony
+    serviceComponents:
+      - name: chrony
+        flavor: default_systemd
+        serviceComponentBackend: lcm_service_backend
+  - name: host_services_rsyslog_generator
+    serviceComponents:
+      - name: rsyslog-log-generator
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+  - name: host_services_rsyslog_aggregator
+    serviceComponents:
+      - name: rsyslog-log-aggregator
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: infra_internal_frontend
+  - name: host_services_shared_filesystem
+    serviceComponents:
+      - name: glusterfs
+        flavor: default_systemd
+        serviceComponentBackend: gluster_service_backend
+#  - name: host_services_css
+#    serviceComponents:
+#      - name: css
+#        flavor: css
+#        serviceComponentBackend: cee_service_backend
+  - name: host_services_css_r630
+    serviceComponents:
+      - name: css
+        flavor: css_r630
+        serviceComponentBackend: cee_service_backend
+  - name: host_services_css_r640
+    serviceComponents:
+      - name: css
+        flavor: css_r640
+        serviceComponentBackend: cee_service_backend
+  - name: host_services_css_r740
+    serviceComponents:
+      - name: css
+        flavor: css_r740
+        serviceComponentBackend: cee_service_backend
+  - name: host_services_css_r740_vxsds
+    serviceComponents:
+      - name: css
+        flavor: css_r740_vxsds
+        serviceComponentBackend: cee_service_backend
+  - name: host_services_hypervisor
+    serviceComponents:
+      - name: libvirt
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+  - name: lcm
+    serviceComponents:
+      - name: cee-lcm
+        flavor: default_systemd
+        serviceComponentBackend: lcm_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: infra_internal_frontend
+          - serviceComponentFrontend: infra_external_frontend
+      - name: docker-registry
+        flavor: default_container
+        version: 2.7.1
+        serviceComponentBackend: cee_service_backend
+      - name: portal
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: infra_internal_frontend
+          - serviceComponentFrontend: infra_external_frontend
+      - name: scheduler
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: infra_internal_frontend
+      - name: sheriff
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: internal_pki_server
+    serviceComponents:
+      - name: ejbca
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: infra_internal_frontend
+  - name: internal_pki_client
+    serviceComponents:
+      - name: cmpclient
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: serviceassurance
+    serviceComponents:
+      - name: kafka
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: notifier-controller
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: notifier-emitter
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: notifier-requeuer
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: pm_reporter
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: vmstorage
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: watchmen-consumer
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: watchmen-snmpagent
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: zookeeper
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: serviceassurance_frontend
+    serviceComponents:
+      - name: aetos
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+          - serviceComponentFrontend: serviceassurance_external_frontend
+      - name: prometheus-alertmanager
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+      - name: sa_api
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+          - serviceComponentFrontend: serviceassurance_external_frontend
+      - name: vmalert
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+      - name: vminsert
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+      - name: vmselect
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+      - name: watchmen-api
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+      - name: watchmen-webhook
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+  - name: serviceassurance_agents
+    serviceComponents:
+      - name: collectd
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: dbus-subscriber
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+      - name: docker-healthcheck
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+      - name: prometheus-cadvisor
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: vmagent
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: loadbalancer
+    serviceComponents:
+      - name: haproxy
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: database_infra
+    serviceComponents:
+      - name: mariadb
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: infra_internal_frontend
+  - name: database_openstack
+    serviceComponents:
+      - name: mariadb
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+  - name: database_serviceassurance
+    serviceComponents:
+      - name: mariadb
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: serviceassurance_internal_frontend
+  - name: messagebus
+    serviceComponents:
+      - name: rabbitmq
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: idam
+    serviceComponents:
+      - name: idam
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: infra_internal_frontend
+  - name: idam_agents
+    serviceComponents:
+      - name: sssd
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+  - name: clustering_infra
+    serviceComponents:
+      - name: pacemaker
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentMetadata:
+          serviceComponentProvides:
+            - name: lcm_int_vip
+              type: vip
+            - name: lcm_ext_vip
+              type: vip
+  - name: clustering_openstack
+    serviceComponents:
+      - name: pacemaker
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentMetadata:
+          serviceComponentProvides:
+            - name: openstack_int_vip
+              type: vip
+            - name: glance_int_vip
+              type: vip
+            - name: openstack_ext_vip
+              type: vip
+  - name: clustering_serviceassurance
+    serviceComponents:
+      - name: pacemaker
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentMetadata:
+          serviceComponentProvides:
+            - name: serviceassurance_int_vip
+              type: vip
+            - name: serviceassurance_ext_vip
+              type: vip
+  - name: clustering_vxsds
+    serviceComponents:
+      - name: pacemaker
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentMetadata:
+          serviceComponentProvides:
+           - name: vxsds_int_vip
+             type: vip
+  - name: keystone_infra
+    serviceComponents:
+      - name: keystone
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: infra_internal_frontend
+          - serviceComponentFrontend: infra_external_frontend
+  - name: keystone_openstack
+    serviceComponents:
+      - name: keystone
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+  - name: openstack_control_default
+    serviceComponents:
+      - name: cmha-service
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+      - name: glance-registry
+        flavor: default_container
+        serviceComponentBackend: glance_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: glance_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: glance-api
+        flavor: default_container
+        serviceComponentBackend: glance_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: glance_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: heat-api
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: heat-api-cfn
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: heat-engine
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: horizon
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: memcached
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: neutron-server
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: nova-api
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: nova-consoleauth
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: nova-conductor
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: nova-novncproxy
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: nova-scheduler
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: placement-api
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+  - name: openstack_barbican
+    serviceComponents:
+      - name: barbican-api
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: barbican-keystone-listener
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: barbican-worker
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_cinder
+    serviceComponents:
+      - name: cinder-api
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: cinder-backup
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: cinder-scheduler
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: cinder-volume
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        plugins:
+          - name: vxsds
+            pluginConfig:
+              filename: config/vxsds/vxsds_backends.yml
+  - name: openstack_swift
+    serviceComponents:
+      - name: swift-account-auditor
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-account-reaper
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-account-replicator
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-account-server
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-container-auditor
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-container-replicator
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-container-server
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-container-updater
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-object-auditor
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-object-expirer
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-object-replicator
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-object-server
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-object-updater
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+      - name: swift-proxy-server
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: swift-rsyncd
+        flavor: default_container
+        serviceComponentBackend: swift_service_backend
+  - name: openstack_manila
+    serviceComponents:
+      - name: manila-api
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+          - serviceComponentFrontend: cee_external_frontend
+      - name: manila-data
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: manila-scheduler
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: manila-share
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+        plugins:
+          - name: nexenta
+            pluginConfig: config/manila/nexenta_backends.yml
+  - name: openstack_openvswitch_agent
+    serviceComponents:
+      - name: neutron-openvswitch-agent
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_neutron_dhcp_agent
+    serviceComponents:
+      - name: neutron-dhcp-agent
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_neutron_l3_agent
+    serviceComponents:
+      - name: neutron-l3-agent
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_neutron_metadata_agent
+    serviceComponents:
+      - name: neutron-metadata-agent
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_computes_default
+    serviceComponents:
+      - name: cmha-agent
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+      - name: node_service_agent
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+      - name: nova_ssh
+        flavor: default_container
+        serviceComponentBackend: migration_service_backend
+  - name: openstack_computes
+    serviceComponents:
+      - name: nova-compute
+        flavor: nova_compute_r640
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_computes_r740
+    serviceComponents:
+      - name: nova-compute
+        flavor: nova_compute_r740
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_computes_r740_vxsds
+    serviceComponents:
+      - name: nova-compute
+        flavor: nova_compute_r740_vxsds
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_computes_passthrough
+    serviceComponents:
+      - name: neutron-sriov-agent
+        flavor: default_container
+        serviceComponentBackend: cee_service_backend
+  - name: toolbox
+    serviceComponents:
+      - name: toolbox
+        flavor: default_container
+  - name: vxsds_gw_dedicated
+    serviceComponents:
+      - name: vxsds-gw
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: vxsds_internal_frontend
+  - name: vxsds_gw_hyperconverged
+    serviceComponents:
+      - name: vxsds-gw
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+        serviceComponentFrontends:
+          - serviceComponentFrontend: cee_internal_frontend
+  - name: vxsds_mdm
+    serviceComponents:
+      - name: vxsds-mdm
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+  - name: vxsds_sdc
+    serviceComponents:
+      - name: vxsds-sdc
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+  - name: vxsds_sds
+    serviceComponents:
+      - name: vxsds-sds
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+  - name: vxsds_tb
+    serviceComponents:
+      - name: vxsds-tb
+        flavor: default_systemd
+        serviceComponentBackend: cee_service_backend
+  - name: openstack_shared_services
+    serviceComponents:
+      - name: keystone
+        relation: centralized
+  - name: vmalert_shared_service
+    serviceComponents:
+      - name: vmalert
+        relation: provider
+  - name: serviceassurance_shared_services
+    serviceComponents:
+      - name: kafka
+        relation: centralized
+      - name: rabbitmq
+        relation: centralized
+      - name: rsyslog-log-aggregator
+        relation: centralized
+      - name: vminsert
+        relation: centralized
+  - name: cee_lcm_shared_services
+    serviceComponents:
+      - name: keystone
+        relation: provider
+      - name: cee-lcm
+        relation: provider
+  - name: infra_shared_services
+    serviceComponents:
+      - name: kafka
+        relation: centralized
+      - name: rabbitmq
+        relation: centralized
+      - name: vminsert
+        relation: centralized
+      - name: rsyslog-log-aggregator
+        relation: centralized
+  - name: idam_shared_services
+    serviceComponents:
+      - name: idam
+        relation: centralized
+  - name: infra_keystone_shared_services
+    serviceComponents:
+      - name: keystone
+        relation: centralized
+...

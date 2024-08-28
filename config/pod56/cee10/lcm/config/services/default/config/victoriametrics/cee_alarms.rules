@@ -1,0 +1,529 @@
+# cee_alarms.rules
+
+#jinja2: trim_blocks: False
+{% set scrape_interval = vmalert_scrapeInterval.strip('s') | int %}
+{% set lcm_host_fqdns_regexp -%}
+^(?:
+{%- for h in groups.lcm_hosts -%}
+  \\Q{{ hostvars[h].hostname_full }}\\E
+  {%- if not loop.last %}|{% endif -%}
+{%- endfor -%}
+)$
+{%- endset %}
+
+groups:
+- name: cpu
+  rules:
+  - record: avg_cpu
+    expr: avg(collectd_cpu_percent{type="idle"}) by (exported_host_fqdn)
+  - record: avg_load
+    expr: collectd_load_shortterm / on(exported_host_fqdn) count(collectd_cpu_percent{type="idle"}) by (exported_host_fqdn)
+  - alert: CriticalCPU on LCM host
+    expr: avg_cpu{exported_host_fqdn=~"{{ lcm_host_fqdns_regexp }}"} < 5 and on(exported_host_fqdn) avg_load > 3
+    for: 1m
+    labels:
+      severity: critical
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: MajorCPU on LCM host
+    expr: avg_cpu{exported_host_fqdn=~"{{ lcm_host_fqdns_regexp }}"} <= 20 and on(exported_host_fqdn) avg_load > 3
+    for: 1m
+    labels:
+      severity: major
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: MinorCPU on LCM host
+    expr: avg_cpu{exported_host_fqdn=~"{{ lcm_host_fqdns_regexp }}"} > 20 and on(exported_host_fqdn) avg_load > 3
+    for: 1m
+    labels:
+      severity: minor
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: LongMajorCPU on LCM host
+    expr: avg_cpu{exported_host_fqdn=~"{{ lcm_host_fqdns_regexp }}"} <= 20 and on(exported_host_fqdn) avg_load > 3
+    for: 10m
+    labels:
+      severity: critical
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: LongMinorCPU on LCM host
+    expr: avg_cpu{exported_host_fqdn=~"{{ lcm_host_fqdns_regexp }}"} > 20 and on(exported_host_fqdn) avg_load > 3
+    for: 10m
+    labels:
+      severity: major
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: CriticalCPU on non-LCM host
+    expr: avg_cpu{exported_host_fqdn!~"{{ lcm_host_fqdns_regexp }}"} < 5 and on(exported_host_fqdn) avg_load > 1.3
+    for: 1s
+    labels:
+      severity: critical
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: MajorCPU on non-LCM host
+    expr: avg_cpu{exported_host_fqdn!~"{{ lcm_host_fqdns_regexp }}"} <= 20 and on(exported_host_fqdn) avg_load > 1.2
+    for: 1s
+    labels:
+      severity: major
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: MinorCPU on non-LCM host
+    expr: avg_cpu{exported_host_fqdn!~"{{ lcm_host_fqdns_regexp }}"} > 20 and on(exported_host_fqdn) avg_load > 1.1
+    for: 1s
+    labels:
+      severity: minor
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: LongMajorCPU on non-LCM host
+    expr: avg_cpu{exported_host_fqdn!~"{{ lcm_host_fqdns_regexp }}"} <= 20 and on(exported_host_fqdn) avg_load > 1.2
+    for: 10m
+    labels:
+      severity: critical
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+  - alert: LongMinorCPU on non-LCM host
+    expr: avg_cpu{exported_host_fqdn!~"{{ lcm_host_fqdns_regexp }}"} > 20 and on(exported_host_fqdn) avg_load > 1.1
+    for: 10m
+    labels:
+      severity: major
+      alarm: HighCPU
+    annotations:
+      summary: CPU utilization is high
+- name: disk
+  rules:
+  - alert: DiskHigh
+    expr: collectd_df_percent_bytes{type="free"} <= 10
+    for: 1s
+    labels:
+      severity: critical
+      alarm: HighDisk
+    annotations:
+      summary: Disk utilization is high
+  - alert: SW RAID Array Degradation
+    expr: collectd_md_md_disks{type="failed"} > 0 or collectd_md_md_disks{type="missing"} > 0
+    for: 1s
+    labels:
+      severity: major
+      alarm: SW RAID Array Degradation
+    annotations:
+      summary: "SW RAID degraded as one or more disks within the array /dev/md{% raw %}{{ $labels.md }}{% endraw %} is defective or unavailable"
+- name: memory
+  rules:
+  - alert: CriticalMemory
+    expr: collectd_table_memory{type="MemAvailable"} < 262144
+    for: 1s
+    labels:
+      severity: critical
+      alarm: HighMemory
+    annotations:
+      summary: Available memory is low
+  - alert: MajorMemory
+    expr: collectd_table_memory{type="MemAvailable"} < 524288
+    for: 1s
+    labels:
+      severity: major
+      alarm: HighMemory
+    annotations:
+      summary: Available memory is low
+  - alert: MinorMemory
+    expr: collectd_table_memory{type="MemAvailable"} < 1048576
+    for: 1s
+    labels:
+      severity: minor
+      alarm: HighMemory
+    annotations:
+      summary: Available memory is low
+# Alternate memory calculation for non-hypervisor nodes "total - available"
+# Template to set threshold and severity
+#  - alert: MinorMemory
+#    expr: (collectd_table_memory{type="MemTotal"} - on(exported_host_fqdn) collectd_table_memory{type="MemAvailable"}) < 1048576
+#    for: 1s
+#    labels:
+#      severity: minor
+#      alarm: HighMemory
+#    annotations:
+#      summary: Available memory is low
+# Alternate memory calculation for hypervisor nodes "free - huge pages + VM memory"
+# Template to set threshold and severity
+#  - alert: MinorMemory
+#    expr: (collectd_table_memory{type="MemTotal"} - on(exported_host_fqdn) collectd_table_memory{type="MemFree"} - on(exported_host_fqdn) collectd_table_memory{type="Buffers"} - on(exported_host_fqdn) collectd_table_memory{type="Cached"} - on(exported_host_fqdn) collectd_table_memory{type="Slab"}) - on(exported_host_fqdn) (collectd_table_memory{type="Hugepagesize"} * on(exported_host_fqdn) collectd_table_memory{type="HugePages_Free"}) < 1048576
+#    for: 1s
+#    labels:
+#      severity: minor
+#      alarm: HighMemory
+#    annotations:
+#      summary: Available memory is low
+- name: agent_availability
+  rules:
+  - alert: AgentAvailabilityCadvisor
+    expr: up{job=~"cadvisor"} == 0
+    for: 1s
+    labels:
+      severity: major
+      alarm: ContainerUnavailable
+    annotations:
+      summary: A monitoring agent is not reachable
+  - alert: AgentAvailabilityRsyslog
+    expr: up{job=~"rsyslog.*"}[900s] == 0
+    for: 1s
+    labels:
+      severity: major
+      alarm: ContainerUnavailable
+    annotations:
+      summary: A monitoring agent is not reachable
+- name: container_availability
+  rules:
+  - alert: ContainerAvailabilityNonPacemaker
+    expr: ((time() - (last_over_time(container_last_seen{job='cadvisor',monitoring_mode='cadvisor'}[1d]))) > {{ (scrape_interval*2) }}) and on(exported_host_fqdn) up{job='cadvisor'}[{{ (scrape_interval*2) }}s] == 1
+    for: 1s
+    labels:
+      severity: major
+      alarm: ContainerUnavailable
+    annotations:
+      summary: Container unavailable
+  - alert: ContainerAvailabilityPacemaker
+    expr: ((time() - (max(last_over_time(container_last_seen{job='cadvisor',monitoring_mode='pacemaker'}[1d])) by (name, cluster))) > {{ (scrape_interval*2) }})
+    for: 1s
+    labels:
+      severity: major
+      alarm: ContainerUnavailable
+    annotations:
+      summary: Container unavailable
+- name: container_cpu
+  rules:
+  - record: container_cpu_util
+    expr: (sum(rate(container_cpu_usage_seconds_total{name=~"..*"}[1m])) by (exported_host_fqdn, name)) / on (exported_host_fqdn, name) (count(container_cpu_usage_seconds_total{name=~"..*"}) by (exported_host_fqdn, name) / 100)
+  - alert: ContainerCriticalCPU
+    expr: container_cpu_util > 95
+    for: 1s
+    labels:
+      severity: critical
+      alarm: ContainerCPU
+    annotations:
+      summary: Container CPU utilization is high
+  - alert: ContainerMajorCPU
+    expr: container_cpu_util > 90
+    for: 1s
+    labels:
+      severity: major
+      alarm: ContainerCPU
+    annotations:
+      summary: Container CPU utilization is high
+  - alert: ContainerMinorCPU
+    expr: container_cpu_util > 85
+    for: 1s
+    labels:
+      severity: minor
+      alarm: ContainerCPU
+    annotations:
+      summary: Container CPU utilization is high
+  - alert: ContainerWarningCPU
+    expr: container_cpu_util > 80
+    for: 1s
+    labels:
+      severity: warning
+      alarm: ContainerCPU
+    annotations:
+      summary: Container CPU utilization is high
+- name: container_memory
+  rules:
+  - record: container_memory_util
+    expr: (container_memory_usage_bytes{name=~"..*"} / on(exported_host_fqdn) group_left() (collectd_table_memory{type="MemTotal"} * 1024) * 100)
+  - alert: ContainerCriticalMemory
+    expr: container_memory_util > 95
+    for: 1s
+    labels:
+      severity: critical
+      alarm: ContainerHighMemory
+    annotations:
+      summary: Container memory usage is high
+  - alert: ContainerMajorMemory
+    expr: container_memory_util > 90
+    for: 1s
+    labels:
+      severity: major
+      alarm: ContainerHighMemory
+    annotations:
+      summary: Container memory usage is high
+  - alert: ContainerMinorMemory
+    expr: container_memory_util > 85
+    for: 1s
+    labels:
+      severity: minor
+      alarm: ContainerHighMemory
+    annotations:
+      summary: Container memory usage is high
+  - alert: ContainerWarningMemory
+    expr: container_memory_util > 80
+    for: 1s
+    labels:
+      severity: warning
+      alarm: ContainerHighMemory
+    annotations:
+      summary: Container memory usage is high
+- name: host_status
+  rules:
+  - alert: HostFailed
+    expr:  last_over_time(up{job='collectd'}[1d]) == 1 unless up{job='collectd'}[{{ (scrape_interval*2) }}s]
+    for: 1s
+    labels:
+      severity: minor
+      alarm: HostFailed
+    annotations:
+      summary: Host is unreachable for monitoring
+  - alert: HostRestarted
+    expr: collectd_uptime < 300 and resets(collectd_uptime[1d]) > 0
+    for: 1s
+    labels:
+      severity: indeterminate
+      alarm: HostRestarted
+    annotations:
+      summary: Host uptime reset
+- name: NTP Alarm Rules
+  rules:
+  - alert: NTP Stratum Level Failure
+    expr: collectd_ntp_upstream_server_status_gauge == 1
+    for: 1s
+    labels:
+      severity: minor
+      alarm: NTP Stratum Level Failure
+    annotations:
+      summary: NTP Stratum Level Failure
+  - alert: NTP Upstream Server Failure
+    expr: collectd_ntp_upstream_server_reach_status_gauge == 0
+    for: 1s
+    labels:
+      severity: minor
+      alarm: NTP Upstream Server Failure
+    annotations:
+      summary: NTP Upstream Server Failure
+  - alert: NTP Authentication Failure
+    expr: collectd_ntp_authentication_gauge > 0
+    for: 1s
+    labels:
+      severity: minor
+      alarm: NTP Authentication Failure
+    annotations:
+      summary: NTP Authentication Failure
+- name: host_nics
+  rules:
+  - alert: PortTraffic
+    expr: collectd_bandwidth_util_gauge >= 90
+    for: 1s
+    labels:
+      severity: critical
+      alarm: PortTraffic
+    annotations:
+      summary: Host NIC has high traffic
+  - alert: PortTraffic
+    expr: collectd_bandwidth_util_gauge  >= 80 and collectd_bandwidth_util_gauge  < 90
+    for: 1s
+    labels:
+      severity: major
+      alarm: PortTraffic
+    annotations:
+      summary: Host NIC has high traffic
+  - alert: PortTraffic
+    expr: collectd_bandwidth_util_gauge >= 70 and collectd_bandwidth_util_gauge < 80
+    for: 1s
+    labels:
+      severity: minor
+      alarm: PortTraffic
+    annotations:
+      summary: Host NIC has high traffic
+  - alert: PortTraffic
+    expr: collectd_bandwidth_util_gauge >= 60 and collectd_bandwidth_util_gauge < 70
+    for: 1s
+    labels:
+      severity: warning
+      alarm: PortTraffic
+    annotations:
+      summary: Host NIC has high traffic
+  - alert: PortDrop
+    expr: collectd_packet_drop_rate_gauge > 1
+    for: 1s
+    labels:
+      severity: critical
+      alarm: PortDrop
+    annotations:
+      summary: Host NIC has high drop rate
+  - alert: PortDrop
+    expr: collectd_packet_drop_rate_gauge > 0.1 and collectd_packet_drop_rate_gauge <= 1
+    for: 1s
+    labels:
+      severity: major
+      alarm: PortDrop
+    annotations:
+      summary: Host NIC has high drop rate
+  - alert: PortDrop
+    expr: collectd_packet_drop_rate_gauge > 0.01 and collectd_packet_drop_rate_gauge <= 0.1
+    for: 1s
+    labels:
+      severity: minor
+      alarm: PortDrop
+    annotations:
+      summary: Host NIC has high drop rate
+  - alert: PortDrop
+    expr: collectd_packet_drop_rate_gauge > 0.001 and collectd_packet_drop_rate_gauge <= 0.01 and collectd_packet_rate_gauge > 1000
+    for: 1s
+    labels:
+      severity: warning
+      alarm: PortDrop
+    annotations:
+      summary: Host NIC has high drop rate
+- name: Expiring Certificate
+  rules:
+  - alert: CriticalCertificate_expire
+    expr: min(collectd_crt_gauge) by (crt) <= 7
+    for: 1s
+    labels:
+      severity: critical
+      alarm: Expiring Certificate
+      ignore_inhibit: true
+    annotations:
+      summary: Expire Certificate after 7 days
+      {% raw %}value: "{{ $value }}"
+{% endraw %}
+  - alert: MajorCertificate_expire
+    expr: min(collectd_crt_gauge) by (crt) > 7 and collectd_crt_gauge  <= 15
+    for: 1s
+    labels:
+      severity: major
+      alarm: Expiring Certificate
+      ignore_inhibit: true
+    annotations:
+      summary: Expire Certificate after 15 days
+      {% raw %}value: "{{ $value }}"
+{% endraw %}
+  - alert: MinorCertificate_expire
+    expr: min(collectd_crt_gauge) by (crt) > 15 and collectd_crt_gauge  <= 30
+    for: 1s
+    labels:
+      severity: minor
+      alarm: Expiring Certificate
+      ignore_inhibit: true
+    annotations:
+      summary: Expire Certificate after 30 days
+      {% raw %}value: "{{ $value }}"
+{% endraw %}
+  - alert: WarningCertificate_expire
+    expr: min(collectd_crt_gauge) by (crt) > 30 and collectd_crt_gauge  <= 90
+    for: 1s
+    labels:
+      severity: warning
+      alarm: Expiring Certificate
+      ignore_inhibit: true
+    annotations:
+      summary: Expire Certificate after 90 days
+      {% raw %}value: "{{ $value }}"
+{% endraw %}
+- name: Core Dump Generated
+  rules:
+  - alert: Core Dump Generated
+    expr: collectd_filecount_files  > 0
+    for: 1s
+    labels:
+      severity: minor
+      alarm: Core Dump Generated
+    annotations:
+      summary: Core Dump Generated
+- name: vSwitch to Controller connectivity failure
+  rules:
+  - alert: vSwitch to Controller connectivity failure
+    expr: collectd_tcpconns_tcp_connections{tcpconns=~"6633-remote|6634-remote|6640-remote|6653-remote",type="ESTABLISHED"} == 0
+    for: 1s
+    labels:
+      severity: major
+      alarm: vSwitchController
+    annotations:
+      summary: vSwitch to Controller connectivity failure
+- name: CSS CPU Utilization
+  rules:
+  - record: css_cpu_util
+    expr: collectd_utilization_gauge{utilization="ovs-vswitchd_cpu"} + on(exported_host_fqdn) collectd_utilization_gauge{utilization="ovsdb-server_cpu"}
+  - alert: CriticalCPU
+    expr: css_cpu_util > 90
+    for: 1s
+    labels:
+      severity: critical
+      alarm: ContainerCPU
+      name: css
+    annotations:
+      summary: CSS CPU utilization is high
+  - alert: MajorCPU
+    expr: (css_cpu_util >= 80 and css_cpu_util <= 90)
+    for: 1s
+    labels:
+      severity: major
+      alarm: ContainerCPU
+      name: css
+    annotations:
+      summary: CSS CPU utilization is high
+  - alert: MinorCPU
+    expr: css_cpu_util >= 60
+    for: 1s
+    labels:
+      severity: minor
+      alarm: ContainerCPU
+      name: css
+    annotations:
+      summary: CSS CPU utilization is high
+- name: CSS memory utilization
+  rules:
+  - record: css_memory_util
+    expr: collectd_utilization_gauge{utilization="ovs-vswitchd_memory"} + on(exported_host_fqdn) collectd_utilization_gauge{utilization="ovsdb-server_memory"}
+  - alert: CriticalMemory
+    expr: css_memory_util > 90
+    for: 1s
+    labels:
+      severity: critical
+      alarm: ContainerHighMemory
+      name: css
+    annotations:
+      summary: CSS memory usage is high
+  - alert: MajorMemory
+    expr: css_memory_util >= 80 and css_memory_util <= 90
+    for: 1s
+    labels:
+      severity: major
+      alarm: ContainerHighMemory
+      name: css
+    annotations:
+      summary: CSS memory usage is high
+  - alert: MinorMemory
+    expr: css_memory_util >= 60
+    for: 1s
+    labels:
+      severity: minor
+      alarm: ContainerHighMemory
+      name: css
+    annotations:
+      summary: CSS memory usage is high
+# The alarms below are disabled, as there is no reasonable default threshold. They are provided as a template.
+#- name: Tenant VM alarms
+#  rules:
+#  - alert: VMHighCPU
+#    expr: collectd_virt_percent >= 90
+#    for: 1s
+#    labels:
+#      severity: critical
+#      alarm: TenantVMCPU
+#    annotations:
+#      summary: CPU utilization is high in a tenant VM
+#  - alert: VMHighMemory
+#    expr: collectd_virt_memory{virt="available"} <= 1073741824
+#    for: 1s
+#    labels:
+#      severity: warning
+#      alarm: TenantVMMemory
+#    annotations:
+#      summary: Available memory is low in a tenant VM

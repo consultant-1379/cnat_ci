@@ -1,0 +1,30 @@
+{
+    "afApplicationId": "af111",
+    "dataNetworkName": "internet",
+    "mediaComponents": [
+        {
+            "afApplicationId": "af111",
+            "maxRequestedBandwidthDl": "110 Kbps",
+            "maxRequestedBandwidthUl": "55 Kbps",
+            "mediaComponentNumber": 1,
+            "mediaSubComponents": [
+                {
+                    "flowNumber": 1,
+                    "maxRequestedBandwidthDl": "100 Kbps",
+                    "maxRequestedBandwidthUl": "50 Kbps"
+                },
+                {
+                    "flowNumber": 2,
+                    "maxRequestedBandwidthDl": "90 Kbps",
+                    "maxRequestedBandwidthUl": "60 Kbps"
+                }
+            ],
+            "mediaType": 1,
+            "minRequestedBandwidthDl": "80 Kbps",
+            "minRequestedBandwidthUl": "30 Kbps"
+        }
+    ],
+    "serviceInfoStatus": 1,
+    "serviceUrn": "sos.fire",
+    "passQosRef": false
+}

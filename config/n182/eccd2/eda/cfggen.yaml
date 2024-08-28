@@ -1,0 +1,46 @@
+nodeInfo: site.yaml
+siteGlobal: ../site_global.yaml
+templateDir: ../../../../ts-config/templates/
+jsonschema: ../jsonschemas/schema-cnf.yaml
+jsonschemaGlobal: ../jsonschemas/schema-global.yaml
+
+files:
+- template: eda/2.16/values.yaml.jinja2
+  target: values.yaml
+- template: eda/2.16/instantiate.json.jinja2
+  target: instantiate.json
+- template: common/snmp-config.json.jinja2
+  target: snmp-config.json
+# EDA Day1 Configurations
+- template: eda/2.16/provisioning/account-management/day1-service-account.json.jinja2
+  target: provisioning/account-management/day1-service-account.json
+- template: eda/2.16/provisioning/account-management/day1-user.json.jinja2
+  target: provisioning/account-management/day1-user.json
+- template: eda/2.16/provisioning/account-management/role.json.jinja2
+  target: provisioning/account-management/role.json
+- template: eda/2.16/provisioning/network-elements/ccdm-pf-mapi-1.json.jinja2
+  target: provisioning/network-elements/ccdm-pf-mapi-1.json
+- template: eda/2.16/provisioning/network-elements/ccdm-pf-mapi-2.json.jinja2
+  target: provisioning/network-elements/ccdm-pf-mapi-2.json
+- template: eda/2.16/provisioning/network-elements/ccdm-udr-ldap-1.json.jinja2
+  target: provisioning/network-elements/ccdm-udr-ldap-1.json
+- template: eda/2.16/provisioning/network-elements/ccdm-udr-ldap-2.json.jinja2
+  target: provisioning/network-elements/ccdm-udr-ldap-2.json
+- template: eda/2.16/provisioning/network-element-groups/ccdm-pf-mapi.json.jinja2
+  target: provisioning/network-element-groups/ccdm-pf-mapi.json
+- template: eda/2.16/provisioning/network-element-groups/ccdm-udr-ldap.json.jinja2
+  target: provisioning/network-element-groups/ccdm-udr-ldap.json
+- template: eda/2.16/provisioning/routings/arpf.json.jinja2
+  target: provisioning/routings/arpf.json
+- template: eda/2.16/provisioning/routings/cudb-eir.json.jinja2
+  target: provisioning/routings/cudb-eir.json
+- template: eda/2.16/provisioning/routings/pcf.json.jinja2
+  target: provisioning/routings/pcf.json
+- template: eda/2.16/provisioning/routings/udm.json.jinja2
+  target: provisioning/routings/udm.json
+- template: eda/2.16/provisioning/routings/udr.json.jinja2
+  target: provisioning/routings/udr.json
+- template: eda/2.16/provisioning/routings/udr-auc.json.jinja2
+  target: provisioning/routings/udr-auc.json
+- template: eda/2.16/provisioning/routings/udr-sapc.json.jinja2
+  target: provisioning/routings/udr-sapc.json

@@ -1,0 +1,137 @@
+---
+#links:
+#  - id: a1 #Possibly a uuid assigned by SDI
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-5010-8051-b5c04f543732 #Check which terminology to use. SDI terms should be used.
+#    computeInterface: "0000:04:00.0" #Is it possible for SDI to easily retreive the PCI address or would we need to use the MAC address intsead?
+#    computeInterfaceMac: #Coming from SDI
+#    vPodInfo: #Populated by vPOD user.
+#      connectionPoint: point1 #What is this?
+#    switchId: 10.24.14.133 #Generic ID. In case of MAX, the switch IP address is used as the ID.
+#    switchName: Leaf1A
+#    switchPort: 0/1 #Native identification of port specific to the particular switch.
+#    parent: Mlag1
+#  - id: b1
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-5010-8051-b5c04f543732
+#    computeInterface: "0000:04:00.1"
+#    switchId: 10.24.14.134 #Switch IP address in case of MAX
+#    switchName: Leaf1B
+#    switchPort: 0/1
+#    parent: Mlag1
+#  - id: a2
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-5010-8051-b5c04f543732
+#    computeInterface: "0000:42:00.0"
+#    switchId: 10.24.14.133 #Switch IP address in case of MAX
+#    switchName: Leaf1A
+#    switchPort: 0/2
+#  - id: b2
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-5010-8051-b5c04f543732
+#    computeInterface: "0000:42:00.1"
+#    switchId: 10.24.14.134 #Switch IP address in case of MAX
+#    switchName: Leaf1B
+#    switchPort: 0_2
+#  - id: a3
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-5010-8051-b5c04f543732
+#    computeInterface: "0000:41:00.0"
+#    switchId: 10.24.14.133 #Switch IP address in case of MAX
+#    switchName: Leaf1A
+#    switchPort: 0_3
+#  - id: b3
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-5010-8051-b5c04f543732
+#    computeInterface: "0000:41:00.0"
+#    switchId: 10.24.14.134 #Switch IP address in case of MAX
+#    switchName: Leaf1B
+#    switchPort: 0_3
+#  - id: a4
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-4c10-8056-b5c04f543732
+#    computeInterface: "0000:03:00.0"
+#    switchId: 10.24.14.133 #Switch IP address in case of MAX
+#    switchName: Leaf1A
+#    switchPort: 1_1
+#  - id: b4
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-4c10-8056-b5c04f543732
+#    computeInterface: "0000:03:00.1"
+#    switchId: 10.24.14.134 #Switch IP address in case of MAX
+#    switchName: Leaf1B
+#    switchPort: 1_1
+#  - id: a5
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-4c10-8056-b5c04f543732
+#    computeInterface: "0000:81:00.0"
+#    switchId: 10.24.14.133 #Switch IP address in case of MAX
+#    switchName: Leaf1A
+#    switchPort: 1_2
+#  - id: b5
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-4c10-8056-b5c04f543732
+#    computeInterface: "0000:81:00.1"
+#    switchId: 10.24.14.134 #Switch IP address in case of MAX
+#    switchName: Leaf1B
+#    switchPort: 1_2
+#  - id: a6
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-4c10-8056-b5c04f543732
+#    computeInterface: "0000:82:00.0"
+#    switchId: 10.24.14.133 #Switch IP address in case of MAX
+#    switchName: Leaf1A
+#    switchPort: 1_3
+#  - id: b6
+#    type: Compute-link
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-4c10-8056-b5c04f543732
+#    computeInterface: "0000:82:00.0"
+#    switchId: 10.24.14.134 #Switch IP address in case of MAX
+#    switchName: Leaf1B
+#    switchPort: 1_3
+###
+###
+#mlags:
+#  - id: mlag1 #Unique ID to identify the MLAG
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-5010-8051-b5c04f543732
+#    hostName: compute1.domain.tld #Populated by vPOD user
+#    memberLinks:
+#      - a1
+#      - b1
+#    vPodInfo: #Populated by vPOD user.
+#      physicalNetwork: default
+#      connectionPoint: point1
+#  - id: mlag2
+#    vPOD: cee1
+#    computeId: 4c4c4544-0042-4c10-8056-b5c04f543732
+#    hostName: compute2.domain.tld #Populated by vPOD user
+#    memberLinks:
+#      - a4
+#      - b4
+#    vPodInfo: #Populated by vPOD user.
+#      physicalNetwork: default
+#      connectionPoint: point1
+#  - id: mlag3
+#    vPod: cee1
+#    computeId: 4c4c4544-0042-4c10-8056-b5c04f543732
+#    hostName: compute2.domain.tld #Populated by vPOD user
+#    memberLinks:
+#      - a6
+#      - b6
+#    vPodInfo: #Populated by vPOD user.
+#      physicalNetwork: PT_MLAG
+#      connectionPoint: point2
+...

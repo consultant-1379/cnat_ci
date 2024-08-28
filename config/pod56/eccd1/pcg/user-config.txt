@@ -1,0 +1,7 @@
+config
+system authentication user tsadm
+ password             tsadm
+ groups               [ system-admin system-troubleshooter ]
+!
+commit
+end

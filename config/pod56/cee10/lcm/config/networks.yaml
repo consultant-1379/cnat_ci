@@ -1,0 +1,146 @@
+#
+# Configuration file with the networking information
+#
+---
+networks:
+  - name: lcm_ctrl_sp
+    taggedVlan: false
+    subnets:
+      - name: lcm-ipv4
+        cidr: 192.168.0.11/24
+        ipAllocationPools:
+          - 192.168.0.20-192.168.0.254
+        vips:
+          - name: lcm_int_vip
+            address: 192.168.0.19
+            hostname: lcm-int-vip.pod56.cee.tld
+  - name: cee_ctrl_sp
+    segmentationId: 2
+    taggedVlan: true
+    subnets:
+      - name: cee-ipv4
+        cidr: 192.168.2.11/24
+        ipAllocationPools:
+          - 192.168.2.20-192.168.2.254
+        vips:
+          - name: openstack_int_vip
+            address: 192.168.2.19
+            hostname: os-int-vip.pod56.cee.tld
+          - name: serviceassurance_int_vip
+            address: 192.168.2.18
+            hostname: sa-int-vip.pod56.cee.tld
+  - name: oobm_ctrl_sp
+    segmentationId: 3
+    taggedVlan: true
+    subnets:
+      - name: oobm-ipv4
+        cidr: 10.0.3.0/25
+        ipAllocationPools:
+          - 10.0.3.31-10.0.3.79
+  - name: glance_san_sp
+    segmentationId: 11
+    taggedVlan: true
+    subnets:
+      - name: glance-ipv4
+        cidr: 192.168.96.0/21
+        ipAllocationPools:
+          - 192.168.96.20-192.168.102.254
+        vips:
+          - name: glance_int_vip
+            address: 192.168.96.19
+            hostname: glance-int-vip.pod56.cee.tld
+  - name: migration_san_sp
+    segmentationId: 12
+    taggedVlan: true
+    subnets:
+      - name: migration-ipv4
+        cidr: 192.168.128.0/21
+        ipAllocationPools:
+          - 192.168.128.20-192.168.134.254
+
+  - name: swift_san_sp
+    segmentationId: 13
+    taggedVlan: true
+    subnets:
+      - name: swift-ipv4
+        cidr: 192.168.112.0/21
+        ipAllocationPools:
+          - 192.168.112.20-192.168.118.254
+
+  - name: gluster_san_sp
+    segmentationId: 14
+    taggedVlan: true
+    subnets:
+      - name: gluster-ipv4
+        cidr: 192.168.120.0/21
+        ipAllocationPools:
+          - 192.168.120.20-192.168.126.254
+  - name: cee_om_sp
+    segmentationId: 22
+    taggedVlan: true
+    subnets:
+      - name: cee-om-ipv4
+        cidr: 10.130.34.0/27
+        ipAllocationPools:
+          - 10.130.34.15-10.130.34.22
+        vips:
+          - name: openstack_ext_vip
+            address: 10.130.34.26
+            hostname: pcccpod056-os-ext-vip.seln.ete.ericsson.se
+          - name: serviceassurance_ext_vip
+            address: 10.130.34.27
+            hostname: pcccpod056-sa-ext.seln.ete.ericsson.se
+  - name: lcm_om_sp
+    segmentationId: 91
+    taggedVlan: true
+    subnets:
+      - name: lcm-om-ipv4
+        cidr: 10.130.34.64/28
+        ipAllocationPools:
+          - 10.130.34.68-10.130.34.75
+        vips:
+          - name: lcm_ext_vip
+            address: 10.130.34.66
+            hostname: pcccpod056-infra-ext.seln.ete.ericsson.se
+
+  - name: sio_be_san_pda
+    segmentationId: 19
+    taggedVlan: true
+    subnets:
+      - name: sio-bel-ipv4
+        cidr: 192.168.19.0/24
+        ipAllocationPools:
+          - 192.168.19.20-192.168.19.254
+        hostRoutes:
+          - default
+  - name: sio_be_san_pdb
+    segmentationId: 20
+    taggedVlan: true
+    subnets:
+      - name: sio-ber-ipv4
+        cidr: 192.168.20.0/24
+        ipAllocationPools:
+          - 192.168.20.20-192.168.20.254
+        hostRoutes:
+          - default
+  - name: sio_fe_san_pda
+    segmentationId: 17
+    taggedVlan: true
+    subnets:
+      - name: sio-fel-ipv4
+        cidr: 192.168.17.0/24
+        ipAllocationPools:
+          - 192.168.17.20-192.168.17.254
+        hostRoutes:
+          - default
+  - name: sio_fe_san_pdb
+    segmentationId: 18
+    taggedVlan: true
+    subnets:
+      - name: sio-fer-ipv4
+        cidr: 192.168.18.0/24
+        ipAllocationPools:
+          - 192.168.18.20-192.168.18.254
+        hostRoutes:
+          - default
+...

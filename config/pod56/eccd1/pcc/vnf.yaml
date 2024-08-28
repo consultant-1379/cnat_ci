@@ -1,0 +1,136 @@
+vnflcm:
+  vnfInstanceName: pod56-pcc1
+  vnfProductName: PCC
+  vnfSoftwareVersion: CXP9041577_1.R57C
+  instantiate-file: instantiate.json
+  values-file: values.yaml
+  evnfmName: pod56
+  timeout: 3600
+
+access-info:
+  oam: pod56-pcc1.seln.ete.ericsson.se
+  amf-oam: pod56-amf1.seln.ete.ericsson.se
+  ldap-admin:
+    user: sysadmin
+    pass: c3lzQWRtMW5ARGF5MA==
+  users:
+  - user: tsadm
+    pass: VHNAZG01Z2NAYjF1ZXM=
+    pass-init: dHNhZG0=
+
+pipeline:
+- module: create-namespace
+- module: create-k8s-secret
+  name: eric-pc-controller-ldap-admin-creds
+  sources:
+  - type: literal
+    key: adminuser
+    value: sysadmin
+  - type: literal
+    key: passwd
+    value: sysAdm1n@Day0
+  - type: literal
+    key: adminpasswd
+    value: $6$fzLPYlRZCpweJMJC$AiNfP0WYE3npY8Za6GxMFoGj75TOl.TS6tmnnky2Bv5wY0Ek8RIoJlr9pyj0LF3wMMaNsNTUH4jp2lIHviJGS0
+- module: create-k8s-secret
+  name: eric-pc-controller-snmp-alarm-provider-config
+  sources:
+  - type: file
+    key: config.json
+    file: snmp-config.json
+- module: instantiate
+- module: verify-pod-running
+  ignore-not-running:
+  - eric-data-search-engine-curator
+- module: run-k8s-command
+  cmd: create ingress eric-data-search-engine --rule="pcc-eric-data-search-engine.ingress.pod56-eccd1.seln.ete.ericsson.se/*=eric-data-search-engine:9200"
+- module: run-k8s-command
+  name: Upload SMF certificates
+  cmd: |
+    cp {file1} -c controller {pod}:/tmp/smf-sbi-server.pem
+    cp {file2} -c controller {pod}:/tmp/smf-sbi-client.pem
+    cp {file3} -c controller {pod}:/tmp/
+  inline-files:
+    file1: ../../../certs/pod56-eccd1/pcc/pcc-smf-sbi-server.pem
+    file2: ../../../certs/pod56-eccd1/pcc/pcc-smf-sbi-client.pem
+    file3: ../../../certs/RootCA/ca.crt
+  inline-intermediate-values:
+    pod: get pod -l app.kubernetes.io/name=eric-pc-sm-controller -o jsonpath='{.items[0].metadata.name}'
+- module: sleep
+  duration: 30
+- module: run-k8s-command
+  name: Upload AMF certificates
+  cmd: |
+    cp {file1} -c eric-pc-mm-controller {pod}:/tmp/amf-sbi-client.p12
+    cp {file2} -c eric-pc-mm-controller {pod}:/tmp/amf-sbi-server.p12
+    cp {file3} -c eric-pc-mm-controller {pod}:/tmp/
+  inline-files:
+    file1: ../../../certs/pod56-eccd1/pcc/pcc-amf-sbi-client.p12
+    file2: ../../../certs/pod56-eccd1/pcc/pcc-amf-sbi-server.p12
+    file3: ../../../certs/RootCA/ca.crt
+  inline-intermediate-values:
+    pod: get pod -l app.kubernetes.io/name=eric-pc-mm-controller -l eric-pc-mm-controller-role=active
+      -o jsonpath='{.items[0].metadata.name}'
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: create ingress eric-pm-server --rule="eric-pm-server-pcc.ingress.pod56-eccd1.seln.ete.ericsson.se/*=eric-pm-server:9090"
+- module: verify-pod-ready
+  check-interval: 30
+  deployments:
+  - eric-cm-yang-provider
+  - eric-pc-mm-controller
+- module: sleep
+  duration: 30
+- module: load-cmyp-user-config
+  file: user-config.txt
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: change-initial-password
+- module: load-cmyp-app-config
+  file: pc-mm-config-external-certificates.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: load-cmyp-app-config
+  file: pc-mm-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 60
+- module: load-cmyp-app-config
+  file: pc-sm-config-external-certificates.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: load-cmyp-app-config
+  file: vpngw-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: pc-sm-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: verify-pod-ready
+  check-interval: 30
+  deployments:
+  - eric-pc-sm-smf-pgw-session
+- module: sleep
+  duration: 120
+- module: load-cmyp-app-config
+  file: ddc-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10

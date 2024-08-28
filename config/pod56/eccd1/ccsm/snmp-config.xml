@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hello xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <capabilities>
+        <capability>
+            urn:ietf:params:netconf:base:1.0
+        </capability>
+    </capabilities>
+</hello>
+]]>]]>
+<?xml version="1.0" encoding="UTF-8"?>
+<rpc message-id="0" xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+    <edit-config>
+        <target>
+            <running/>
+        </target>
+        <config>
+            <snmp xmlns="urn:rdns:com:ericsson:oammodel:ericsson-snmp">
+                <!--heartbeat-interval: The interval in seconds, with which an SNMP heartbeat notification (eriAlarmHeartBeatNotif) is sent to all targets. heartbeat-interval in this module replaces heartbeat-interval specified in the ericsson-fm model, which has no effect on SNMP heartbeat. If not defined, a default value of 60 seconds will be used. The heartbeatInterval must be greater than 30 sec when oamVIP is enabled.-->
+                <heartbeat-interval>60</heartbeat-interval>
+                <!--administrative-state: The administrative state for the SNMP protocol. If locked, no SNMP Traps are generated, for example, alarm, alerts or heartbeats. All access to the SNMP protocol is disabled. The default value is unlocked.-->
+                <administrative-state>unlocked</administrative-state>
+                <!--engine-id: Unique identifier of the SNMP agent. Only applicable when using SNMPv3. To be configured when auto discovery of the SNMP Engine ID is not supported or it is desired to use an identifier that is not automatically calculated and remains unchanged across re-initializations.-->
+                <engine-id>8000137001C0A856ECCD107E28</engine-id>
+                <!-- <snmp-target-v2c> -->
+                    <!--id: Unique ID represents the snmp target v2c.-->
+                    <!-- <id>{{SNMP-TARGET-V2C-ID}}</id> -->
+                    <!--community: SNMP community string.-->
+                    <!-- <community>{{SNMP-COMMUNITY}}</community> -->
+                    <!--host: Host of snmp target v2c, can be IPv4 address, IP v6 address or FQDN of the host.-->
+                    <!-- <host>{{SNMP-TARGET-V2C-HOST}}</host> -->
+                    <!--port: Port of snmp target v2c.-->
+                    <!-- <port>{{SNMP-TARGET-V2C-PORT}}</port> -->
+                <!-- </snmp-target-v2c> -->
+                <snmp-target-v3>
+                    <!--id: Unique ID represents the snmp target v3.-->
+                    <id>snmp-target-v3-0</id>
+                    <!--host: Host of snmp target v3, can be IPv4 address, IP v6 address or FQDN of the host.-->
+                    <host>10.130.34.243</host>
+                    <!--port: Port of snmp target v3.-->
+                    <port>162</port>
+                    <!--user: SNMP V3 user name. Used for authorization of incoming SNMP requests. Defined by the subject alternative name field, from the certificate provided by the client during DTLS session setup. (string of length 1..32).-->
+                    <user>snmpuser</user>
+                    <!--snmp-security-level: Specifies the level of security applied to messages exchanged with this target. (enumeration of auth-no-priv, auth-priv).-->
+                    <snmp-security-level>auth-priv</snmp-security-level>
+                    <!--auth-protocol: Authentication protocol used. Value relevant only when authentication is enabled. See snmp-security-level. (enumeration of md5, sha1).-->
+                    <auth-protocol>sha1</auth-protocol>
+                    <!--auth-key: Authentication key used for signing SNMP notifications. Value relevant only if authentication is enabled. See snmp-security-level. If authentication is enabled key MUST contain at least 8 characters..-->
+                    <auth-key>myAuthPassword</auth-key>
+                    <!--priv-protocol: Privacy protocol used. Relevant only if privacy is enabled. See snmp-security-level. (enumeration of aes-128-cfb, des-cbc).-->
+                    <priv-protocol>aes-128-cfb</priv-protocol>
+                    <!--priv-key: Privacy key used for encryption. User's privKey encrypts the data portion of the message. Value relevant only if privacy is enabled. See snmp-security-level.. If privacy is enabled key MUST contain at least 8 characters.-->
+                    <priv-key>myPrivPassword</priv-key>
+                </snmp-target-v3>
+            </snmp>
+        </config>
+    </edit-config>
+</rpc>

@@ -1,0 +1,104 @@
+######################################
+## CNF general information
+######################################
+nodeName: n182-vpod2-cces1
+nodeType: CCES
+
+vnflcm:
+  clusterName: n182-eccd2
+  namespace: cces
+
+users:
+  day1:
+  - username: cces-admin
+    password: Changeme@1st
+    groups:
+    - nef-admin
+    - apigm-admin
+    - sragent-admin
+    - nrfagent-admin
+    - system-admin
+  - username: cces-sec
+    password: Changeme@1st
+    groups:
+    - nef-security-admin
+    - apigm-security-admin
+    - sragent-security-admin
+    - nrfagent-security-admin
+    - system-security-admin
+
+license:
+  customerId: "946060"
+  swltId: STA-CCES-13
+
+cnom:
+  fqdn: cnom.cces1.n182.vpod2.seli.gic.ericsson.se
+
+snmp:
+  agentEngineId: 800000c104636365733163347331
+  sourceIdentifier: 10.221.125.9
+
+ddc:
+  remotePath: /mnt/ddc/node182-cluster2-cces1
+vtap:
+  remotePath: vtap/node182-cluster2-cces1
+
+######################################
+## CNF specific information
+######################################
+cces:
+  iamFqdn: iam-cces1-n182-vpod2.seli.gic.ericsson.se
+  iamDomain: cces1-n182-vpod2.seli.gic.ericsson.se
+  nef:
+    instanceId: ddd9b5b3-fa57-4cb1-ace7-63eccd10cea6
+    host: cces1-5g-sbi-traffic.n182-vpod2
+    port: 443
+    nbi:
+      trust:
+        host: cces1-5g-nbi-trust-traffic.n182-vpod2
+    diameter:
+      host: n182-vpod2-cces1-nef
+      peer:
+        host: n182-vpod2-ccpc1-pcrf
+        ip: 172.17.142.8
+        port: 3868
+
+######################################
+## CNF certificates specific
+######################################
+certs:
+  iccr-external-tls-certificate:
+    p12: ../certificates/cces1/cces1-iccr-server.p12
+  eric-cces-sbi-server-certs-certificate:
+    p12: ../certificates/cces1/cces1-sbi-server.p12
+  eric-cces-sbi-client-certs-certificate:
+    p12: ../certificates/cces1/cces1-sbi-client.p12
+  eric-cces-nbi-trust-server-certs-certificate:
+    p12: ../certificates/cces1/cces1-nbi-trust-server.p12
+  eric-cces-nbi-client-certs-certificate:
+    p12: ../certificates/cces1/cces1-nbi-trust-client.p12
+  eric-cces-prov-server-certs-certificate:
+    p12: ../certificates/cces1/cces1-prov-server.p12
+
+######################################
+## CNF dimensioning specific
+######################################
+
+replicaCount:
+  eric-data-wide-column-database-cd: 1 # 3
+  eric-cces-common-entity: 1           # 2
+  eric-cces-timer-service: 1           # 2
+  eric-apigm-api-proxy: 1              # 2
+
+hpaReplica:
+  eric-cces-common-entity:
+    min: 1 # 2
+    max: 1 # 3
+  eric-cces-timer-service:
+    min: 1 # 2
+    max: 1 # 3
+  eric-cces-redis-cluster:
+    max: 1 # 5
+  eric-apigm-api-proxy:
+    min: 1 # 2
+    max: 1 # 3

@@ -1,0 +1,172 @@
+autowizard false
+config
+
+interfaces interface cre:net0
+ type    ethernetCsmacd
+ enabled true
+ l2-mtu  1968
+exit
+interfaces interface vpngw:net0
+ type    ethernetCsmacd
+ enabled true
+exit
+
+network-instances network-instance intraForward
+ enabled true
+exit
+interfaces interface vpngw:intra
+ type            ipForward
+ enabled         true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 3400
+ parent-interface vpngw:net0
+ bind-ni-name    intraForward
+ ipv4 enabled true
+ ipv4 address 172.31.1.1
+  prefix-length 24
+  exit
+ address-type ip-range 8
+ exit
+
+network-instances network-instance signaling
+ enabled                  true
+ description              signaling
+ routing bgp 7002
+  neighbor 11.1.52.254
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              8002
+   address-family ipv4 unicast
+   exit
+ routing ingress-next-hop-announcements ingress-next-hop-announcement signaling_ingress
+  fallback-route-next-hop interface vpngw:signaling_vnfloop
+  service           vpngw-forwarder
+ ip static-route up 0.0.0.0/0 11.1.52.254
+  bfd-enabled true
+ exit
+exit
+
+interfaces interface cre:signaling_link
+ description      cre:signaling_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 3852
+ parent-interface cre:net0
+ bind-ni-name     signaling
+ ipv4 enabled true
+ ipv4 address 11.1.52.100
+  prefix-length 24
+  exit
+ address-type ip-range 2
+ exit
+
+interfaces interface vpngw:signaling_link
+ description      vpngw:signaling_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 3852
+ parent-interface vpngw:net0
+ bind-ni-name     signaling
+ ipv4 enabled true
+ ipv4 address 11.1.52.1
+  prefix-length 24
+  exit
+ address-type ip-range 8
+ exit
+
+interfaces interface vpngw:signaling_vnfloop
+ description  vpngw:signaling_vnfloop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name signaling
+ ipv4 enabled true
+ ipv4 address 5.129.0.1
+  prefix-length 32
+  exit
+ address-type single
+ exit
+
+network-instances network-instance media
+ enabled                  true
+ description              media
+ routing bgp 7001
+  neighbor 11.1.1.254
+   peer-type                 external
+   advertisement-interval 20
+   bfd-enabled            false
+   remote-as              8001
+   address-family ipv4 unicast
+   exit
+ routing ingress-next-hop-announcements ingress-next-hop-announcement media_ingress
+  fallback-route-next-hop interface vpngw:media_vnfloop
+  service           vpngw-forwarder
+ ip static-route up 0.0.0.0/0 11.1.1.254
+  bfd-enabled true
+ exit
+exit
+
+interfaces interface cre:media_link
+ description      cre:media_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 3801
+ parent-interface cre:net0
+ bind-ni-name     media
+ ipv4 enabled true
+ ipv4 address 11.1.1.100
+  prefix-length 24
+  exit
+ address-type ip-range 2
+ exit
+
+interfaces interface vpngw:media_link
+ description      vpngw:media_link
+ type             ipForward
+ enabled          true
+ encapsulation dot1q-vlan outer-tag tag-type c-vlan
+ encapsulation dot1q-vlan outer-tag vlan-id 3801
+ parent-interface vpngw:net0
+ bind-ni-name     media
+ ipv4 enabled true
+ ipv4 address 11.1.1.1
+  prefix-length 24
+  exit
+ address-type ip-range 8
+ exit
+
+interfaces interface vpngw:media_vnfloop
+ description  vpngw:media_vnfloop
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name media
+ ipv4 enabled true
+ ipv4 address 5.128.0.1
+  prefix-length 32
+  exit
+ address-type single
+ exit
+
+interfaces interface vpngw:loopback
+ type         softwareLoopback
+ enabled      true
+ bind-ni-name signaling
+ ipv4 enabled true
+ ipv4 address 109.1.0.50
+  prefix-length 32
+ exit
+ address-type single
+ exit
+
+vpn-gateway networks network vpngw-service
+ parent-interface vpngw:loopback
+ exit
+
+intra-forwarding interface intraforwarding
+ parent-interface vpngw:intra
+
+commit
+end

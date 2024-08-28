@@ -1,0 +1,142 @@
+vnflcm:
+  vnfInstanceName: pod56-sc1
+  vnfProductName: Signaling_Controller
+  values-file: values.yaml
+  orchestrator: helm
+  namespace: sc
+  csar-file: /lab/pccc_builds/images/TS_DM_5GC_NFVI_images/1.11/VNF/eric-sc-1.12.0+43.csar
+  clusterName: pod56-eccd1
+
+access-info:
+  oam: 10.130.34.244
+  ldap-admin:
+    user: admin
+    pass: cm9vdHJvb3Q=
+  users:
+  - user: tsadm
+    pass: VHNAZG01Z2NAYjF1ZXM=
+    pass-init: dHNhZG0=
+pipeline:
+# As this module will take too much time. Therefore, comment it out. But this config is available.
+#- module: push-images-to-registry
+#  cleanup: true
+#  remote-server:
+#    host: pod56-eccd1.seln.ete.ericsson.se
+#    user: eccd
+#    ssh-key: /lab/pccc_utils/scripts/ssh_key/pod56_key
+#  tool:
+#    cli: docker
+#  registry:
+#     url: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+#     user: admin
+#     pass: YWRtaW4xMjM=
+- module: install-crd
+  namespace: eric-crd-ns
+  registry:
+    host: container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se
+    username: admin
+    password: YWRtaW4xMjM=
+  pullSecret: regcred
+  additional-values:
+    eric-tm-ingress-controller-cr-crd:
+      rbac.create: true
+- module: create-namespace
+- module: run-k8s-command
+  name: Create docker registry secret
+  cmd: create secret docker-registry regcred --docker-server=container-registry.ingress.pod56-eccd1.seln.ete.ericsson.se --docker-username=admin --docker-password=admin123
+- module: create-k8s-resource
+  file: ../day0_secrets/bsf-db-secret.yaml
+- module: create-k8s-resource
+  file: ../day0_secrets/distributed_coordinator_ed_sc_secret.yaml
+- module: create-k8s-resource
+  file: ../day0_secrets/distributed_coordinator_ed_secret.yaml
+- module: create-k8s-resource
+  file: ../day0_secrets/ldap-secret.yaml
+- module: create-k8s-resource
+  file: ../day0_secrets/eric-sc-bragent-secret.yaml
+- module: create-k8s-resource
+  file: ../day0_secrets/wcdbcd-admin-secret.yaml
+- module: create-k8s-resource
+  file: ../day0_secrets/wcdbcd-day0-secret.yaml
+- module: create-k8s-secret
+  name: snmp-alarm-provider-config
+  sources:
+  - type: file
+    key: config.json
+    file: ../snmp-config.json
+- module: instantiate
+- module: verify-pod-running
+  ignore-not-running:
+  - eric-data-search-engine-curator
+- module: run-k8s-command
+  name: Create networkpolicy to allow accessing eric-pm-server and eric-data-search-engine
+  cmd: |
+    apply -f {file1}
+    apply -f {file2}
+  inline-files:
+    file1: ../network-policy/eric-pm-server-allow.yaml
+    file2: ../network-policy/eric-data-search-engine-allow.yaml
+- module: run-k8s-command
+  name: Create pm server ingress
+  cmd: create ingress eric-pm-server --rule="eric-pm-server-sc.ingress.pod56-eccd1.seln.ete.ericsson.se/*=eric-pm-server:9090"
+- module: verify-pod-ready
+  check-interval: 5
+  deployments:
+  - eric-cm-yang-provider
+- module: load-cmyp-user-config
+  file: ../user-config.txt
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 30
+- module: change-initial-password
+- module: load-cmyp-app-config
+  file: ../external-certificates.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: ../external-certificates-bsf.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  file: ../external-certificates-scp.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+# - module: load-cmyp-app-config
+#   file: bsf-config.txt
+#   user-id: 0
+#   proto: ssh
+#   retry-interval: 30
+# - module: sleep
+#   duration: 10
+# - module: load-cmyp-app-config
+#   file: scp-config.txt
+#   user-id: 0
+#   proto: ssh
+#   retry-interval: 30
+# - module: sleep
+#   duration: 10
+- module: load-cmyp-app-config
+  file: ../ddc-config.txt
+  user-id: 0
+  proto: ssh
+  retry-interval: 30
+- module: sleep
+  duration: 10
+- module: load-cmyp-app-config
+  name: Database initialize
+  user-id: 0
+  commands: |-
+    bsf-function nf-instance bsf1 bsf-service serviceName1 binding-database initialize-db datacenter { name datacenter1 }
+    end
+- module: sleep
+  duration: 10

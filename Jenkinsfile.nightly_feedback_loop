@@ -1,0 +1,138 @@
+/*
+* This Jenkins pipeline is used in CNAT CI for building
+* and testing the latest merged CNAT code.
+*/
+import groovy.json.JsonOutput
+
+config = [
+    gitInfo: [
+        cnatRepoUri: 'https://gerritmirror-direct.sero.gic.ericsson.se/a/5gc_config/cnat',
+        credentialId: 'cnat-https-token'
+    ]
+]
+
+pipeline {
+    agent {
+        label "CNAT_RH8"
+    }
+
+    environment {
+        WORKSPACE = "${env.WORKSPACE}"
+        EMAIL_TO = 'thomas.g.johansson@ericsson.com; sambasiva.rao.mudigonda@ericsson.com; zhiwen.he@ericsson.com'
+    }
+
+    options {
+        timeout(time: 360, unit: 'MINUTES')
+    }
+
+    stages
+    {
+
+        stage('Download latest merged code from cnat git repository') {
+            steps {
+                script {
+                    echo "Fetching lastest merged CNAT code from cnat git repository"
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: 'refs/heads/master']],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'cnat']],
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[credentialsId: config.gitInfo.credentialId, url: config.gitInfo.cnatRepoUri]]
+                    ])
+                }
+            }
+        }
+
+        stage('Build the CNAT binary from latest merged code') {
+            steps {
+                script {
+                    withEnv(['TEST_VERSION=']) {
+                        sh '''#!/usr/bin/env bash
+# This line is needed because it defined the 'module' command, which is used by this script
+# to load necessary/desired software from AFS.
+source "/app/modules/0/init/bash"
+# source cnat env
+source /lab/pccc_utils/scripts/bashrc.eagles
+# source the python test env
+source /lab/pccc_utils/scripts/cnat_pyvenv/bin/activate
+module list
+
+echo "================================================"
+echo "=    BUILD CNAT BINARY FROM LATEST MERGED CODE ="
+echo "================================================"
+cd cnat
+echo "Building binary from latest cloned cnat repo..."
+./make_cnat_binary.sh
+echo "CNAT build version: $(dist/cnat --version | tail -1)"
+cd -
+'''
+                        def version = sh(script: 'cnat/dist/cnat --version | tail -1', returnStdout: true).trim()
+                        echo "Updating currentBuild.description with version ${version}"
+                        currentBuild.description  = "CNAT: ${version}"
+                    }
+                }
+            }
+        }
+
+        stage('Run the CNAT CI test suite') {
+            steps {
+                script {
+                    sh '''#!/usr/bin/env bash
+# This line is needed because it defined the 'module' command, which is used by this script
+# to load necessary/desired software from AFS.
+source "/app/modules/0/init/bash"
+# source cnat env
+source /lab/pccc_utils/scripts/bashrc.eagles
+# source the python test env
+source /lab/pccc_utils/scripts/cnat_pyvenv/bin/activate
+
+echo "================================================"
+echo "=    RUN CNAT CI TEST SUITE                    ="
+echo "================================================"
+script_path=$(pwd)
+# The TEMP_DIR is also defined in common/consts.py
+TEMP_DIR=test_resource
+TEMPLATE_REPO_DIR=ts-config
+# CNAT Binary file and repos will be saved here.
+test_path=$script_path/$TEMP_DIR
+rm -rf $test_path
+mkdir $test_path
+rm -rf ts-config || true
+
+echo "Running prepare_repo.py script..."
+./utility/prepare_repo.py
+template_repo_path=$script_path/$TEMPLATE_REPO_DIR
+
+echo "Copying the build CNAT binary to test_resource directory..."
+cp cnat/dist/cnat test_resource/
+echo "Starting CI test suite..."
+pytest ./case -vs
+'''
+                }
+            }
+        }
+    }
+
+    post {
+        failure {
+            echo "Archiving test logs after failure..."
+            script {
+                withEnv(['TEST_VERSION=']) {
+                    def version = sh(script: 'cnat/dist/cnat --version | tail -1', returnStdout: true).trim()
+                    echo "Archiving all logs in /proj/pdupc-mano/XPT/Team_Eagles/cnat/cnat_ci/release_${version}"
+                    archiveArtifacts artifacts: "/proj/pdupc-mano/XPT/Team_Eagles/cnat/cnat_ci/release_${version}/**"
+                }
+            }
+
+            emailext body: 'Check console output at ${BUILD_URL} to view the results. \n\n ${CHANGES} \n\n -------------------------------------------------- \n${BUILD_LOG, maxLines=100, escapeHtml=false}',
+                to: "${env.EMAIL_TO}",
+                subject: 'CNAT nightly feedback loop failed in Jenkins: ${PROJECT_NAME} - #${BUILD_NUMBER}'
+
+            cleanWs()
+        }
+        success {
+            cleanWs()
+        }
+    }
+}

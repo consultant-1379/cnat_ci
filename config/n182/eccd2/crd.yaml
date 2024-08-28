@@ -1,0 +1,21 @@
+# Edit 'csar-list' to update the required CSAR package
+# Then in the same directory run: cnat --install-crd
+clusterName: n182-eccd2
+namespace: eric-crd-ns
+registry:
+  host: registry01.eoaas.n182.vpod1.seli.gic.ericsson.se
+  username: vnfm-user
+  password: DefaultP12345!
+pullSecret: regcred
+csar-list:
+- /lab/pccc_builds/images/EDA_2/EDA_2.16/EDA_2.16_GA_T-152239/eric-act-cna-1.57.127.csar
+- /lab/pccc_builds/images/CCES/CCES_1.12_T-150326/Ericsson.CCES.CXP9037720_1_12_3+53.csar
+- /lab/pccc_builds/images/CCDM/1.11.26_T-152183/Ericsson.CCDM.CXP9037622_1_11_26.csar
+- /lab/pccc_builds/images/CCRC/CCRC_1.13_T-150137/Ericsson.CCRC.CXP9037716_1_13_4_1.csar
+- /lab/pccc_builds/images/CCSM_1.11_EP1_T-151617/Ericsson.CCSM.CXP9037722_1_11_5_14.csar
+- /lab/pccc_builds/images/PCC/PCC1.31-R60C91-EP1/PCC_CXP9041577_1-R60C91.csar
+- /lab/pccc_builds/images/PCG/PCG_1.23/PCG_1.23_EP1_T-153595/PCG_CXP9041656_1-R58C234.csar
+- /lab/pccc_builds/images/SC/sc-1.13/eric-sc-1.13.0+4.csar
+additional-values:
+  eric-tm-ingress-controller-cr-crd:
+    rbac.create: true

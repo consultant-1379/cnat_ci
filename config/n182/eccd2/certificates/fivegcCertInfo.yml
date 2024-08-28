@@ -1,0 +1,241 @@
+country: "SE"
+state: "Stockholm"
+localityName: "Stockholm"
+p12_password: "ericsson"
+lab:
+  n182-vpod2:
+    pcc1:
+      - cert_name: pcc1-amf-sbi-server
+        cn: AMF
+        subjectAlternateName:
+          - 'site1-cluster2-pcc1.amf.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: pcc1-amf-sbi-client
+        cn: AMF
+        subjectAlternateName:
+          - 'site1-cluster2-pcc1.amf.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: pcc1-smf-sbi-server
+        cn: SMF
+        subjectAlternateName:
+          - 'pcc1-smf-nsmf.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'pcc1-smf-notification.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: pcc1-smf-sbi-client
+        cn: SMF
+        subjectAlternateName:
+          - 'pcc1-smf-nsmf.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'pcc1-smf-notification.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+    eda1:
+      - cert_name: eda1-iccr-server
+        cn: EDA1
+        subjectAlternateName:
+          - '*.eda1.n182.vpod2.seli.gic.ericsson.se'
+    ccrc1:
+      - cert_name: ccrc1-nrf-sbi-server
+        cn: CCRC1
+        subjectAlternateName:
+          - 'ccrc1-nrf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccrc1-nrf-sbi-client
+        cn: CCRC1
+        subjectAlternateName:
+          - 'ccrc1-nrf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccrc1-nssf-sbi-server
+        cn: CCRC1
+        subjectAlternateName:
+          - 'ccrc1-nssf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccrc1-nssf-sbi-client
+        cn: CCRC1
+        subjectAlternateName:
+          - 'ccrc1-nssf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccrc1-nrf-kvdb-server
+        cn: CCRC1
+        subjectAlternateName:
+          - 'ccrc1-nrf-sig.site1-cluster2.kvdb.nrf.3gppnetwork.org'
+      - cert_name: ccrc1-nrf-kvdb-client
+        cn: CCRC1
+        subjectAlternateName:
+          - 'ccrc1-nrf-sig.site1-cluster2.kvdb.nrf.3gppnetwork.org'
+      - cert_name: ccrc1-nssf-kvdb-server
+        cn: CCRC1
+        subjectAlternateName:
+          - 'ccrc1-nssf-sig.site1-cluster2.kvdb.nssf.3gppnetwork.org'
+      - cert_name: ccrc1-nssf-kvdb-client
+        cn: CCRC1
+        subjectAlternateName:
+          - 'ccrc1-nssf-sig.site1-cluster2.kvdb.nssf.3gppnetwork.org'
+      - cert_name: ccrc1-iccr-server
+        cn: CCRC1
+        subjectAlternateName:
+          - '*.ccrc1.n182.vpod2.seli.gic.ericsson.se'
+    ccdm1:
+      - cert_name: ccdm1-sbi-server
+        cn: CCDM1
+        subjectAlternateName:
+          - 'ccdm1-5g-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'ccdm1-intersite.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccdm1-sbi-client
+        cn: CCDM1
+        subjectAlternateName:
+          - 'ccdm1-5g-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'ccdm1-intersite.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccdm1-4g-traffic-server
+        cn: CCDM1
+        subjectAlternateName:
+          - 'ccdm1-4g-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccdm1-4g-traffic-client
+        cn: CCDM1
+        subjectAlternateName:
+          - 'ccdm1-4g-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccdm1-iccr-server
+        cn: CCDM1
+        subjectAlternateName:
+          - '*.ccdm1.n182.vpod2.seli.gic.ericsson.se'
+      - cert_name: ccdm1-prov-server
+        cn: CCDM1
+        subjectAlternateName:
+          - 'prov-ccdm1-n182-vpod2.seli.gic.ericsson.se'
+      - cert_name: ccdm1-4g-prov-server
+        cn: CCDM1
+        subjectAlternateName:
+          - 'prov-4g-ccdm1-n182-vpod2.seli.gic.ericsson.se'
+      - cert_name: ccdm1-4g-prov-client
+        cn: CCDM1
+        subjectAlternateName:
+          - 'prov-4g-ccdm1-n182-vpod2.seli.gic.ericsson.se'
+    ccpc1:
+      - cert_name: ccpc1-sbi-server
+        cn: CCPC1
+        subjectAlternateName:
+          - 'ccpc1-5g-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'prov-ccpc1-n182-vpod2.seli.gic.ericsson.se'
+      - cert_name: ccpc1-sbi-client
+        cn: CCPC1
+        subjectAlternateName:
+          - 'ccpc1-5g-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'prov-ccpc1-n182-vpod2.seli.gic.ericsson.se'
+      - cert_name: ccpc1-iccr-server
+        cn: CCPC1
+        subjectAlternateName:
+          - 'ccpc1-n182-vpod2.seli.gic.ericsson.se'
+    ccsm1:
+      - cert_name: ccsm1-sbi-server
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-ausf-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'ccsm1-udm-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'ccsm1-eir-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'ccsm1-hss-epc-http-sig.site1-cluster2.epc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-sbi-client
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-ausf-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'ccsm1-udm-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'ccsm1-eir-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+          - 'ccsm1-hss-epc-http-sig.site1-cluster2.epc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-udm-sbi-server
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-udm-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-udm-sbi-client
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-udm-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-ausf-sbi-server
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-ausf-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-ausf-sbi-client
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-ausf-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-hss-sbi-server
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-hss-epc-http-sig.site1-cluster2.epc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-hss-sbi-client
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-hss-epc-http-sig.site1-cluster2.epc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-eir-sbi-server
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-eir-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-eir-sbi-client
+        cn: CCSM1
+        subjectAlternateName:
+          - 'ccsm1-eir-5g-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: ccsm1-iccr-server
+        cn: CCSM1
+        subjectAlternateName:
+          - '*.ccsm1.n182.vpod2.seli.gic.ericsson.se'
+    cces1:
+      - cert_name: cces1-sbi-server
+        cn: CCES1
+        subjectAlternateName:
+          - 'cces1-5g-sbi-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: cces1-sbi-client
+        cn: CCES1
+        subjectAlternateName:
+          - 'cces1-5g-sbi-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: cces1-nbi-trust-server
+        cn: CCES1
+        subjectAlternateName:
+          - 'cces1-5g-nbi-trust-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: cces1-nbi-trust-client
+        cn: CCES1
+        subjectAlternateName:
+          - 'cces1-5g-nbi-trust-traffic.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: cces1-iccr-server
+        cn: CCES1
+        subjectAlternateName:
+          - '*.cces1.n182.vpod2.seli.gic.ericsson.se'
+      - cert_name: cces1-prov-server
+        cn: CCES1
+        subjectAlternateName:
+          - 'prov-cces1-n182-vpod2.seli.gic.ericsson.se'
+      - cert_name: cces1-prov-client
+        cn: CCES1
+        subjectAlternateName:
+          - 'prov-cces1-n182-vpod2.seli.gic.ericsson.se'
+    sc1:
+      - cert_name: sc1-bsf-sbi-server
+        cn: SC1
+        subjectAlternateName:
+          - 'sc1-bsf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: sc1-bsf-sbi-client
+        cn: SC1
+        subjectAlternateName:
+          - 'sc1-bsf-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: sc1-scp-sbi-server
+        cn: SC1
+        subjectAlternateName:
+          - 'sc1-scp-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: sc1-scp-sbi-client
+        cn: SC1
+        subjectAlternateName:
+          - 'sc1-scp-sig.site1-cluster2.5gc.mnc081.mcc240.3gppnetwork.org'
+      - cert_name: sc1-iccr-server
+        cn: SC1
+        subjectAlternateName:
+          - 'bsf1-n182-vpod2.seli.gic.ericsson.se'
+    af-outline:
+      - cert_name: af-outline-sbi-server
+        cn: af-outline
+        subjectAlternateName:
+          - 'outline-af1.node182.5gc.mnc081.mcc240.3gppnetwork.org'
+    # sc1-sepp:
+    #   - cert_name: sc1-sepp-internal-sbi
+    #     cn: SC1-SEPP-Internal
+    #     subjectAlternateName:
+    #       - 'sc1-sepp-internal-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org'
+    #   - cert_name: sc1-sepp-external-sbi
+    #     cn: SC1-SEPP-External
+    #     subjectAlternateName:
+    #       - 'sc1-sepp-external-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org'
+    #   - cert_name: sc1-sepp-nrf-sbi
+    #     cn: SC1-SEPP
+    #     subjectAlternateName:
+    #       - 'sc1-sepp-external-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org'
+    #       - 'sc1-sepp-internal-sig.n182-vpod2.5gc.mnc081.mcc240.3gppnetwork.org'
+    #   - cert_name: sc1-sepp-iccr-server
+    #     cn: SC1-SEPP
+    #     subjectAlternateName:
+    #       - '*.sc1-oam.n182-vpod2.seli.gic.ericsson.se'

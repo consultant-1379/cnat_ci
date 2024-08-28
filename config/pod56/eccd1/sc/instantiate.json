@@ -1,0 +1,9 @@
+{
+  "clusterName": "pod56-eccd1",
+  "additionalParams": {
+       "namespace": "sc",
+       "applicationTimeOut": "3000",
+       "skipJobVerification": "false",
+       "skipVerification": "true"
+      }
+}

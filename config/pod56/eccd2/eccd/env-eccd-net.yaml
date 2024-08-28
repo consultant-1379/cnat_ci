@@ -1,0 +1,22 @@
+parameters:
+
+  prefix: pod56-eccd2
+  phynet_virtio: default
+  target_cloud_system: openstack
+
+  virtio_networks:
+  - name: ccd-oam
+    vlan: 3012
+    cidr: 10.130.34.88/29
+    enable_dhcp: false
+    gateway: 10.130.34.94
+    allocation_pools: { start: 10.130.34.89, end: 10.130.34.93 }
+    routes: []
+
+  - name: ecfe-oam
+    vlan: 3019
+    cidr: 11.1.19.0/24
+    enable_dhcp: false
+    gateway: 11.1.19.254
+    allocation_pools: { start: 11.1.19.1, end: 11.1.19.10 }
+    routes: []

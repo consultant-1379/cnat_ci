@@ -1,0 +1,20 @@
+autowizard false
+config 
+
+epg node secm certm trusted-certificate RootCA
+
+epg node secm certm node-credential smf-sbi-client
+
+epg node secm certm node-credential smf-sbi-server
+
+commit
+
+epg node secm certm node-credential smf-sbi-client install-external-credential-from-uri uri smf-sbi-client.pem
+epg node secm certm node-credential smf-sbi-server install-external-credential-from-uri uri smf-sbi-server.pem
+
+epg node secm certm trust-category trust-category
+epg node secm certm trusted-certificate RootCA install-trusted-cert-from-uri uri ca.crt
+epg node secm certm trust-category trust-category trusted-certificates RootCA
+
+commit 
+end
